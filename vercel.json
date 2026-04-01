@@ -3,7 +3,6 @@
   "outputDirectory": "dist",
   "installCommand": "npm install",
   "framework": "vite",
-  "regions": ["sin1", "hkg1"],
   "env": {
     "VITE_API_URL": "https://kaki-hoardings-api.onrender.com"
   }
