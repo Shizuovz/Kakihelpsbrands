@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/config';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -10,7 +11,7 @@ const About = () => {
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/content/about');
+        const response = await fetch(`${API_BASE_URL}/api/content/about`);
         if (response.ok) {
           const result = await response.json();
           setContent(result.data);
