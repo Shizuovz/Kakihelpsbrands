@@ -7,11 +7,8 @@ const Contact = () => {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    company: '',
-    department: '',
-    message: '',
-    budget: '',
-    timeline: ''
+    subject: '',
+    message: ''
   });
   const { toast } = useToast();
 
@@ -33,22 +30,47 @@ const Contact = () => {
     return () => observer.disconnect();
   }, []);
 
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    toast({
-      title: "Message Sent! 🚀",
-      description: "Thank you for reaching out. Our team will get back to you within 24 hours with creative ideas!",
-    });
-    setFormData({
-      name: '',
-      email: '',
-      company: '',
-      department: '',
-      message: '',
-      budget: '',
-      timeline: ''
-    });
+    setIsSubmitting(true);
+    
+    try {
+      const response = await fetch('http://localhost:3001/api/inquiries', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          type: 'contact_form' // Tag it as coming from the contact page
+        }),
+      });
+
+      if (response.ok) {
+        toast({
+          title: "Inquiry Sent! 🚀",
+          description: "Thank you for reaching out. We will get back to you shortly!",
+        });
+        setFormData({
+          name: '',
+          email: '',
+          subject: '',
+          message: ''
+        });
+      } else {
+        throw new Error('Failed to send message');
+      }
+    } catch (error) {
+      toast({
+        title: "Submission Error",
+        description: "Something went wrong. Please try again or email us directly.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -68,31 +90,36 @@ const Contact = () => {
   const contactInfo = [
     {
       title: 'General Inquiries',
-      email: 'KAKI.HELPS.BRANDS@GMAIL.COM',
+      email: 'kaki.helps.brands@gmail.com',
       description: 'For general questions and collaboration opportunities',
       icon: <Mail className="w-6 h-6" />,
-      color: 'from-blue-500 to-purple-600'
+      color: 'from-blue-500 to-purple-600',
+      type: 'email'
     },
     {
       title: 'New Business',
-      email: 'KAKI.HELPS.BRANDS@GMAIL.COM',
+      info: '88374 02472',
       description: 'Ready to start a project? Let\'s discuss your vision',
       icon: <Phone className="w-6 h-6" />,
-      color: 'from-green-500 to-teal-600'
+      color: 'from-green-500 to-teal-600',
+      type: 'phone'
     },
     {
       title: 'Careers',
-      email: 'KAKI.HELPS.BRANDS@GMAIL.COM',
+      email: 'kaki.helps.brands@gmail.com',
       description: 'Join our creative team and craft culture with us',
       icon: <MapPin className="w-6 h-6" />,
-      color: 'from-pink-500 to-red-600'
+      color: 'from-pink-500 to-red-600',
+      type: 'email'
     }
   ];
 
   const socialLinks = [
-    { icon: <Instagram className="w-5 h-5" />, url: 'https://instagram.com/kaki.design', label: 'Instagram', followers: '5K+' },
-    { icon: <Youtube className="w-5 h-5" />, url: 'https://youtube.com/@kaki9139?si=hoHcVP9_i2cB5qoi', label: 'YouTube', followers: '22K+' },
-    { icon: <Facebook className="w-5 h-5" />, url: 'https://facebook.com/kaki.design', label: 'Facebook', followers: '590+' },
+    { icon: <Instagram className="w-5 h-5" />, url: 'https://instagram.com/kaki_marketing', label: 'Instagram', followers: '5K+' },
+    { icon: <Youtube className="w-5 h-5" />, url: 'https://youtube.com/@kaki9139', label: 'YouTube', followers: '22K+' },
+    { icon: <Facebook className="w-5 h-5" />, url: 'https://facebook.com/KAKIMarketing', label: 'Facebook', followers: '590+' },
+    { icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>, url: 'https://twitter.com/KAKImarketing', label: 'X (Twitter)', followers: '100+' },
+    { icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>, url: 'https://in.linkedin.com/company/kakimarketing', label: 'LinkedIn', followers: '200+' },
   ];
 
   return (
@@ -105,7 +132,7 @@ const Contact = () => {
               Get In Touch
             </h1>
             <p className="text-xl lg:text-2xl text-kaki-grey max-w-4xl mx-auto leading-relaxed">
-              Ready to craft culture together? Let's discuss how we can bring your vision to life and create something extraordinary that resonates with your audience.
+              Have a question or want to learn more about KAKI? Send us an inquiry and we'll be happy to assist you.
             </p>
           </div>
         </div>
@@ -118,7 +145,7 @@ const Contact = () => {
             {/* Contact Form */}
             <div className="xl:col-span-2 fade-in-on-scroll">
               <div className="bg-gradient-to-br from-kaki-dark-grey to-kaki-black p-8 lg:p-12 rounded-3xl border border-purple-500/20">
-                <h2 className="text-3xl font-bold mb-8 text-white">Start Your Project</h2>
+                <h2 className="text-3xl font-bold mb-8 text-white">Send an Inquiry</h2>
                 
                 <form onSubmit={handleSubmit} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -155,86 +182,25 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="company" className="block text-sm font-medium mb-3 text-white">
-                        Company
-                      </label>
-                      <input
-                        type="text"
-                        id="company"
-                        name="company"
-                        value={formData.company}
-                        onChange={handleChange}
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white placeholder-gray-400"
-                        placeholder="Your company name"
-                      />
-                    </div>
-                    
-                    <div>
-                      <label htmlFor="department" className="block text-sm font-medium mb-3 text-white">
-                        Department of Interest
-                      </label>
-                      <select
-                        id="department"
-                        name="department"
-                        value={formData.department}
-                        onChange={handleChange}
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white"
-                      >
-                        <option value="">Select a department</option>
-                        <option value="studio">KAKI Studio</option>
-                        <option value="marketing">KAKI Marketing</option>
-                        <option value="design">KAKI Design</option>
-                        <option value="tech">KAKI Tech</option>
-                        <option value="multiple">Multiple Departments</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="budget" className="block text-sm font-medium mb-3 text-white">
-                        Project Budget
-                      </label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white"
-                      >
-                        <option value="">Select budget range</option>
-                        <option value="10k-25k">$10K - $25K</option>
-                        <option value="25k-50k">$25K - $50K</option>
-                        <option value="50k-100k">$50K - $100K</option>
-                        <option value="100k+">$100K+</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label htmlFor="timeline" className="block text-sm font-medium mb-3 text-white">
-                        Timeline
-                      </label>
-                      <select
-                        id="timeline"
-                        name="timeline"
-                        value={formData.timeline}
-                        onChange={handleChange}
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white"
-                      >
-                        <option value="">Select timeline</option>
-                        <option value="asap">ASAP</option>
-                        <option value="1-3months">1-3 Months</option>
-                        <option value="3-6months">3-6 Months</option>
-                        <option value="6months+">6+ Months</option>
-                      </select>
-                    </div>
+                  <div>
+                    <label htmlFor="subject" className="block text-sm font-medium mb-3 text-white">
+                      Subject *
+                    </label>
+                    <input
+                      type="text"
+                      id="subject"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleChange}
+                      required
+                      className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white placeholder-gray-400"
+                      placeholder="What is your inquiry about?"
+                    />
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium mb-3 text-white">
-                      Project Details *
+                      Inquiry Details *
                     </label>
                     <textarea
                       id="message"
@@ -244,16 +210,17 @@ const Contact = () => {
                       required
                       rows={6}
                       className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors resize-none text-white placeholder-gray-400"
-                      placeholder="Tell us about your project, goals, and vision. What story do you want to tell?"
+                      placeholder="Please provide details about your inquiry..."
                     />
                   </div>
 
                   <Button 
                     type="submit" 
                     size="lg" 
+                    disabled={isSubmitting}
                     className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 py-6 md:text-lg"
                   >
-                    Send Message & Start Creating
+                    {isSubmitting ? "Sending Inquiry..." : "Send Inquiry"}
                   </Button>
                 </form>
               </div>
@@ -272,12 +239,21 @@ const Contact = () => {
                       </div>
                       <h3 className="font-bold text-white">{info.title}</h3>
                     </div>
-                    <a 
-                      href={`mailto:${info.email}`}
-                      className="text-white hover:text-white/80 transition-colors block mb-2 font-medium"
-                    >
-                      {info.email}
-                    </a>
+                    {info.type === 'email' ? (
+                      <a 
+                        href={`mailto:${info.email}`}
+                        className="text-white hover:text-white/80 transition-colors block mb-2 font-medium"
+                      >
+                        {info.email}
+                      </a>
+                    ) : (
+                      <a 
+                        href={`tel:${info.info?.replace(/\s/g, '')}`}
+                        className="text-white hover:text-white/80 transition-colors block mb-2 font-medium"
+                      >
+                        {info.info}
+                      </a>
+                    )}
                     <p className="text-white/80 text-sm">{info.description}</p>
                   </div>
                 ))}
@@ -329,78 +305,44 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* Departments Overview */}
-      <section className=" bg-gradient-to-b from-kaki-black to-kaki-dark-grey">
-        <div className="container-custom">
-          <div className="text-center mb-16 fade-in-on-scroll">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-white">Choose Your Department</h2>
-            <p className="text-xl text-kaki-grey max-w-3xl mx-auto">
-              Not sure which department fits your needs? Here's a quick overview of our specialties to help you get started.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {departments.map((dept, index) => (
-              <div key={dept.name} className={`p-8 bg-gradient-to-br ${dept.color} rounded-3xl hover-lift fade-in-on-scroll animation-delay-${index * 100} group`}>
-                <div className="flex items-center mb-6">
-                  <span className="text-3xl mr-4 group-hover:scale-110 transition-transform duration-300">
-                    {dept.icon}
-                  </span>
-                  <h3 className="text-2xl font-bold text-white">{dept.name}</h3>
-                </div>
-                <p className="text-white/90 text-lg leading-relaxed">{dept.focus}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Map Section */}
-      <section className="section-padding">
+      <section className="section-padding bg-kaki-dark-grey/30">
         <div className="container-custom">
           <div className="fade-in-on-scroll">
-            <div className="bg-gradient-to-br from-kaki-dark-grey to-kaki-black rounded-3xl p-8 lg:p-12 text-center border border-purple-500/20">
-              <div className="w-20 h-20 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6">
-                <MapPin className="w-10 h-10 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold mb-4 text-white">Visit Our Office</h3>
-              <p className="text-kaki-grey mb-4 text-lg">132 B, 2 ½ Mile<br />Darogapather, Dimapur, Nagaland</p>
-              <p className="text-sm text-kaki-grey mb-8">
-                Come visit our creative space where culture is crafted daily. 
-                Schedule a tour to see our studios, meet the team, and get inspired.
-              </p>
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
-                Schedule a Visit
-              </Button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Hiring CTA */}
-      <section className="section-padding bg-gradient-to-r from-purple-900 via-pink-900 to-purple-900">
-        <div className="container-custom text-center">
-          <div className="fade-in-on-scroll">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-white">Join Our Creative Family</h2>
-            <p className="text-xl text-purple-200 mb-12 max-w-3xl mx-auto leading-relaxed">
-              We're always looking for passionate creatives, strategists, and innovators to join our growing team. 
-              Ready to craft culture and shape the future with us?
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-              {[
-                { role: 'Creative Director', department: 'Studio' },
-                { role: 'Digital Strategist', department: 'Marketing' },
-                { role: 'Senior Designer', department: 'Design' }
-              ].map((job) => (
-                <div key={job.role} className="p-6 bg-white/10 backdrop-blur-sm rounded-2xl">
-                  <h3 className="font-bold text-white mb-2">{job.role}</h3>
-                  <p className="text-purple-200 text-sm">{job.department}</p>
+            <div className="bg-gradient-to-br from-kaki-dark-grey to-kaki-black rounded-3xl overflow-hidden border border-purple-500/20">
+              <div className="grid grid-cols-1 lg:grid-cols-2">
+                {/* Live Map Embed */}
+                <div className="h-[400px] lg:h-auto min-h-[400px]">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3589.4258511746766!2d93.75454789999999!3d25.8883677!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3745e2884f84c2af%3A0x7fdf085888fbe84a!2sKAKI!5e0!3m2!1sen!2sin!4v1774951655321!5m2!1sen!2sin"
+                    className="w-full h-full border-0 grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
+                    allowFullScreen={true}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                  ></iframe>
                 </div>
-              ))}
+
+                {/* Office Details */}
+                <div className="p-8 lg:p-12 flex flex-col justify-center text-center lg:text-left">
+                  <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center mb-6 mx-auto lg:mx-0 shadow-lg shadow-purple-500/20">
+                    <MapPin className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4 text-white">Visit Our Creative Space</h3>
+                  <p className="text-xl text-kaki-grey mb-4">132 B, 2 ½ Mile, Darogapather<br />Dimapur, Nagaland</p>
+                  <p className="text-kaki-grey mb-8 leading-relaxed max-w-md">
+                    Come visit our creative headquarters where culture is crafted daily. 
+                    Explore our studios, meet the visionary team, and experience the future of branding.
+                  </p>
+                  <div>
+                    <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 px-10 shadow-lg shadow-purple-600/30">
+                      <a href="https://maps.app.goo.gl/Rgc2vsCGmdVHW3GF7" target="_blank" rel="noopener noreferrer">
+                        Schedule a Visit
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <Button asChild size="lg" className="bg-white text-purple-900 hover:bg-gray-100 px-8">
-              <a href="mailto:careers@kaki.design">View Open Positions</a>
-            </Button>
           </div>
         </div>
       </section>

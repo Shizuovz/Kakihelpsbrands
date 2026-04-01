@@ -1,37 +1,33 @@
-
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Linkedin, Twitter,Instagram, Mail } from 'lucide-react';
-import boss from '../assets/team/boss.jpg';
-import arong from '../assets/team/design/arong.jpg';
-import wako from '../assets/team/studio/wako.jpg';
-import kc from '../assets/team/tech/kc.jpg';
-import along from '../assets/team/studio/along.jpg';
-import mego from '../assets/team/studio/mego.png';
-import akhro from '../assets/team/studio/akhro.jpg';
-import maya from '../assets/team/studio/maya.jpg';
-import nokul from '../assets/team/studio/nokul.jpg';
-import amugha from '../assets/team/studio/amugha.jpg';
-import christy from '../assets/team/marketing/christy.jpg';
-import ajung from '../assets/team/marketing/ajung.jpg';
-import meren from '../assets/team/marketing/meren.jpg';
-import lepok from '../assets/team/marketing/lepok.jpg';
-import kuku from '../assets/team/marketing/kuku.jpg';
-import koko from '../assets/team/marketing/koko.jpg';
-import ngamshing from '../assets/team/marketing/ngamshing.jpg';
-import akok from '../assets/team/marketing/akok.jpg';
-import toika from '../assets/team/marketing/toika.jpg';
-import anu from '../assets/team/marketing/anu.jpg';
-import sully from '../assets/team/design/sully.jpg';
-import tono from '../assets/team/design/tono.jpg';
-import vinoto from '../assets/team/tech/vinoto.jpg';
-import mostafa from '../assets/team/tech/mostafa.png';
-import pabitra from '../assets/team/tech/pabitra.jpg';
-
+import { Linkedin, Twitter, Instagram, Mail } from 'lucide-react';
 
 const Team = () => {
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/content/teamPage');
+        if (response.ok) {
+          const result = await response.json();
+          setContent(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch team content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, []);
+
+  useEffect(() => {
+    if (isLoading || !content) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -47,294 +43,15 @@ const Team = () => {
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading, content]);
 
-  // Team members data
-  const teamMembers = {
-    leadership: [
-      {
-        name: 'Kakivi',
-        role: 'Founder / Managing Director',
-        image: boss,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'alex@kaki.design'
-        }
-      },
-      {
-        name: 'Arong',
-        role: 'Creative Director',
-        image: arong,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'jordan@kaki.design'
-        }
-      },
-      {
-        name: 'Wako',
-        role: 'Studio Director',
-        image: wako,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'taylor@kaki.design'
-        }
-      },
-      {
-        name: 'KC',
-        role: 'Tech Director',
-        image: kc,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'taylor@kaki.design'
-        }
-      }
-    ],
-    studio: [
-      {
-        name: 'Wako',
-        role: 'Studio Director',
-        image: wako,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'morgan@kaki.design'
-        }
-      },
-      {
-        name: 'Along',
-        role: 'Videographer',
-        image: along,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'morgan@kaki.design'
-        }
-      },
-      {
-        name: 'Mego',
-        role: 'Videographer/Photographer',
-        image: mego,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'jamie@kaki.design'
-        }
-      },
-      {
-        name: 'Akhro',
-        role: 'Videoprapher/Photographer',
-        image: akhro,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'river@kaki.design'
-        }
-      },
-      {
-        name: 'Maya',
-        role: 'Videoprapher/Photographer',
-        image: maya,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'river@kaki.design'
-        }
-      },
-      {
-        name: 'Amugha',
-        role: 'Photographer',
-        image: amugha,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'river@kaki.design'
-        }
-      },
-      {
-        name: 'Nokul',
-        role: 'Videoprapher/Photographer',
-        image: nokul,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'river@kaki.design'
-        }
-      },
-    ],
-    marketing: [
-      {
-        name: 'Christy',
-        role: 'HR (Human Resource)',
-        image: christy,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Ajung',
-        role: 'Social Media Manager',
-        image: ajung,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Meren',
-        role: 'Social Media Manager',
-        image: meren,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Lepok',
-        role: 'Digital Marketing Assistant',
-        image: lepok,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Kuku',
-        role: 'Social Media Coordinator',
-        image: kuku,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Koko',
-        role: 'BDE (Business Development Executive)',
-        image: koko,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Ngamshing',
-        role: 'Content Writer',
-        image: ngamshing,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Akok',
-        role: 'Support Manager',
-        image: akok,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Toika',
-        role: 'Digital Marketing Executive',
-        image: toika,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-      {
-        name: 'Anuvito',
-        role: 'Content Writer',
-        image: anu,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'casey@kaki.design'
-        }
-      },
-    ],
-    design: [
-      {
-        name: 'Arong',
-        role: 'Creative Director',
-        image: arong,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          email: 'quinn@kaki.design'
-        }
-      },
-      {
-        name: 'Sully',
-        role: 'Graphic Designer',
-        image: sully,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'riley@kaki.design'
-        }
-      },
-      {
-        name: 'Tono',
-        role: 'Graphic Designer',
-        image: tono,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'riley@kaki.design'
-        }
-      },
-    ],
-    tech: [
-      {
-        name: 'KC',
-        role: 'Tech Director',
-        image: kc,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'cameron@kaki.design'
-        }
-      },
-      {
-        name: 'Mostafa',
-        role: 'Full Stack Developer',
-        image: mostafa,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'cameron@kaki.design'
-        }
-      },
-      {
-        name: 'Vinoto',
-        role: 'Front-End Web Dev',
-        image: vinoto,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'jordan.m@kaki.design'
-        }
-      },
-      {
-        name: 'Pabitra',
-        role: 'Full Stack Developer',
-        image: pabitra,
-        social: {
-          linkedin: 'https://linkedin.com/',
-          instagram: 'https://twitter.com/',
-          email: 'jordan.m@kaki.design'
-        }
-      },
-    ]
-  };
+  if (isLoading || !content) {
+    return (
+      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
+        <div className="w-12 h-12 border-4 border-purple-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-24">
@@ -343,10 +60,10 @@ const Team = () => {
         <div className="container-custom">
           <div className="text-center mb-16 fade-in-on-scroll">
             <h1 className="text-5xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              Our Team
+              {content.hero?.title || 'Our Team'}
             </h1>
             <p className="text-xl lg:text-2xl text-kaki-grey max-w-4xl mx-auto leading-relaxed">
-              A dynamic group of creatives, marketers, strategists, and technologists working together to build bold brands and deliver real results.
+              {content.hero?.subtitle}
             </p>
           </div>
         </div>
@@ -359,18 +76,18 @@ const Team = () => {
             <Tabs defaultValue="leadership" className="w-full">
               <div className="flex justify-center mb-8">
                 <TabsList className="bg-kaki-dark-grey">
-                  <TabsTrigger value="leadership">Leadership</TabsTrigger>
-                  <TabsTrigger value="studio">Studio</TabsTrigger>
-                  <TabsTrigger value="marketing">Marketing</TabsTrigger>
-                  <TabsTrigger value="design">Design</TabsTrigger>
-                  <TabsTrigger value="tech">Tech</TabsTrigger>
+                  {Object.keys(content.departments || {}).map((dept) => (
+                    <TabsTrigger key={dept} value={dept} className="capitalize">
+                      {dept}
+                    </TabsTrigger>
+                  ))}
                 </TabsList>
               </div>
 
-              {Object.entries(teamMembers).map(([department, members]) => (
+              {Object.entries(content.departments || {}).map(([department, members]: [string, any]) => (
                 <TabsContent key={department} value={department} className="mt-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {members.map((member, index) => (
+                    {members.map((member: any, index: number) => (
                       <div 
                         key={member.name} 
                         className="bg-kaki-dark-grey rounded-3xl overflow-hidden hover-lift fade-in-on-scroll group"
@@ -388,7 +105,7 @@ const Team = () => {
                           <p className="text-purple-300 mb-4">{member.role}</p>
 
                           <div className="flex gap-4">
-                            {member.social.linkedin && (
+                            {member.social?.linkedin && (
                               <a 
                                 href={member.social.linkedin} 
                                 target="_blank" 
@@ -398,7 +115,7 @@ const Team = () => {
                                 <Linkedin className="w-5 h-5" />
                               </a>
                             )}
-                            {member.social.instagram && (
+                            {member.social?.instagram && (
                               <a 
                                 href={member.social.instagram} 
                                 target="_blank" 
@@ -408,7 +125,7 @@ const Team = () => {
                                 <Instagram className="w-5 h-5" />
                               </a>
                             )}
-                            {member.social.email && (
+                            {member.social?.email && (
                               <a 
                                 href={`mailto:${member.social.email}`}
                                 className="p-2 bg-kaki-black/50 rounded-full hover:bg-green-600/50 transition-colors"
@@ -428,18 +145,42 @@ const Team = () => {
         </div>
       </section>
 
+      {/* Values Section */}
+      <section className="section-padding bg-kaki-dark-grey">
+        <div className="container-custom">
+          <div className="text-center mb-16 fade-in-on-scroll">
+            <h2 className="text-4xl lg:text-5xl font-bold mb-6">Our Core Principles</h2>
+            <p className="text-xl text-kaki-grey max-w-2xl mx-auto">
+              The values that drive our team to excel in every project we undertake.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {content.values?.map((value: any, index: number) => (
+              <div 
+                key={index} 
+                className="p-8 rounded-3xl bg-kaki-black border border-white/5 hover-lift fade-in-on-scroll group"
+                style={{ animationDelay: `${index * 150}ms` }}
+              >
+                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${value.color} flex items-center justify-center text-3xl mb-6 shadow-lg transform transition-transform group-hover:scale-110`}>
+                  {value.icon}
+                </div>
+                <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
+                <p className="text-kaki-grey leading-relaxed">
+                  {value.description}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Stats Section */}
       <section className="section-padding bg-gradient-to-b from-kaki-black to-purple-950/40">
         <div className="container-custom">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { number: '45+', label: 'Tech Professionals' },
-              { number: '4+', label: 'Years of Excellence' },
-              { number: '200+', label: 'Projects Completed' },
-              { number: '15', label: 'Industry Awards' }
-            ].map((stat, index) => (
+            {content.stats?.map((stat: any, index: number) => (
               <div 
-                key={stat.label} 
+                key={index} 
                 className="text-center p-8 bg-kaki-dark-grey rounded-3xl fade-in-on-scroll hover-lift"
                 style={{ animationDelay: `${index * 200}ms` }}
               >
@@ -459,60 +200,14 @@ const Team = () => {
           <div className="bg-gradient-to-r from-purple-900 to-pink-900 rounded-3xl p-8 lg:p-16 text-center relative overflow-hidden fade-in-on-scroll">
             <div className="absolute inset-0 particles opacity-30"></div>
             <div className="relative z-10">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white">Join Our Tech Family</h2>
+              <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-white">{content.hiring?.title || 'Join Our Tech Family'}</h2>
               <p className="text-xl text-purple-200 mb-8 max-w-2xl mx-auto">
-                We're always on the lookout for passionate, talented individuals to join our growing team.
-                Think you have what it takes to help us build the future?
+                {content.hiring?.description}
               </p>
               <Button size="lg" className="bg-white text-purple-900 hover:bg-gray-100 px-10 py-6 text-lg">
-                View Open Positions
+                {content.hiring?.buttonText || 'View Open Positions'}
               </Button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Values Section */}
-      <section className="section-padding bg-kaki-dark-grey">
-        <div className="container-custom">
-          <div className="text-center mb-16 fade-in-on-scroll">
-            <h2 className="text-4xl font-bold mb-6">Our Values</h2>
-            <p className="text-kaki-grey max-w-3xl mx-auto text-lg">
-              These core principles guide our work, shape our culture, and define who we are as a tech family.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { 
-                title: 'Innovation First', 
-                description: 'We embrace cutting-edge technologies and aren\'t afraid to push boundaries to achieve extraordinary results.',
-                icon: '🚀',
-                color: 'from-purple-600 to-blue-600'
-              },
-              { 
-                title: 'Collaborative Spirit', 
-                description: 'We believe great ideas can come from anywhere, and our best work happens when diverse minds unite.',
-                icon: '🤝',
-                color: 'from-pink-600 to-purple-600'
-              },
-              { 
-                title: 'Quality Excellence', 
-                description: 'Everything we create is built with precision, scalability, and user experience in mind.',
-                icon: '⭐',
-                color: 'from-orange-600 to-pink-600'
-              }
-            ].map((value, index) => (
-              <div 
-                key={value.title} 
-                className={`p-8 bg-gradient-to-br ${value.color} rounded-3xl fade-in-on-scroll hover-lift`}
-                style={{ animationDelay: `${index * 200}ms` }}
-              >
-                <div className="text-4xl mb-6">{value.icon}</div>
-                <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
-                <p className="text-white/90">{value.description}</p>
-              </div>
-            ))}
           </div>
         </div>
       </section>

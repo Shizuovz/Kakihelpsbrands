@@ -1,17 +1,28 @@
-
 import { useState, useEffect } from 'react';
 import logo from '../assets/logos/logo-no-bg.png';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Preloader = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
+  const { isAuthenticated } = useAuth();
+  const [hasFinishedOnce, setHasFinishedOnce] = useState(false);
 
   useEffect(() => {
+    // If already authenticated and we've already shown the loader once, 
+    // let's skip it to speed up the dashboard experience
+    if (isAuthenticated && progress > 50) {
+      setProgress(100);
+      setIsLoading(false);
+      return;
+    }
+
     const timer = setInterval(() => {
       setProgress((prevProgress) => {
         if (prevProgress >= 100) {
           clearInterval(timer);
           setTimeout(() => setIsLoading(false), 500);
+          setHasFinishedOnce(true);
           return 100;
         }
         return prevProgress + 2;
@@ -19,7 +30,7 @@ const Preloader = () => {
     }, 30);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [isAuthenticated]);
 
   if (!isLoading) return null;
 

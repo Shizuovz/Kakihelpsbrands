@@ -325,15 +325,21 @@ const LifeAtKaki = () => {
         <div className="container-custom">
           <div className="text-center mb-16 fade-in-on-scroll">
             <h2 className="text-4xl font-bold mb-6">Follow Our Journey</h2>
-            <div className="flex items-center justify-center gap-6 mb-8">
-              <a href="https://www.instagram.com/kaki_marketing?utm_source=qr&igsh=MWc4anVnandhNmVnbQ==" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
+            <div className="flex flex-wrap items-center justify-center gap-6 mb-8">
+              <a href="https://instagram.com/kaki_marketing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
                 <Instagram className="w-5 h-5" /> Instagram
               </a>
-              <a href="https://youtube.com/@kaki9139?si=hoHcVP9_i2cB5qoi" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
+              <a href="https://youtube.com/@kaki9139" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
                 <Youtube className="w-5 h-5" /> Youtube
               </a>
-              <a href="https://www.facebook.com/share/1BmouaVZus/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
+              <a href="https://facebook.com/KAKIMarketing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
                 <Facebook className="w-5 h-5" /> Facebook
+              </a>
+              <a href="https://twitter.com/KAKImarketing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
+                <FaXTwitter className="w-5 h-5" /> Twitter
+              </a>
+              <a href="https://in.linkedin.com/company/kakimarketing" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-kaki-grey hover:text-white transition-colors">
+                <Linkedin className="w-5 h-5" /> LinkedIn
               </a>
             </div>
           </div>

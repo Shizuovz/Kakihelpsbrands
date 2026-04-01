@@ -1,20 +1,37 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowDown, Play, Pause, Instagram, Youtube, Facebook, Twitter, Video, Code, Smartphone } from 'lucide-react';
+import { ArrowDown, Play, Pause, Instagram, Youtube, Facebook, Video, Code } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 
 import logo from '../assets/logos/logo-no-bg.png';
 import ahibiLogo from '../assets/lovable-uploads/ahibi.png';
-import ahibi from '../assets/img/ahibi.png';
-import nslpf from '../assets/works/marketing/nslpf.jpg';
-import chef from '../assets/works/studio/chef.jpg';
-import melita from '../assets//works/tech/melita.png';
+import ahibiImg from '../assets/img/ahibi.png';
 
 const Index = () => {
-  const heroRef = useRef<HTMLDivElement>(null); 
+  const heroRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [isPlaying, setIsPlaying] = useState(false); // Video state
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/content/all');
+        if (response.ok) {
+          const result = await response.json();
+          setContent(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch index content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -32,53 +49,7 @@ const Index = () => {
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
-
-  const departments = [
-    {
-      name: 'KAKI Studio',
-      description: 'Video production, photography, post-production',
-      path: '/departments/studio',
-      gradient: 'from-purple-600 via-purple-800 to-blue-900',
-      icon: <Video className="w-8 h-8" />,
-      stats: '200+ Videos',
-      color: 'purple'
-    },
-    {
-      name: 'KAKI Marketing',
-      description: 'Digital marketing, strategy, media buying, influencer campaigns',
-      path: '/departments/marketing',
-      gradient: 'from-green-500 via-emerald-600 to-teal-700',
-      icon: <Instagram className="w-8 h-8" />,
-      stats: '5M+ Reach',
-      color: 'green'
-    },
-    {
-      name: 'KAKI Design',
-      description: 'Graphic design, branding, packaging, UI/UX',
-      path: '/departments/design',
-      gradient: 'from-pink-500 via-red-600 to-orange-600',
-      icon: '🎨',
-      stats: '100+ Brands',
-      color: 'pink'
-    },
-    {
-      name: 'KAKI Tech',
-      description: 'Web development, app development, software solutions, AR development',
-      path: '/departments/tech',
-      gradient: 'from-cyan-500 via-blue-600 to-indigo-700',
-      icon: <Code className="w-8 h-8" />,
-      stats: '50+ Apps',
-      color: 'blue'
-    }
-  ];
-
-  const socialLinks = [
-    { icon: <Instagram className="w-6 h-6" />, url: 'https://www.instagram.com/kaki_marketing?utm_source=qr&igsh=MWc4anVnandhNmVnbQ==', label: 'Instagram' },
-    { icon: <Youtube className="w-6 h-6" />, url: 'https://youtube.com/@kaki9139?si=hoHcVP9_i2cB5qoi', label: 'YouTube' },
-    { icon: <Facebook className="w-6 h-6" />, url: 'https://www.facebook.com/share/1BmouaVZus/', label: 'Facebook' },
-    { icon: <FaXTwitter className="w-6 h-6" />, url: 'https://x.com/KAKImarketing?t=84jvK1mWevGVP6_vOwlJBw&s=09', label: 'Twitter' },
-  ];
+  }, [content]);
 
   const handleVideoPlay = () => {
     const video = videoRef.current;
@@ -93,60 +64,100 @@ const Index = () => {
     }
   };
 
+  const getIcon = (iconName: string) => {
+    switch (iconName) {
+      case 'Video': return <Video className="w-8 h-8" />;
+      case 'Instagram': return <Instagram className="w-8 h-8" />;
+      case 'Code': return <Code className="w-8 h-8" />;
+      case 'Youtube': return <Youtube className="w-6 h-6" />;
+      case 'Facebook': return <Facebook className="w-6 h-6" />;
+      case 'Twitter': return <FaXTwitter className="w-6 h-6" />;
+      case 'Linkedin': return <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" /></svg>;
+      default: return <span>{iconName}</span>;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  // Fallback to default if content fetch failed
+  const hero = content?.hero || {
+    title: "We Build Brands",
+    subtitle: "KAKI delivers full-service digital marketing — strategy, content, and campaigns that engage, convert, and scale.",
+    videoUrl: "/video/kaki.mp4",
+    posterUrl: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
+  };
+  const departments = content?.departments || [];
+  const stats = content?.stats || [];
+  const socialLinks = content?.socialLinks || [];
+  const recentWorks = content?.recentWorks || [];
+
   return (
     <div className="min-h-screen">
       {/* Hero Section with Video */}
       <section ref={heroRef} className="min-h-screen flex items-center justify-center relative overflow-hidden">
-        {/* Background Video */}
         <div className="absolute inset-0 z-0">
-          <video
-            ref={videoRef}
-            className="w-full h-full object-cover opacity-30"
-            loop
-            muted
-            playsInline
-            poster="https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
+          {/* Static Hero Image (shown when not playing) */}
+          <div 
+            className={`absolute inset-0 transition-opacity duration-700 ${isPlaying ? 'opacity-0' : 'opacity-30'}`}
           >
-            <source src="/video/kaki.mp4" type="video/mp4" />
-          </video>
-          {/* <div className="absolute inset-0 bg-gradient-to-br from-kaki-black/80 via-purple-900/30 to-kaki-black/80" /> */}
-        </div>
-        
-        <div className="relative z-10 text-center container-custom pt-20 pb-20">
-          <div className="animate-fade-in-up">
             <img 
-              src={logo} 
-              alt="KAKI Logo" 
-              className="h-32 lg:h-48 w-auto mx-auto mb-8 animate-logo-float drop-shadow-2xl"
+              src={hero.posterUrl} 
+              alt="Hero Background" 
+              className="w-full h-full object-cover"
             />
           </div>
           
-          <h1 className="text-5xl lg:text-8xl font-bold mb-6 animate-fade-in-up animation-delay-200">
-            <span className="text-gradient bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              We Build Brands
-            </span>
-          </h1>
-          
-          <p className="text-xl lg:text-2xl text-kaki-grey max-w-3xl mx-auto mb-8 animate-fade-in-up animation-delay-400">
-            KAKI delivers full-service digital marketing — strategy, content, and campaigns that engage, convert, and scale.
-          </p>
-
-          {/* Video Play Button */}
-          <div className="mb-12 animate-fade-in-up animation-delay-500">
-          <button
-            onClick={handleVideoPlay}
-            className="group inline-flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+          {/* Hero Video (shown when playing) */}
+          <video
+            ref={videoRef}
+            className={`w-full h-full object-cover transition-opacity duration-700 ${isPlaying ? 'opacity-30' : 'opacity-0'}`}
+            loop
+            muted
+            playsInline
           >
-            {isPlaying ? (
-              <Pause className="w-8 h-8 text-white group-hover:text-purple-400 transition-colors" />
-            ) : (
-              <Play className="w-8 h-8 text-white group-hover:text-purple-400 transition-colors" />
-            )}
-          </button>
-          <p className="text-sm text-kaki-grey mt-4">Watch Our Story</p>
+            <source src={hero.videoUrl} type="video/mp4" />
+          </video>
         </div>
 
-          
+        <div className="relative z-10 text-center container-custom pt-20 pb-20">
+          <div className="animate-fade-in-up">
+            <img
+              src={logo}
+              alt="KAKI Logo"
+              className="h-32 lg:h-48 w-auto mx-auto mb-8 animate-logo-float drop-shadow-2xl"
+            />
+          </div>
+
+          <h1 className="text-5xl lg:text-8xl font-bold mb-6 animate-fade-in-up animation-delay-200">
+            <span className="text-gradient bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
+              {hero.title}
+            </span>
+          </h1>
+
+          <p className="text-xl lg:text-2xl text-kaki-grey max-w-3xl mx-auto mb-8 animate-fade-in-up animation-delay-400">
+            {hero.subtitle}
+          </p>
+
+          <div className="mb-12 animate-fade-in-up animation-delay-500">
+            <button
+              onClick={handleVideoPlay}
+              className="group inline-flex items-center justify-center bg-white/10 backdrop-blur-md border border-white/20 rounded-full p-6 hover:bg-white/20 transition-all duration-300 hover:scale-105"
+            >
+              {isPlaying ? (
+                <Pause className="w-8 h-8 text-white group-hover:text-purple-400 transition-colors" />
+              ) : (
+                <Play className="w-8 h-8 text-white group-hover:text-purple-400 transition-colors" />
+              )}
+            </button>
+            <p className="text-sm text-kaki-grey mt-4">Watch Our Story</p>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-fade-in-up animation-delay-600">
             <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 px-8 py-6 text-lg">
               <Link to="/works">View Our Work</Link>
@@ -156,24 +167,22 @@ const Index = () => {
             </Button>
           </div>
 
-          {/* Social Media Links */}
           <div className="flex justify-center gap-6 mt-12 animate-fade-in-up animation-delay-800">
-            {socialLinks.map((social) => (
+            {socialLinks.map((social: any) => (
               <a
                 key={social.label}
                 href={social.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-3 bg-white/10 backdrop-blur-md rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110"
+                className="w-12 h-12 flex items-center justify-center bg-white/10 backdrop-blur-md rounded-full hover:bg-white/20 transition-all duration-300 hover:scale-110"
                 aria-label={social.label}
               >
-                {social.icon}
+                {getIcon(social.icon)}
               </a>
             ))}
           </div>
         </div>
 
-        {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce z-10">
           <ArrowDown className="w-6 h-6 text-kaki-grey" />
         </div>
@@ -192,7 +201,7 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            {departments.map((dept, index) => (
+            {departments.map((dept: any, index: number) => (
               <Link
                 key={dept.name}
                 to={dept.path}
@@ -202,17 +211,13 @@ const Index = () => {
                 <div className="relative z-10">
                   <div className="flex items-center mb-6">
                     <div className="mr-4 p-3 bg-white/20 rounded-2xl backdrop-blur-sm">
-                      {typeof dept.icon === 'string' ? (
-                        <span className="text-2xl">{dept.icon}</span>
-                      ) : (
-                        dept.icon
-                      )}
+                      {getIcon(dept.icon)}
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-bold text-white/80">{dept.stats}</div>
                     </div>
                   </div>
-                  
+
                   <h3 className="text-3xl lg:text-4xl font-bold mb-4 text-white group-hover:text-white/90 transition-colors">
                     {dept.name}
                   </h3>
@@ -227,7 +232,7 @@ const Index = () => {
                     </svg>
                   </div>
                 </div>
-                
+
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="absolute top-4 right-4 w-3 h-3 bg-white/50 rounded-full opacity-50 group-hover:opacity-100 group-hover:scale-150 transition-all duration-300" />
               </Link>
@@ -245,13 +250,13 @@ const Index = () => {
               Introducing Ahibi - Our revolutionary online ticket booking platform
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="fade-in-on-scroll">
               <div className="bg-white p-8 rounded-3xl text-center mb-8">
-                <img 
-                  src={ahibiLogo} 
-                  alt="Ahibi Logo" 
+                <img
+                  src={ahibiLogo}
+                  alt="Ahibi Logo"
                   className="h-16 mx-auto"
                 />
               </div>
@@ -270,15 +275,14 @@ const Index = () => {
                 </Button>
               </div>
             </div>
-            
+
             <div className="fade-in-on-scroll animation-delay-200">
               <div className="relative">
-                <img 
-                  src={ahibi}
-                  alt="Ahibi Platform Preview" 
+                <img
+                  src={ahibiImg}
+                  alt="Ahibi Platform Preview"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
-                {/* <div className="absolute inset-0 bg-gradient-to-t from-red-900/50 to-transparent rounded-3xl" /> */}
               </div>
             </div>
           </div>
@@ -294,14 +298,9 @@ const Index = () => {
               Numbers that showcase our commitment to creative excellence
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              { number: '50+', label: 'Brands Served', color: 'text-purple-300' },
-              { number: '200+', label: 'Projects Completed', color: 'text-blue-300' },
-              { number: '4+', label: 'Years Experience', color: 'text-indigo-300' },
-              { number: '4', label: 'Departments', color: 'text-pink-300' }
-            ].map((stat, index) => (
+            {stats.map((stat: any, index: number) => (
               <div key={stat.label} className={`text-center fade-in-on-scroll animation-delay-${index * 200} group`}>
                 <div className={`text-4xl lg:text-6xl font-bold ${stat.color} mb-3 group-hover:scale-110 transition-transform duration-300`}>
                   {stat.number}
@@ -324,33 +323,11 @@ const Index = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            {[
-              {
-                title: 'Nagaland Super League',
-                category: 'Marketing',
-                description:'Social media marketing, ticketing, media production, and branding.',
-                image: nslpf,
-                gradient: 'from-green-500 to-teal-600'
-              },
-              {
-                title: 'Studio',
-                category: 'Chef Salang',
-                description:'Photography, video production, post-production, and brand visuals.',
-                image: chef,
-                gradient: 'from-purple-500 to-blue-600'
-              },
-              {
-                title: 'Melita',
-                category: 'Tech',
-                description:'Web development, cloud integration, and scalable backend systems.',
-                image: melita,
-                gradient: 'from-cyan-500 to-blue-600'
-              }
-            ].map((work, index) => (
+            {recentWorks.map((work: any, index: number) => (
               <div key={work.title} className={`group relative overflow-hidden rounded-2xl fade-in-on-scroll animation-delay-${index * 200} hover-lift`}>
                 <div className="aspect-square bg-gradient-to-br from-kaki-dark-grey to-kaki-black">
-                  <img 
-                    src={work.image} 
+                  <img
+                    src={work.image}
                     alt={work.title}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-300"
                   />

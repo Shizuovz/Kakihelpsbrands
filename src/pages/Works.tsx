@@ -1,12 +1,37 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import projects from '@/data/projects';
 import { Link } from 'react-router-dom';
+import { toast } from 'sonner';
 
 const Works = () => {
   const [filter, setFilter] = useState('All');
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [openVideo, setOpenVideo] = useState(null); 
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/api/content/works');
+        if (response.ok) {
+          const result = await response.json();
+          setContent(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch works content:', error);
+        toast.error('Failed to load projects');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, []);
+
+  useEffect(() => {
+    if (isLoading) return;
+    
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -22,11 +47,9 @@ const Works = () => {
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, []);
+  }, [isLoading, content]);
 
   const categories = ['All', 'Studio', 'Marketing', 'Design', 'Tech', 'Case Study'];
-  const [openVideo, setOpenVideo] = useState(null); 
-  const [expanded, setExpanded] = useState({});
 
   const toggleExpand = (id) => {
     setExpanded((prev) => ({
@@ -35,6 +58,20 @@ const Works = () => {
     }));
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  const hero = content?.hero || {
+    title: "Our Works",
+    subtitle: "A showcase of creative excellence across video production, marketing campaigns, design solutions, and cutting-edge technology."
+  };
+  
+  const projects = content?.projects || [];
   const filteredProjects = filter === 'All' ? projects : projects.filter(project => project.category === filter);
   const openProject = projects.find(p => p.id === openVideo);
 
@@ -45,10 +82,10 @@ const Works = () => {
         <div className="container-custom">
           <div className="text-center mb-16 fade-in-on-scroll">
             <h1 className="text-5xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              Our Works
+              {hero.title}
             </h1>
             <p className="text-xl lg:text-2xl text-kaki-grey max-w-4xl mx-auto leading-relaxed">
-              A showcase of creative excellence across video production, marketing campaigns, design solutions, and cutting-edge technology.
+              {hero.subtitle}
             </p>
           </div>
         </div>
@@ -82,7 +119,7 @@ const Works = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {filteredProjects.map((project, index) => {
               const cardContent = (
-                <div className={`group relative overflow-hidden rounded-3xl bg-kaki-dark-grey hover-lift fade-in-on-scroll animation-delay-${index * 100}`}>
+                <div className={`group relative overflow-hidden rounded-3xl bg-kaki-dark-grey hover-lift fade-in-on-scroll animation-delay-${index % 5 * 100}`}>
                   <div className="aspect-video relative overflow-hidden">
                     {project.video ? (
                       <video
@@ -163,14 +200,14 @@ const Works = () => {
               // If the project is a Case Study, make the whole card a link
               return project.category === 'Case Study' ? (
                 <Link
-                  key={project.id}
+                  key={project.id || index}
                   to={`/case-studies/${project.id}`}
                   style={{ textDecoration: 'none' }}
                 >
                   {cardContent}
                 </Link>
               ) : (
-                <div key={project.id}>
+                <div key={project.id || index}>
                   {cardContent}
                 </div>
               );
@@ -220,7 +257,7 @@ const Works = () => {
               Whether you need video production, marketing campaigns, design solutions, or cutting-edge technology, we're here to bring your vision to life.
             </p>
             <Button asChild size="lg" className="bg-white text-purple-900 hover:bg-gray-100 px-12 py-6 text-xl">
-              <a href="/contact">Start Your Project</a>
+              <Link to="/contact">Start Your Project</Link>
             </Button>
           </div>
         </div>

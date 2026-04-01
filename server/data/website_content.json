@@ -1,0 +1,919 @@
+{
+  "hero": {
+    "title": "We Build Brands ",
+    "subtitle": "KAKI is a digital marketing company that builds brands with clarity and helps them grow with purpose.",
+    "videoUrl": "http://localhost:3001/uploads/files-1774944894311-803334195.mp4",
+    "posterUrl": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
+  },
+  "departments": [
+    {
+      "name": "KAKI Studio",
+      "description": "Video production, photography, post-production",
+      "path": "/departments/studio",
+      "gradient": "from-purple-600 via-purple-800 to-blue-900",
+      "icon": "Video",
+      "stats": "200+ Videos",
+      "color": "purple"
+    },
+    {
+      "name": "KAKI Marketing",
+      "description": "Digital marketing, strategy, media buying, influencer campaigns",
+      "path": "/departments/marketing",
+      "gradient": "from-green-500 via-emerald-600 to-teal-700",
+      "icon": "Instagram",
+      "stats": "5M+ Reach",
+      "color": "green"
+    },
+    {
+      "name": "KAKI Design",
+      "description": "Graphic design, branding, packaging, UI/UX",
+      "path": "/departments/design",
+      "gradient": "from-pink-500 via-red-600 to-orange-600",
+      "icon": "🎨",
+      "stats": "100+ Brands",
+      "color": "pink"
+    },
+    {
+      "name": "KAKI Tech",
+      "description": "Web development, app development, software solutions, AR development",
+      "path": "/departments/tech",
+      "gradient": "from-cyan-500 via-blue-600 to-indigo-700",
+      "icon": "Code",
+      "stats": "50+ Apps",
+      "color": "blue"
+    }
+  ],
+  "stats": [
+    {
+      "number": "60+",
+      "label": "Brands Served",
+      "color": "text-purple-300"
+    },
+    {
+      "number": "200+",
+      "label": "Projects Completed",
+      "color": "text-blue-300"
+    },
+    {
+      "number": "5+",
+      "label": "Years Experience",
+      "color": "text-indigo-300"
+    },
+    {
+      "number": "4",
+      "label": "Departments",
+      "color": "text-pink-300"
+    }
+  ],
+  "socialLinks": [
+    {
+      "icon": "Instagram",
+      "url": "https://instagram.com/kaki_marketing",
+      "label": "Instagram"
+    },
+    {
+      "icon": "Youtube",
+      "url": "https://youtube.com/@kaki9139",
+      "label": "YouTube"
+    },
+    {
+      "icon": "Facebook",
+      "url": "https://facebook.com/KAKIMarketing",
+      "label": "Facebook"
+    },
+    {
+      "icon": "Twitter",
+      "url": "https://twitter.com/KAKImarketing",
+      "label": "Twitter"
+    },
+    {
+      "icon": "Linkedin",
+      "url": "https://in.linkedin.com/company/kakimarketing",
+      "label": "LinkedIn"
+    }
+  ],
+  "recentWorks": [
+    {
+      "title": "Nagaland Super League (NSL)",
+      "category": "Marketing",
+      "description": "Social media marketing, ticketing, media production, and branding.",
+      "image": "/src/assets/works/marketing/nslpf.jpg",
+      "gradient": "from-green-500 to-teal-600"
+    },
+    {
+      "title": "Studio",
+      "category": "Chef Salang",
+      "description": "Photography, video production, post-production, and brand visuals.",
+      "image": "/src/assets/works/studio/chef.jpg",
+      "gradient": "from-purple-500 to-blue-600"
+    },
+    {
+      "title": "Melita",
+      "category": "Tech",
+      "description": "Web development, cloud integration, and scalable backend systems.",
+      "image": "/src/assets/works/tech/melita.png",
+      "gradient": "from-cyan-500 to-blue-600"
+    }
+  ],
+  "works": {
+    "hero": {
+      "title": "Our Works",
+      "subtitle": "A showcase of creative excellence across video production, marketing campaigns, design solutions, and cutting-edge technology."
+    },
+    "projects": [
+      {
+        "id": 1,
+        "title": "NSL Ad Commercial ",
+        "category": "Studio",
+        "description": "High-impact sports film for “Every dream begins with a simple kick” campaign by Nagaland Super League.",
+        "video": "/src/assets/works/studio/nslAD.mp4",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 2,
+        "title": "Chef Salang",
+        "category": "Studio",
+        "description": "Photography, video production, and post-production for culinary storytelling and brand visuals.",
+        "video": "/src/assets/works/studio/chef.mp4",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 3,
+        "title": "NSL Trophy Reveal Ad",
+        "category": "Studio",
+        "description": "High-energy sports commercial unveiling the NSL Trophy with cinematic flair.",
+        "image": "/src/assets/works/studio/nslpf.jpg",
+        "video": "/src/assets/works/studio/nsl.mp4",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 4,
+        "title": "The Ultimate Fighter Nagaland",
+        "category": "Studio",
+        "description": "Documentary and promotional coverage of Nagaland’s premier MMA fighting event.",
+        "video": "/src/assets/works/studio/ufn.mp4",
+        "year": "2024",
+        "client": "UFN"
+      },
+      {
+        "id": 5,
+        "title": "Nagaland Super League (NSL)",
+        "category": "Marketing",
+        "description": "Comprehensive marketing, branding, social media management, and event coverage for NSL Season 1.",
+        "image": "/src/assets/works/marketing/nsl.jpg",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 6,
+        "title": "The Northeast Experience",
+        "category": "Marketing",
+        "description": "Digital strategy and branding for a large-scale cultural and tourism initiative in NE India.",
+        "image": "/src/assets/works/marketing/thenortheast.jpg",
+        "year": "2023",
+        "client": "Tourism Dept"
+      },
+      {
+        "id": 7,
+        "title": "Taste of Nagaland",
+        "category": "Marketing",
+        "description": "Promotional campaign and social media growth for Nagaland’s finest culinary expo.",
+        "image": "/src/assets/works/marketing/ton.jpg",
+        "year": "2023",
+        "client": "TON"
+      },
+      {
+        "id": 8,
+        "title": "Tako-Kala",
+        "category": "Marketing",
+        "description": "Brand building and local influencer collaborations for Tako-Kala clothing line.",
+        "image": "/src/assets/works/marketing/tako.jpg",
+        "year": "2023",
+        "client": "Tako-Kala"
+      },
+      {
+        "id": 9,
+        "title": "Melita",
+        "category": "Tech",
+        "description": "Full-stack web development and scalable e-commerce infrastructure for Melita Nagaland.",
+        "image": "/src/assets/works/tech/melita.png",
+        "link": "https://melita.in",
+        "year": "2024",
+        "client": "Melita"
+      },
+      {
+        "id": 10,
+        "title": "Hoarding Ad Management",
+        "category": "Tech",
+        "description": "Advanced digital platform for managing and booking billboards across the state.",
+        "image": "/src/assets/works/tech/hoarding.jpg",
+        "year": "2024",
+        "client": "Internal"
+      },
+      {
+        "id": 11,
+        "title": "E-Learning Platform",
+        "category": "Tech",
+        "description": "Interactive learning management system integrated with Nagaland’s education standards.",
+        "image": "/src/assets/works/tech/elearning.png",
+        "year": "2023",
+        "client": "Education Board"
+      },
+      {
+        "id": 12,
+        "title": "Health Connect",
+        "category": "Tech",
+        "description": "Mobile application for medical consultations and streamlined hospital bookings.",
+        "image": "/src/assets/works/tech/health.jpg",
+        "year": "2023",
+        "client": "Health Dept"
+      },
+      {
+        "id": 13,
+        "title": "KAKI Branding",
+        "category": "Design",
+        "description": "Complete visual identity and brand guidelines for KAKI Marketing Agency.",
+        "image": "/src/assets/works/design/kaki.jpg",
+        "year": "2021",
+        "client": "Internal"
+      },
+      {
+        "id": 14,
+        "title": "NSL Logo System",
+        "category": "Design",
+        "description": "Development of the primary and secondary logo systems for Nagaland Super League.",
+        "image": "/src/assets/works/design/nsl_logo.jpg",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 15,
+        "title": "Festival Of Dreams",
+        "category": "Design",
+        "description": "Key visual arts, stage design concepts, and merchandise for a major music festival.",
+        "image": "/src/assets/works/design/fod.jpg",
+        "year": "2023",
+        "client": "Global Music"
+      },
+      {
+        "id": 16,
+        "title": "Modern Tribal",
+        "category": "Design",
+        "description": "UI/UX design for a cultural archive preserving Nagaland’s rich history in VR.",
+        "image": "/src/assets/works/design/modern.jpg",
+        "year": "2024",
+        "client": "Cultural Council"
+      },
+      {
+        "id": 17,
+        "title": "NSL Season 1",
+        "category": "Case Study",
+        "description": "A deep dive into how KAKI helped NSL achieve 5M+ reach and a sold-out season.",
+        "image": "/src/assets/works/case_studies/nsl_case.jpg",
+        "year": "2024",
+        "client": "NSL"
+      },
+      {
+        "id": 18,
+        "title": "Going Digital in NE",
+        "category": "Case Study",
+        "description": "Analysis of the digital transformation journey for traditional businesses in Northeast India.",
+        "image": "/src/assets/works/case_studies/digital.jpg",
+        "year": "2023",
+        "client": "Commerce Dept"
+      },
+      {
+        "id": 19,
+        "title": "Sustainable Fashion",
+        "category": "Case Study",
+        "description": "Building a global market for tribal textiles through brand storytelling.",
+        "image": "/src/assets/works/case_studies/fashion.jpg",
+        "year": "2023",
+        "client": "Handloom Assoc"
+      },
+      {
+        "id": 20,
+        "title": "The Road to 10M",
+        "category": "Case Study",
+        "description": "Scaling a local beverage brand to national recognition via social-first strategy.",
+        "image": "/src/assets/works/case_studies/road.jpg",
+        "year": "2024",
+        "client": "Thrill Drinks"
+      },
+      {
+        "id": 21,
+        "title": "Vlog: The Next Gen",
+        "category": "Studio",
+        "description": "High-production value vlogs produced for local creators aimed at mass distribution.",
+        "image": "/src/assets/works/studio/vlog.jpg",
+        "year": "2024",
+        "client": "Various"
+      },
+      {
+        "id": 22,
+        "title": "Govt Digital Campaign",
+        "category": "Marketing",
+        "description": "State-wide awareness campaign for public health initiatives and digital portals.",
+        "image": "/src/assets/works/marketing/govt.jpg",
+        "year": "2023",
+        "client": "Govt of Nagaland"
+      },
+      {
+        "id": 23,
+        "title": "Nagaland Coffee",
+        "category": "Design",
+        "description": "Packaging design and premium brand aesthetics for Nagaland’s finest coffee beans.",
+        "image": "/src/assets/works/design/coffee.jpg",
+        "year": "2024",
+        "client": "Nagaland Coffee"
+      },
+      {
+        "id": 24,
+        "title": "Northeast United Branding",
+        "category": "Design",
+        "description": "Visual identities for grassroots football academies across Northeast India.",
+        "image": "/src/assets/works/design/neu.jpg",
+        "year": "2023",
+        "client": "NEUFC"
+      },
+      {
+        "id": 25,
+        "title": "The Frontier Connect",
+        "category": "Tech",
+        "description": "Custom CRM and internal management tools for The Frontier Connect logistics.",
+        "image": "/src/assets/works/tech/tfc.jpg",
+        "year": "2023",
+        "client": "TFC"
+      }
+    ]
+  },
+  "index": {
+    "hero": {
+      "title": "We Build Brands ",
+      "subtitle": "KAKI delivers full-service digital marketing — strategy, content, and campaigns that engage, convert, and scale.",
+      "videoUrl": "http://localhost:3001/uploads/files-1774944894311-803334195.mp4",
+      "posterUrl": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
+    },
+    "departments": [
+      {
+        "name": "KAKI Studio",
+        "description": "Video production, photography, post-production",
+        "path": "/departments/studio",
+        "gradient": "from-purple-600 via-purple-800 to-blue-900",
+        "icon": "Video",
+        "stats": "200+ Videos",
+        "color": "purple"
+      },
+      {
+        "name": "KAKI Marketing",
+        "description": "Digital marketing, strategy, media buying, influencer campaigns",
+        "path": "/departments/marketing",
+        "gradient": "from-green-500 via-emerald-600 to-teal-700",
+        "icon": "Instagram",
+        "stats": "5M+ Reach",
+        "color": "green"
+      },
+      {
+        "name": "KAKI Design",
+        "description": "Graphic design, branding, packaging, UI/UX",
+        "path": "/departments/design",
+        "gradient": "from-pink-500 via-red-600 to-orange-600",
+        "icon": "🎨",
+        "stats": "100+ Brands",
+        "color": "pink"
+      },
+      {
+        "name": "KAKI Tech",
+        "description": "Web development, app development, software solutions, AR development",
+        "path": "/departments/tech",
+        "gradient": "from-cyan-500 via-blue-600 to-indigo-700",
+        "icon": "Code",
+        "stats": "50+ Apps",
+        "color": "blue"
+      }
+    ],
+    "stats": [
+      {
+        "number": "50+",
+        "label": "Brands Served",
+        "color": "text-purple-300"
+      },
+      {
+        "number": "200+",
+        "label": "Projects Completed",
+        "color": "text-blue-300"
+      },
+      {
+        "number": "4+",
+        "label": "Years Experience",
+        "color": "text-indigo-300"
+      },
+      {
+        "number": "4",
+        "label": "Departments",
+        "color": "text-pink-300"
+      }
+    ],
+    "socialLinks": [
+      {
+        "icon": "Instagram",
+        "url": "https://instagram.com/kaki_marketing",
+        "label": "Instagram"
+      },
+      {
+        "icon": "Youtube",
+        "url": "https://youtube.com/@kaki9139",
+        "label": "YouTube"
+      },
+      {
+        "icon": "Facebook",
+        "url": "https://facebook.com/KAKIMarketing",
+        "label": "Facebook"
+      },
+      {
+        "icon": "Twitter",
+        "url": "https://twitter.com/KAKImarketing",
+        "label": "Twitter"
+      },
+      {
+        "icon": "Linkedin",
+        "url": "https://in.linkedin.com/company/kakimarketing",
+        "label": "LinkedIn"
+      }
+    ],
+    "recentWorks": [
+      {
+        "title": "Nagaland Super League (NSL)",
+        "category": "Marketing",
+        "description": "Social media marketing, ticketing, media production, and branding.",
+        "image": "/src/assets/works/marketing/nslpf.jpg",
+        "gradient": "from-green-500 to-teal-600"
+      },
+      {
+        "title": "Studio",
+        "category": "Chef Salang",
+        "description": "Photography, video production, post-production, and brand visuals.",
+        "image": "/src/assets/works/studio/chef.jpg",
+        "gradient": "from-purple-500 to-blue-600"
+      },
+      {
+        "title": "Melita",
+        "category": "Tech",
+        "description": "Web development, cloud integration, and scalable backend systems.",
+        "image": "/src/assets/works/tech/melita.png",
+        "gradient": "from-cyan-500 to-blue-600"
+      }
+    ]
+  },
+  "about": {
+    "journeyTitle": "Our Journey",
+    "journeySubtitle": "From a small studio in Nagaland to a full-scale creative agency: here’s how KAKI evolved, one bold move at a time.",
+    "teamTitle": "Meet Our Team",
+    "teamSubtitle": "The creative minds behind KAKI's success, each bringing unique expertise and passion to every project.",
+    "valuesTitle": "Our Values",
+    "valuesSubtitle": "The principles that guide everything we do and drive us to create exceptional work.",
+    "ctaTitle": "Join Our Journey",
+    "ctaSubtitle": "Ready to be part of a team that's shaping the future of creative culture? Let's create something extraordinary together.",
+    "hero": {
+      "title": "About KAKI ",
+      "subtitle": "We build brands through strategy, storytelling, and design that delivers real results."
+    },
+    "intro": {
+      "title": "Who We Are",
+      "description": "We’re not just a creative agency. We’re builders, brand architects, problem solvers — born in Nagaland, built to take bold ideas to the world. Founded in 2021, KAKI started as a lean crew with a big vision: to give Nagaland and Northeast India the digital firepower it deserves. Today, we’re a growing team of designers, strategists, developers, storytellers, and creators delivering full-stack marketing solutions across India and beyond.",
+      "subDescription": "Whether you’re a startup, social movement, football league, or festival, we’re here to help you show up, stand out, and scale up.",
+      "image": "http://localhost:3001/uploads/files-1774949614918-597493879.jpeg"
+    },
+    "mission": {
+      "title": "Our Mission",
+      "description": "At KAKI, we believe in the power of creativity to shape culture and drive meaningful change. Our mission is to craft exceptional experiences that resonate with audiences and leave lasting impressions.",
+      "subDescription": "Through our four specialized departments, we offer comprehensive creative solutions that span from initial concept to final execution, ensuring every project reflects our commitment to excellence and innovation.",
+      "image": "/src/assets/team/mission2.jpg"
+    },
+    "timeline": [
+      {
+        "year": "2021",
+        "title": "The Beginning",
+        "description": "KAKI was born from a tiny studio with a mission: craft stories that connect, brands that matter, and culture that moves.",
+        "highlight": "Founded"
+      },
+      {
+        "year": "2022",
+        "title": "Foundations Built",
+        "description": "We expanded into digital marketing, launched KAKI Studio for video production, and delivered campaigns that turned local brands into buzzworthy names.",
+        "highlight": "1M+ Views"
+      },
+      {
+        "year": "2023",
+        "title": "Momentum Mode",
+        "description": "KAKI scaled up. From managing state-wide campaigns to producing high-profile events with 5,000+ attendees, we proved ideas backed by execution create real impact.",
+        "highlight": "5K+ Footfall"
+      },
+      {
+        "year": "2024",
+        "title": "Creative Force",
+        "description": "With four powerhouse divisions — Strategy, Studio, Design, Tech and Events — we became the go-to agency for brands looking to blend storytelling with scale.",
+        "highlight": "4 Divisions"
+      },
+      {
+        "year": "2025 & Beyond",
+        "title": "Culture x Creativity x Growth",
+        "description": "We’re just getting started. From Nagaland to the world, KAKI continues to build brands that dare, disrupt, and deliver.",
+        "highlight": "50+ Clients"
+      }
+    ],
+    "team": [
+      {
+        "name": "Kakivi",
+        "role": "Founder / Managing Director",
+        "description": "Leads the agency’s overall vision...",
+        "specialization": "Brand Strategy & Creative Direction",
+        "image": "/src/assets/team/boss.jpg"
+      },
+      {
+        "name": "Arong",
+        "role": "Creative Director",
+        "description": "Heads the creative process...",
+        "specialization": "Video Production & Cinematography",
+        "image": "/src/assets/team/design/arong.jpg"
+      },
+      {
+        "name": "Wako",
+        "role": "Studio Director",
+        "description": "Specializes in visual production...",
+        "specialization": "Video Production & Cinematography",
+        "image": "/src/assets/team/studio/wako.jpg"
+      },
+      {
+        "name": "KC",
+        "role": "Tech Director",
+        "description": "Builds immersive digital experiences...",
+        "specialization": "Brand Identity & UI/UX Design",
+        "image": "/src/assets/team/tech/kc.jpg"
+      }
+    ],
+    "values": [
+      {
+        "title": "Excellence",
+        "description": "We don’t settle for “good enough.” Every campaign, design, and frame is crafted with sharp detail and a drive to exceed expectations, because results matter.",
+        "icon": "✨",
+        "color": "from-yellow-500 to-orange-500"
+      },
+      {
+        "title": "Innovation",
+        "description": "We move fast and think forward. From emerging tech to creative-first strategies, we stay ahead of trends to help our clients lead — not follow.",
+        "icon": "🚀",
+        "color": "from-blue-500 to-purple-500"
+      },
+      {
+        "title": "Collaboration",
+        "description": "Great ideas don’t happen in silos. We build strong, transparent partnerships with our clients, working as one team to bring bold visions to life.",
+        "icon": "🤝",
+        "color": "from-green-500 to-teal-500"
+      },
+      {
+        "title": "Culture",
+        "description": "We create more than content. We build cultural relevance. Our work is rooted in Nagaland identity and designed to spark meaningful conversations, online and offline.",
+        "icon": "🎨",
+        "color": "from-pink-500 to-red-500"
+      }
+    ]
+  },
+  "teamPage": {
+    "hero": {
+      "title": "Our Team",
+      "subtitle": "A dynamic group of creatives, marketers, strategists, and technologists working together to build bold brands and deliver real results."
+    },
+    "departments": {
+      "leadership": [
+        {
+          "name": "Kakivi",
+          "role": "Founder / Managing Director",
+          "image": "/src/assets/team/boss.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "alex@kaki.design"
+          }
+        },
+        {
+          "name": "Arong",
+          "role": "Creative Director",
+          "image": "/src/assets/team/design/arong.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "jordan@kaki.design"
+          }
+        },
+        {
+          "name": "Wako",
+          "role": "Studio Director",
+          "image": "/src/assets/team/studio/wako.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "taylor@kaki.design"
+          }
+        },
+        {
+          "name": "KC",
+          "role": "Tech Director",
+          "image": "/src/assets/team/tech/kc.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "taylor@kaki.design"
+          }
+        }
+      ],
+      "studio": [
+        {
+          "name": "Wako",
+          "role": "Studio Director",
+          "image": "/src/assets/team/studio/wako.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "morgan@kaki.design"
+          }
+        },
+        {
+          "name": "Along",
+          "role": "Videographer",
+          "image": "/src/assets/team/studio/along.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "morgan@kaki.design"
+          }
+        },
+        {
+          "name": "Mego",
+          "role": "Videographer/Photographer",
+          "image": "/src/assets/team/studio/mego.png",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "jamie@kaki.design"
+          }
+        },
+        {
+          "name": "Akhro",
+          "role": "Videoprapher/Photographer",
+          "image": "/src/assets/team/studio/akhro.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "river@kaki.design"
+          }
+        },
+        {
+          "name": "Maya",
+          "role": "Videoprapher/Photographer",
+          "image": "/src/assets/team/studio/maya.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "river@kaki.design"
+          }
+        },
+        {
+          "name": "Amugha",
+          "role": "Photographer",
+          "image": "/src/assets/team/studio/amugha.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "river@kaki.design"
+          }
+        },
+        {
+          "name": "Nokul",
+          "role": "Videoprapher/Photographer",
+          "image": "/src/assets/team/studio/nokul.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "river@kaki.design"
+          }
+        }
+      ],
+      "marketing": [
+        {
+          "name": "Christy",
+          "role": "HR (Human Resource)",
+          "image": "/src/assets/team/marketing/christy.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Ajung",
+          "role": "Social Media Manager",
+          "image": "/src/assets/team/marketing/ajung.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Meren",
+          "role": "Social Media Manager",
+          "image": "/src/assets/team/marketing/meren.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Lepok",
+          "role": "Digital Marketing Assistant",
+          "image": "/src/assets/team/marketing/lepok.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Kuku",
+          "role": "Social Media Coordinator",
+          "image": "/src/assets/team/marketing/kuku.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Koko",
+          "role": "BDE (Business Development Executive)",
+          "image": "/src/assets/team/marketing/koko.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Ngamshing",
+          "role": "Content Writer",
+          "image": "/src/assets/team/marketing/ngamshing.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Akok",
+          "role": "Support Manager",
+          "image": "/src/assets/team/marketing/akok.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Toika",
+          "role": "Digital Marketing Executive",
+          "image": "/src/assets/team/marketing/toika.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        },
+        {
+          "name": "Anuvito",
+          "role": "Content Writer",
+          "image": "/src/assets/team/marketing/anu.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "casey@kaki.design"
+          }
+        }
+      ],
+      "design": [
+        {
+          "name": "Arong",
+          "role": "Creative Director",
+          "image": "/src/assets/team/design/arong.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "email": "quinn@kaki.design"
+          }
+        },
+        {
+          "name": "Sully",
+          "role": "Graphic Designer",
+          "image": "/src/assets/team/design/sully.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "riley@kaki.design"
+          }
+        },
+        {
+          "name": "Tono",
+          "role": "Graphic Designer",
+          "image": "/src/assets/team/design/tono.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "riley@kaki.design"
+          }
+        }
+      ],
+      "tech": [
+        {
+          "name": "KC",
+          "role": "Tech Director",
+          "image": "/src/assets/team/tech/kc.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "cameron@kaki.design"
+          }
+        },
+        {
+          "name": "Mostafa",
+          "role": "Full Stack Developer",
+          "image": "/src/assets/team/tech/mostafa.png",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "cameron@kaki.design"
+          }
+        },
+        {
+          "name": "Vinoto",
+          "role": "Front-End Web Dev",
+          "image": "/src/assets/team/tech/vinoto.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "jordan.m@kaki.design"
+          }
+        },
+        {
+          "name": "Pabitra",
+          "role": "Full Stack Developer",
+          "image": "/src/assets/team/tech/pabitra.jpg",
+          "social": {
+            "linkedin": "https://linkedin.com/",
+            "instagram": "https://instagram.com/",
+            "email": "jordan.m@kaki.design"
+          }
+        }
+      ]
+    },
+    "stats": [
+      {
+        "number": "45+",
+        "label": "Tech Professionals"
+      },
+      {
+        "number": "4+",
+        "label": "Years of Excellence"
+      },
+      {
+        "number": "200+",
+        "label": "Projects Completed"
+      },
+      {
+        "number": "15",
+        "label": "Industry Awards"
+      }
+    ],
+    "hiring": {
+      "title": "Join Our Tech Family",
+      "description": "We're always on the lookout for passionate, talented individuals to join our growing team. Think you have what it takes to help us build the future?",
+      "buttonText": "View Open Positions"
+    },
+    "values": [
+      {
+        "title": "Innovation First",
+        "description": "We embrace cutting-edge technologies and aren't afraid to push boundaries to achieve extraordinary results.",
+        "icon": "🚀",
+        "color": "from-purple-600 to-blue-600"
+      },
+      {
+        "title": "Collaborative Spirit",
+        "description": "We believe great ideas can come from anywhere, and our best work happens when diverse minds unite.",
+        "icon": "🤝",
+        "color": "from-pink-600 to-purple-600"
+      },
+      {
+        "title": "Quality Excellence",
+        "description": "Everything we create is built with precision, scalability, and user experience in mind.",
+        "icon": "⭐",
+        "color": "from-orange-600 to-pink-600"
+      }
+    ]
+  }
+}
