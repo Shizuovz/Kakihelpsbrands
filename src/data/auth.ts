@@ -1,4 +1,5 @@
 // Authentication types and utilities
+import { API_BASE_URL } from '@/config';
 export interface User {
   id: string;
   email: string;
@@ -36,7 +37,7 @@ export interface RegisterData {
 // API functions
 export const authAPI = {
   login: async (credentials: LoginCredentials): Promise<{ user: User; token: string }> => {
-    const response = await fetch('http://localhost:3001/api/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
@@ -51,7 +52,7 @@ export const authAPI = {
   },
 
   register: async (data: RegisterData): Promise<{ user: User; token: string }> => {
-    const response = await fetch('http://localhost:3001/api/auth/register', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
@@ -66,7 +67,7 @@ export const authAPI = {
   },
 
   getCurrentUser: async (token: string): Promise<User> => {
-    const response = await fetch('http://localhost:3001/api/auth/me', {
+    const response = await fetch(`${API_BASE_URL}/api/auth/me`, {
       headers: { 'Authorization': `Bearer ${token}` }
     });
     

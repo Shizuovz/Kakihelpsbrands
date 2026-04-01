@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { API_BASE_URL } from '@/config';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -61,7 +62,7 @@ export const AdminContent = () => {
 
     const fetchContent = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/content/all');
+        const response = await fetch(`${API_BASE_URL}/api/content/all`);
         if (response.ok) {
           const result = await response.json();
           // Merge initial structure with fetched data to ensure all keys like 'works' exist
@@ -81,7 +82,7 @@ export const AdminContent = () => {
 
     const fetchInquiries = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/inquiries');
+        const response = await fetch(`${API_BASE_URL}/api/inquiries`);
         if (response.ok) {
           const result = await response.json();
           setInquiries(result.data || []);
@@ -108,7 +109,7 @@ export const AdminContent = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      const response = await fetch('http://localhost:3001/api/admin/content/all', {
+      const response = await fetch(`${API_BASE_URL}/api/admin/content/all`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +146,7 @@ export const AdminContent = () => {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://localhost:3001/api/upload', {
+        const response = await fetch(`${API_BASE_URL}/api/upload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
