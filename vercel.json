@@ -4,7 +4,7 @@
   "installCommand": "npm install",
   "framework": "vite",
   "env": {
-    "VITE_API_URL": "https://kaki-hoardings-api.onrender.com"
+    "VITE_API_URL": "https://kakihelpsbrands.onrender.com"
   },
   "rewrites": [
     { "source": "/(.*)", "destination": "/index.html" }
