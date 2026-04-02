@@ -143,10 +143,10 @@ export const AdminContent = () => {
       if (!file) return;
 
       const formData = new FormData();
-      formData.append('file', file);
+      formData.append('files', file);
 
       try {
-        const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        const response = await fetch(`${API_BASE_URL}/api/admin/upload`, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
@@ -156,7 +156,9 @@ export const AdminContent = () => {
 
         if (response.ok) {
           const data = await response.json();
-          onSuccess(data.url);
+          // The admin upload endpoint returns { success: true, files: [{ url: '...' }] }
+          const url = data.files && data.files.length > 0 ? data.files[0].url : data.url;
+          onSuccess(url);
           toast.success('File uploaded successfully!');
         } else {
           toast.error('Failed to upload file');
@@ -218,7 +220,7 @@ export const AdminContent = () => {
     if (!confirm('Are you sure you want to delete this inquiry?')) return;
     
     try {
-      const response = await fetch(`http://localhost:3001/api/inquiries/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/api/inquiries/${id}`, {
         method: 'DELETE'
       });
       if (response.ok) {
@@ -233,7 +235,7 @@ export const AdminContent = () => {
   const handleMarkAsRead = async (id: string, currentStatus: string) => {
     const newStatus = currentStatus === 'unread' || currentStatus === 'new' ? 'read' : 'unread';
     try {
-      const response = await fetch(`http://localhost:3001/api/inquiries/${id}/status`, {
+      const response = await fetch(`${API_BASE_URL}/api/inquiries/${id}/status`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus })

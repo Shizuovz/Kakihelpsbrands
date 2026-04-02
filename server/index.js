@@ -292,7 +292,7 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), (re
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
     const uploadedFiles = req.files.map(file => ({
-      url: `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+      url: `https://kakihelpsbrands.onrender.com/uploads/${file.filename}`
     }));
     res.json({ success: true, files: uploadedFiles });
   } catch (error) {
@@ -316,8 +316,9 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), (req, res) =>
       filename: file.filename,
       originalname: file.originalname,
       size: file.size,
-      url: `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+      url: `https://kakihelpsbrands.onrender.com/uploads/${file.filename}`
     }));
+
 
     console.log('Files processed:', uploadedFiles);
 

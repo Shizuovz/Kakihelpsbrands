@@ -28,11 +28,14 @@ export interface Hoarding {
   updatedAt?: string;
 }
 
-const API_BASE_URL = 'http://localhost:3001/api';
+import { API_BASE_URL } from '@/config';
+
+const DATA_API_URL = `${API_BASE_URL}/api`;
+
 
 export const fetchHoardings = async (userId?: string): Promise<Hoarding[]> => {
   try {
-    const url = userId ? `${API_BASE_URL}/hoardings?userId=${userId}` : `${API_BASE_URL}/hoardings`;
+    const url = userId ? `${DATA_API_URL}/hoardings?userId=${userId}` : `${DATA_API_URL}/hoardings`;
     const response = await fetch(url);
     if (response.ok) {
       const result = await response.json();
@@ -50,7 +53,7 @@ export const fetchHoardings = async (userId?: string): Promise<Hoarding[]> => {
 export const fetchUserHoardings = async (userId: string): Promise<Hoarding[]> => {
   try {
     const token = localStorage.getItem('authToken');
-    const response = await fetch(`${API_BASE_URL}/user/hoardings`, {
+    const response = await fetch(`${DATA_API_URL}/user/hoardings`, {
       headers: {
         'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
@@ -71,7 +74,7 @@ export const fetchUserHoardings = async (userId: string): Promise<Hoarding[]> =>
 
 export const fetchRegions = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/regions`);
+    const response = await fetch(`${DATA_API_URL}/regions`);
     if (response.ok) {
       const result = await response.json();
       return result.data;
@@ -86,7 +89,7 @@ export const fetchRegions = async (): Promise<string[]> => {
 
 export const fetchTypes = async (): Promise<string[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/types`);
+    const response = await fetch(`${DATA_API_URL}/types`);
     if (response.ok) {
       const result = await response.json();
       return result.data;
