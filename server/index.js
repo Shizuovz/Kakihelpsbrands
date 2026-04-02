@@ -291,9 +291,14 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), (re
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
-    const uploadedFiles = req.files.map(file => ({
-      url: `https://kakihelpsbrands.onrender.com/uploads/${file.filename}`
-    }));
+    const uploadedFiles = req.files.map(file => {
+      // Use the actual host from headers to ensure it works on both localhost and Render
+      const host = req.get('host') || 'kakihelpsbrands.onrender.com';
+      const protocol = host.includes('localhost') ? 'http' : 'https';
+      return {
+        url: `${protocol}://${host}/uploads/${file.filename}`
+      };
+    });
     res.json({ success: true, files: uploadedFiles });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message });
@@ -312,12 +317,17 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), (req, res) =>
       });
     }
 
-    const uploadedFiles = req.files.map(file => ({
-      filename: file.filename,
-      originalname: file.originalname,
-      size: file.size,
-      url: `https://kakihelpsbrands.onrender.com/uploads/${file.filename}`
-    }));
+    const uploadedFiles = req.files.map(file => {
+      // Use the actual host from headers to ensure it works on both localhost and Render
+      const host = req.get('host') || 'kakihelpsbrands.onrender.com';
+      const protocol = host.includes('localhost') ? 'http' : 'https';
+      return {
+        filename: file.filename,
+        originalname: file.originalname,
+        size: file.size,
+        url: `${protocol}://${host}/uploads/${file.filename}`
+      };
+    });
 
 
     console.log('Files processed:', uploadedFiles);

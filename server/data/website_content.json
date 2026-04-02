@@ -1,6 +1,6 @@
 {
   "hero": {
-    "title": "We Build Brands ",
+    "title": "We Build Brands",
     "subtitle": "KAKI is a digital marketing company that builds brands with clarity and helps them grow with purpose.",
     "videoUrl": "http://localhost:3001/uploads/files-1774944894311-803334195.mp4",
     "posterUrl": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
@@ -485,7 +485,7 @@
       "title": "Who We Are",
       "description": "We’re not just a creative agency. We’re builders, brand architects, problem solvers — born in Nagaland, built to take bold ideas to the world. Founded in 2021, KAKI started as a lean crew with a big vision: to give Nagaland and Northeast India the digital firepower it deserves. Today, we’re a growing team of designers, strategists, developers, storytellers, and creators delivering full-stack marketing solutions across India and beyond.",
       "subDescription": "Whether you’re a startup, social movement, football league, or festival, we’re here to help you show up, stand out, and scale up.",
-      "image": "http://localhost:3001/uploads/files-1774949614918-597493879.jpeg"
+      "image": "https://kakihelpsbrands.onrender.com/uploads/files-1775116471719-883279125.png"
     },
     "mission": {
       "title": "Our Mission",
