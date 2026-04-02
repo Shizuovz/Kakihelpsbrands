@@ -13,7 +13,34 @@ import { authMiddleware, register, login, getCurrentUser, resetPassword } from '
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
+
+// 1. GLOBAL MIDDLEWARE (MUST BE FIRST)
+app.use(cors({
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'https://kakihelpsbrands.vercel.app',
+      'https://kakihelpsbrands-git-main-shizuovzs-projects.vercel.app'
+    ];
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true,
+  optionsSuccessStatus: 200
+}));
+
+app.options('*', cors());
+app.use(express.json({ limit: '20mb' }));
+app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+
 
 // Path for JSON fallback storage
 const DATA_DIR = path.join(process.cwd(), 'data');
@@ -222,34 +249,12 @@ const connectDB = async () => {
   }
 };
 
-app.use(cors({
-  origin: function(origin, callback) {
-    const allowedOrigins = [
-      'http://localhost:3001',
-      'http://localhost:3000',
-      'https://kakihelpsbrands.vercel.app',
-      'https://kakihelpsbrands-git-main-shizuovzs-projects.vercel.app'
-    ];
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
-      callback(null, true);
-    } else {
-      callback(null, true); // Still allow others but track this
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true,
-  optionsSuccessStatus: 200
-}));
+// No-op for old location
 
-// Handle preflight for all routes
-app.options('*', cors());
 
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+// Static assets
 app.use('/uploads', express.static('uploads'));
+
 
 // Configure multer for file uploads
 const storage = multer.diskStorage({
