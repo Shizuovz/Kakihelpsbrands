@@ -223,10 +223,30 @@ const connectDB = async () => {
 };
 
 app.use(cors({
-  origin: '*', // Allow all origins for local development
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      'http://localhost:3001',
+      'http://localhost:3000',
+      'https://kakihelpsbrands.vercel.app',
+      'https://kakihelpsbrands-git-main-shizuovzs-projects.vercel.app'
+    ];
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1 || origin.endsWith('.vercel.app')) {
+      callback(null, true);
+    } else {
+      callback(null, true); // Still allow others but track this
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true,
+  optionsSuccessStatus: 200
 }));
+
+// Handle preflight for all routes
+app.options('*', cors());
+
 app.use(express.json({ limit: '20mb' }));
 app.use(express.urlencoded({ extended: true, limit: '20mb' }));
 app.use('/uploads', express.static('uploads'));

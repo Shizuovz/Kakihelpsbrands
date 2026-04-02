@@ -36,10 +36,12 @@ export const AdminLogin = () => {
         toast.error(result.message || "Invalid Admin Credentials");
       }
     } catch (error) {
-      toast.error("Admin authentication failed");
+      console.error("Admin Login Error:", error);
+      toast.error("Auth server unreachable (CORS issues possible)");
     } finally {
       setIsLoading(false);
     }
+
   };
 
   return (
