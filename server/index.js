@@ -34,8 +34,8 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.json({ limit: '20mb' }));
-app.use(express.urlencoded({ extended: true, limit: '20mb' }));
+app.use(express.json({ limit: '110mb' }));
+app.use(express.urlencoded({ extended: true, limit: '110mb' }));
 
 
 // Path for JSON fallback storage
@@ -266,7 +266,7 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage: storage,
   limits: {
-    fileSize: 10 * 1024 * 1024 // 10MB limit
+    fileSize: 100 * 1024 * 1024 // 100MB limit
   },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
