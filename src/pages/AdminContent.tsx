@@ -262,9 +262,9 @@ export const AdminContent = () => {
   }
 
   return (
-    <div className="min-h-screen bg-kaki-black pt-32 pb-20">
       <div className="container-custom">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <div className="sticky top-0 z-50 bg-kaki-black/90 backdrop-blur-md border-b border-white/5 pt-32 pb-4 -mt-32 mb-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
             <Button variant="ghost" onClick={() => navigate("/")} className="text-kaki-grey hover:text-white">
               <ArrowLeft className="w-4 h-4 mr-2" /> Back
@@ -780,6 +780,26 @@ export const AdminContent = () => {
                     </div>
                   </div>
                 ))}
+
+                {/* Redundant Actions at Bottom */}
+                <div className="mt-8 flex items-center justify-between p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl">
+                    <div className="flex items-center gap-4">
+                        <Button 
+                            onClick={() => addItem('works.projects', { id: Date.now(), title: 'New Project', category: 'Studio', description: '', year: new Date().getFullYear().toString(), client: '' })}
+                            className="bg-white text-black hover:bg-gray-200"
+                        >
+                            <Plus className="w-4 h-4 mr-2" /> Add Another Project
+                        </Button>
+                        <p className="text-sm text-kaki-grey">Total Projects: {(content.works?.projects || []).length}</p>
+                    </div>
+                    <Button 
+                        onClick={handleSave} 
+                        disabled={isSaving}
+                        className="bg-purple-600 hover:bg-purple-700 text-white px-8"
+                    >
+                        {isSaving ? 'Saving...' : <><Save className="w-4 h-4 mr-2" /> Save All Work</>}
+                    </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
