@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
+import { API_BASE_URL } from '@/config';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -74,7 +76,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
     
     try {
       if (hoarding.id) {
-        const response = await fetch(`http://localhost:3001/api/hoardings/${hoarding.id}/availability`);
+        const response = await fetch(`${API_BASE_URL}/api/hoardings/${hoarding.id}/availability`);
         if (response.ok) {
           const result = await response.json();
           setAvailabilityData(result.data || []);
@@ -107,8 +109,8 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
       };
 
       const url = isCreatingNew 
-        ? 'http://localhost:3001/api/user/hoardings' 
-        : `http://localhost:3001/api/user/hoardings/${updatedHoarding.id}`;
+        ? `${API_BASE_URL}/api/user/hoardings` 
+        : `${API_BASE_URL}/api/user/hoardings/${updatedHoarding.id}`;
       
       const method = isCreatingNew ? 'POST' : 'PUT';
 
@@ -132,7 +134,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
 
         // Save availability data
         if (result.data.id && availabilityData.length >= 0) {
-          await fetch(`http://localhost:3001/api/hoardings/${result.data.id}/availability`, {
+          await fetch(`${API_BASE_URL}/api/hoardings/${result.data.id}/availability`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -159,7 +161,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
     if (!confirm('Are you sure you want to delete this hoarding?')) return;
     
     try {
-      const response = await fetch(`http://localhost:3001/api/user/hoardings/${hoardingId}`, {
+      const response = await fetch(`${API_BASE_URL}/api/user/hoardings/${hoardingId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('authToken')}`
@@ -375,7 +377,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
           <Card key={h.id} className="bg-white/5 border-white/10 overflow-hidden group hover:border-green-500/50 transition-all">
             <div className="relative h-48">
               <img 
-                src={h.imageUrl || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80'} 
+                src={resolveApiUrl(h.imageUrl) || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80'} 
                 alt={h.title}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />

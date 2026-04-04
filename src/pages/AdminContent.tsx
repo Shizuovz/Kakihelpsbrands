@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASE_URL } from '@/config';
 import { useNavigate } from 'react-router-dom';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -732,11 +733,22 @@ export const AdminContent = () => {
                                     value={project.video || ''} 
                                     onChange={(e) => updateItem('works.projects', index, 'video', e.target.value)}
                                     className="bg-kaki-black border-white/10"
+                                    placeholder="/uploads/video.mp4"
                                 />
                                 <Button size="icon" variant="secondary" onClick={() => handleFileUpload((url) => updateItem('works.projects', index, 'video', url), 'video')}>
                                     <UploadCloud className="w-4 h-4" />
                                 </Button>
                             </div>
+                            {project.video && (
+                              <div className="mt-2 aspect-video rounded-lg overflow-hidden border border-white/10">
+                                <video 
+                                  src={resolveApiUrl(project.video)} 
+                                  className="w-full h-full object-cover"
+                                  controls
+                                  muted
+                                />
+                              </div>
+                            )}
                         </div>
                         <div className="space-y-2">
                             <label className="text-xs text-kaki-grey">External Link (Tech Only)</label>

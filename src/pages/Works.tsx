@@ -3,6 +3,7 @@ import { API_BASE_URL } from '@/config';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 const Works = () => {
   const [filter, setFilter] = useState('All');
@@ -123,17 +124,25 @@ const Works = () => {
                 <div className={`group relative overflow-hidden rounded-3xl bg-kaki-dark-grey hover-lift fade-in-on-scroll animation-delay-${index % 5 * 100}`}>
                   <div className="aspect-video relative overflow-hidden">
                     {project.video ? (
-                      <video
-                        src={project.video}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                        controls
-                        muted
-                        playsInline
-                        preload="metadata"
-                      />
+                      <div className="w-full h-full cursor-pointer" onClick={() => setOpenVideo(project.id)}>
+                        <video
+                          src={resolveApiUrl(project.video)}
+                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                          muted
+                          playsInline
+                          preload="metadata"
+                        />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
+                          <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
+                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                              <path d="M8 5v14l11-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      </div>
                     ) : (
                       <img 
-                        src={project.image} 
+                        src={resolveApiUrl(project.image)} 
                         alt={project.title}
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
@@ -224,27 +233,29 @@ const Works = () => {
           onClick={() => setOpenVideo(null)} // Click outside to close
         >
           <div
-            className="relative bg-black rounded-2xl p-4 shadow-lg"
+            className="relative bg-black rounded-2xl p-4 shadow-lg w-[90%] max-w-5xl aspect-video"
             onClick={e => e.stopPropagation()} // Prevent closing when clicking inside modal
           >
             <button
-              className="absolute top-2 right-2 text-white text-2xl"
+              className="absolute -top-12 right-0 text-white text-4xl hover:text-purple-400 transition-colors"
               onClick={() => setOpenVideo(null)}
               aria-label="Close"
             >
               &times;
             </button>
             <video
-              src={openProject?.video}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              src={resolveApiUrl(openProject?.video)}
+              className="w-full h-full rounded-xl overflow-hidden shadow-2xl"
               controls
-              muted
+              autoPlay
               playsInline
-              preload="metadata"
             />
-            <div className="mt-4 text-white text-center text-lg font-semibold">
+            <div className="mt-4 text-white text-center text-xl font-bold">
               {openProject?.title}
             </div>
+            <p className="text-kaki-grey text-center mt-2 max-w-2xl mx-auto">
+              {openProject?.description}
+            </p>
           </div>
         </div>
       )}

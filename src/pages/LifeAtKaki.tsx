@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Instagram, Youtube, Facebook, Linkedin, Play, Loader2, AlertCircle } from 'lucide-react';
+import { Instagram, Youtube, Facebook, Linkedin, Play, Loader2, AlertCircle, MessageCircle } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { FaXTwitter } from 'react-icons/fa6';
 import { YouTubeIntegration } from '@/components/YouTubeIntegration';
 import { useYouTube } from '@/hooks/useYouTube';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { API_BASE_URL } from '@/config';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 const LifeAtKaki = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [currentVideo, setCurrentVideo] = useState('');
-  // Hardcoded YouTube credentials
-  const [youtubeApiKey, setYoutubeApiKey] = useState('AIzaSyCBPA_VvusazHVm5tKUaBYv00PcdfQirmg');
-  const [youtubeChannelId, setYoutubeChannelId] = useState('@kaki9139');
-  const [youtubePlaylistId, setYoutubePlaylistId] = useState('PLB62csA14WQoYAEavYpLrG66xScEI1dte');
+  const [youtubeApiKey, setYoutubeApiKey] = useState('');
+  const [youtubeChannelId, setYoutubeChannelId] = useState('');
+  const [youtubePlaylistId, setYoutubePlaylistId] = useState('');
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   // YouTube integration
   const { videos: youtubeVideos, loading: youtubeLoading, error: youtubeError } = useYouTube({
@@ -24,14 +28,27 @@ const LifeAtKaki = () => {
   });
 
   useEffect(() => {
-    // Load saved YouTube credentials from localStorage, but use hardcoded as fallback
-    const savedApiKey = localStorage.getItem('youtube-api-key') || 'AIzaSyCBPA_VvusazHVm5tKUaBYv00PcdfQirmg';
-    const savedChannelId = localStorage.getItem('youtube-channel-id') || '@kaki9139';
-    const savedPlaylistId = localStorage.getItem('youtube-playlist-id') || 'PLB62csA14WQoYAEavYpLrG66xScEI1dte';
-    
-    setYoutubeApiKey(savedApiKey);
-    setYoutubeChannelId(savedChannelId);
-    setYoutubePlaylistId(savedPlaylistId);
+    const fetchContent = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/content/all`);
+        if (response.ok) {
+          const result = await response.json();
+          const lifeData = result.data?.lifeAtKaki;
+          if (lifeData) {
+            setContent(lifeData);
+            if (lifeData.youtube?.apiKey) setYoutubeApiKey(lifeData.youtube.apiKey);
+            if (lifeData.youtube?.channelId) setYoutubeChannelId(lifeData.youtube.channelId);
+            if (lifeData.youtube?.playlistId) setYoutubePlaylistId(lifeData.youtube.playlistId);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch Life at Kaki content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
   }, []);
 
   useEffect(() => {
@@ -56,7 +73,7 @@ const LifeAtKaki = () => {
     setYoutubeApiKey(apiKey);
     setYoutubeChannelId(channelId);
     setYoutubePlaylistId(playlistId || '');
-    
+
     // Save to localStorage
     localStorage.setItem('youtube-api-key', apiKey);
     localStorage.setItem('youtube-channel-id', channelId);
@@ -83,32 +100,21 @@ const LifeAtKaki = () => {
     });
   };
 
-  // Fallback content data (keeping original structure)
   const fallbackActivities = {
-    events: [
-      {
-        title: 'KAKI Annual Music Festival',
-        description: 'Our annual in-house music competition where team members showcase their musical talents.',
-        image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?q=80&w=900',
-        date: 'July 2023',
-        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-      },
-      {
-        title: 'Gaming Tournament',
-        description: 'Quarterly gaming competitions with prizes and bragging rights at stake.',
-        image: 'https://images.unsplash.com/photo-1511882150382-421056c89033?q=80&w=900',
-        date: 'October 2023',
-        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-      },
-      {
-        title: 'Hackathon Weekend',
-        description: '48-hour creative sprint where cross-departmental teams build innovative prototypes.',
-        image: 'https://images.unsplash.com/photo-1515169067868-5387ec356754?q=80&w=900',
-        date: 'March 2023',
-        videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ'
-      }
-    ],
+    events: (content?.highlights || []).map((h: any) => ({
+      ...h,
+      image: resolveApiUrl(h.image),
+      videoUrl: resolveApiUrl(h.videoUrl)
+    }))
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
+        <Loader2 className="w-12 h-12 text-purple-500 animate-spin" />
+      </div>
+    );
+  }
 
   // Convert ALL YouTube videos to activities format for events tab (removed slice limit)
   const youtubeActivities = youtubeVideos.map(video => ({
@@ -151,17 +157,17 @@ const LifeAtKaki = () => {
       {/* Video Modal */}
       {showVideo && (
         <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4">
-          <button 
+          <button
             onClick={closeVideo}
             className="absolute top-8 right-8 text-white text-3xl hover:text-gray-300"
           >
             ×
           </button>
           <div className="w-full max-w-5xl aspect-video">
-            <iframe 
-              src={currentVideo} 
-              className="w-full h-full" 
-              title="Video Player" 
+            <iframe
+              src={currentVideo}
+              className="w-full h-full"
+              title="Video Player"
               allowFullScreen
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -194,7 +200,7 @@ const LifeAtKaki = () => {
                 Display your actual YouTube videos instead of placeholder content by connecting your YouTube channel.
               </p>
             </div>
-            <YouTubeIntegration 
+            <YouTubeIntegration
               onApiKeySet={handleApiKeySet}
               hasApiKey={!!youtubeApiKey}
             />
@@ -224,9 +230,9 @@ const LifeAtKaki = () => {
           )}
 
           <div className="relative rounded-3xl overflow-hidden aspect-video fade-in-on-scroll cursor-pointer group" onClick={() => playVideo(youtubeVideos[0]?.embedUrl || 'https://www.youtube.com/embed/dQw4w9WgXcQ')}>
-            <img 
-              src={youtubeVideos[0]?.thumbnail || "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=1600"} 
-              alt="Life at KAKI" 
+            <img
+              src={youtubeVideos[0]?.thumbnail || "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?q=80&w=1600"}
+              alt="Life at KAKI"
               className="w-full h-full object-cover brightness-75 group-hover:brightness-50 transition-all duration-300"
             />
             <div className="absolute inset-0 flex items-center justify-center">
@@ -246,7 +252,7 @@ const LifeAtKaki = () => {
 
           {youtubeApiKey && (
             <div className="mt-4 text-center hidden">
-              <YouTubeIntegration 
+              <YouTubeIntegration
                 onApiKeySet={handleApiKeySet}
                 hasApiKey={!!youtubeApiKey}
               />
@@ -280,19 +286,19 @@ const LifeAtKaki = () => {
                 <TabsContent key={category} value={category} className="mt-0">
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {items.map((item, index) => (
-                      <div 
-                        key={item.title} 
+                      <div
+                        key={item.title}
                         className="bg-kaki-dark-grey rounded-3xl overflow-hidden hover-lift fade-in-on-scroll group"
                         style={{ animationDelay: `${index * 100}ms` }}
                       >
                         <div className="aspect-video overflow-hidden relative">
-                          <img 
-                            src={item.image} 
-                            alt={item.title} 
+                          <img
+                            src={item.image}
+                            alt={item.title}
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />
                           {item.videoUrl && (
-                            <div 
+                            <div
                               className="absolute inset-0 flex items-center justify-center cursor-pointer bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity"
                               onClick={(e) => {
                                 e.stopPropagation();
@@ -344,21 +350,7 @@ const LifeAtKaki = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {Array.from({ length: 12 }).map((_, index) => (
-              <div 
-                key={index}
-                className="aspect-square rounded-xl overflow-hidden fade-in-on-scroll hover-scale-110 cursor-pointer"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <img 
-                  src={`https://source.unsplash.com/random/300x300?creative,office,fun&sig=${index}`}
-                  alt="KAKI Instagram"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
+
         </div>
       </section>
 
@@ -411,11 +403,11 @@ const LifeAtKaki = () => {
                 Check out our open positions and become part of the KAKI family.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button size="lg" className="bg-white text-purple-900 hover:bg-gray-100 px-8">
-                  View Open Positions
-                </Button>
-                <Button size="lg" variant="outline" className="border-white text-white hover:bg-white/10 px-8">
-                  Learn About Benefits
+                <Button asChild size="lg" className="bg-white text-purple-900 hover:bg-gray-100 px-8">
+                  <Link to="/contact">
+                    <MessageCircle className="w-5 h-5 mr-2" />
+                    Contact Us
+                  </Link>
                 </Button>
               </div>
             </div>

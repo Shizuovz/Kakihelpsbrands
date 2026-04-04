@@ -304,11 +304,8 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), (re
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
     const uploadedFiles = req.files.map(file => {
-      // Use the actual host from headers to ensure it works on both localhost and Render
-      const host = req.get('host') || 'kakihelpsbrands.onrender.com';
-      const protocol = host.includes('localhost') ? 'http' : 'https';
       return {
-        url: `${protocol}://${host}/uploads/${file.filename}`
+        url: `/uploads/${file.filename}`
       };
     });
     res.json({ success: true, files: uploadedFiles });
@@ -330,14 +327,11 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), (req, res) =>
     }
 
     const uploadedFiles = req.files.map(file => {
-      // Use the actual host from headers to ensure it works on both localhost and Render
-      const host = req.get('host') || 'kakihelpsbrands.onrender.com';
-      const protocol = host.includes('localhost') ? 'http' : 'https';
       return {
         filename: file.filename,
         originalname: file.originalname,
         size: file.size,
-        url: `${protocol}://${host}/uploads/${file.filename}`
+        url: `/uploads/${file.filename}`
       };
     });
 
@@ -396,7 +390,7 @@ app.post('/api/upload-test', upload.array('images', 5), (req, res) => {
       filename: file.filename,
       originalname: file.originalname,
       size: file.size,
-      url: `${req.protocol}://${req.get('host')}/uploads/${file.filename}`
+      url: `/uploads/${file.filename}`
     }));
 
     console.log('Test files processed:', uploadedFiles);
@@ -1012,15 +1006,26 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
       if (db) {
         const collection = db.collection('website_content');
         const pages = Object.keys(contentData);
+        let saveFailures = [];
         for (const p of pages) {
-          await collection.updateOne(
-            { page: p },
-            { $set: { data: contentData[p], updatedAt: new Date(), updatedBy: req.admin.id } },
-            { upsert: true }
-          );
+          try {
+            await collection.updateOne(
+              { page: p },
+              { $set: { data: contentData[p], updatedAt: new Date(), updatedBy: req.admin?.id } },
+              { upsert: true }
+            );
+          } catch (e) {
+            saveFailures.push(p);
+          }
+        }
+        if (saveFailures.length > 0) {
+          return res.status(500).json({ 
+            success: false, 
+            message: `Cloud sync failed for: ${saveFailures.join(', ')}. Local save successful.` 
+          });
         }
       }
-      res.json({ success: true, message: 'All content updated successfully', data: contentData });
+      res.json({ success: true, message: 'Website content updated everywhere', data: contentData });
       return;
     }
 
@@ -1391,6 +1396,27 @@ const server = app.listen(port, '0.0.0.0', async () => {
   // Connect to MongoDB first
   await connectDB();
   console.log(`Hoardings API listening at http://0.0.0.0:${port}`);
+
+  // Sync Content Engine
+  if (db) {
+    console.log('🔄 [Sync] Starting Content Sync Engine...');
+    try {
+      const websiteContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
+      const collection = db.collection('website_content');
+      const pages = Object.keys(websiteContent);
+      
+      for (const page of pages) {
+        await collection.updateOne(
+          { page: page },
+          { $set: { data: websiteContent[page], updatedAt: new Date(), syncStatus: 'automated' } },
+          { upsert: true }
+        );
+      }
+      console.log('✅ [Sync] Website content successfully synced to MongoDB');
+    } catch (syncError) {
+      console.error('❌ [Sync] Content sync engine failed:', syncError);
+    }
+  }
 });
 
 // Increase server timeout for large file uploads (10 minutes)

@@ -3,6 +3,7 @@ import { API_BASE_URL } from '@/config';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Linkedin, Twitter, Instagram, Mail, Cpu, Handshake, Gem, Sparkles } from 'lucide-react';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 const Team = () => {
   const [content, setContent] = useState<any>(null);
@@ -121,7 +122,7 @@ const Team = () => {
                       >
                         <div className="aspect-[4/5] overflow-hidden">
                           <img 
-                            src={member.image} 
+                            src={resolveApiUrl(member.image)} 
                             alt={member.name} 
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                           />

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { Award, Zap, Handshake, Globe, Sparkles, Gem, Cpu, Palette } from 'lucide-react';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 const About = () => {
   const [content, setContent] = useState<any>(null);
@@ -121,7 +122,7 @@ const About = () => {
             <div className="fade-in-on-scroll animation-delay-200">
               <div className="relative">
                 <img
-                  src={content.intro?.image}
+                  src={resolveApiUrl(content.intro?.image)}
                   alt="KAKI Team Collaboration"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
@@ -151,7 +152,7 @@ const About = () => {
             <div className="fade-in-on-scroll animation-delay-200 order-2 lg:order-1">
               <div className="relative">
                 <img
-                  src={content.mission?.image}
+                  src={resolveApiUrl(content.mission?.image)}
                   alt="KAKI Mission"
                   className="w-full h-auto rounded-3xl shadow-2xl"
                 />
@@ -210,7 +211,7 @@ const About = () => {
               <div key={member.name} className={`text-center group fade-in-on-scroll animation-delay-${index * 200}`}>
                 <div className="relative mb-6 overflow-hidden rounded-3xl">
                   <img
-                    src={member.image}
+                    src={resolveApiUrl(member.image)}
                     alt={member.name}
                     className="w-full aspect-square object-cover group-hover:scale-110 transition-transform duration-500"
                   />

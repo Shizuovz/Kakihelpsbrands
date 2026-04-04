@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowDown, Play, Pause, Instagram, Youtube, Facebook, Video, Code } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 import logo from '../assets/logos/logo-no-bg.png';
 import ahibiLogo from '../assets/lovable-uploads/ahibi.png';
@@ -108,7 +109,7 @@ const Index = () => {
             className={`absolute inset-0 transition-opacity duration-700 ${isPlaying ? 'opacity-0' : 'opacity-30'}`}
           >
             <img 
-              src={hero.posterUrl} 
+              src={resolveApiUrl(hero.posterUrl)} 
               alt="Hero Background" 
               className="w-full h-full object-cover"
             />
@@ -121,8 +122,9 @@ const Index = () => {
             loop
             muted
             playsInline
+            key={hero.videoUrl} 
           >
-            <source src={hero.videoUrl} type="video/mp4" />
+            <source src={resolveApiUrl(hero.videoUrl)} type="video/mp4" />
           </video>
         </div>
 
@@ -328,7 +330,7 @@ const Index = () => {
               <div key={work.title} className={`group relative overflow-hidden rounded-2xl fade-in-on-scroll animation-delay-${index * 200} hover-lift`}>
                 <div className="aspect-square bg-gradient-to-br from-kaki-dark-grey to-kaki-black">
                   <img
-                    src={work.image}
+                    src={resolveApiUrl(work.image)}
                     alt={work.title}
                     className="w-full h-full object-cover opacity-80 group-hover:opacity-60 transition-opacity duration-300"
                   />
