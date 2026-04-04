@@ -19,6 +19,9 @@ app.use((req, res, next) => {
   const origin = req.headers.origin;
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${origin}`);
   
+  if (req.url.includes('/upload')) {
+    console.log(`[UPLOAD DEBUG] ${req.method} ${req.url} - Content-Length: ${req.headers['content-length']}`);
+  }
   // Allow all origins by reflecting the origin header or defaulting to *
   res.setHeader('Access-Control-Allow-Origin', origin || '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -34,8 +37,8 @@ app.use((req, res, next) => {
 });
 
 
-app.use(express.json({ limit: '110mb' }));
-app.use(express.urlencoded({ extended: true, limit: '110mb' }));
+app.use(express.json({ limit: '500mb' }));
+app.use(express.urlencoded({ extended: true, limit: '500mb' }));
 
 
 // Path for JSON fallback storage
@@ -266,13 +269,22 @@ const storage = multer.diskStorage({
 const upload = multer({ 
   storage: storage,
   limits: {
-    fileSize: 100 * 1024 * 1024 // 100MB limit
+    fileSize: 500 * 1024 * 1024 // 500MB limit for videos
   },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype.startsWith('video/')) {
+    console.log(`[Upload] File received: ${file.originalname}, mimetype: ${file.mimetype}`);
+    
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
+    const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
+    const fileExt = path.extname(file.originalname).toLowerCase();
+
+    if (file.mimetype.startsWith('image/') || 
+        file.mimetype.startsWith('video/') || 
+        allowedMimeTypes.includes(file.mimetype) ||
+        allowedExtensions.includes(fileExt)) {
       cb(null, true);
     } else {
-      cb(new Error('Only image and video files are allowed'));
+      cb(new Error(`File type not allowed: ${file.mimetype} (${file.originalname}). Only images and videos are allowed.`));
     }
   }
 });
@@ -1352,8 +1364,36 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', async () => {
+// Global error handler for Multer and other errors
+app.use((err, req, res, next) => {
+  console.error('[Global Error Handler]:', err);
+  
+  if (err instanceof multer.MulterError) {
+    if (err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({
+        success: false,
+        message: 'File too large. Maximum size is 500MB.'
+      });
+    }
+    return res.status(400).json({
+      success: false,
+      message: `Upload error: ${err.message}`
+    });
+  }
+
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || 'An unexpected error occurred'
+  });
+});
+
+const server = app.listen(port, '0.0.0.0', async () => {
   // Connect to MongoDB first
   await connectDB();
   console.log(`Hoardings API listening at http://0.0.0.0:${port}`);
 });
+
+// Increase server timeout for large file uploads (10 minutes)
+server.timeout = 600000;
+server.keepAliveTimeout = 600000;
+server.headersTimeout = 610000;

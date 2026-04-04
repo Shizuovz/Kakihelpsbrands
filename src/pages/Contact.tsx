@@ -2,7 +2,13 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '@/config';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { MapPin, Phone, Mail, Clock, Instagram, Youtube, Facebook } from 'lucide-react';
+import { MapPin, Phone, Mail, Clock, Instagram, Youtube, Facebook, ChevronDown, MessageCircle, HelpCircle } from 'lucide-react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -121,6 +127,65 @@ const Contact = () => {
     { icon: <Facebook className="w-5 h-5" />, url: 'https://facebook.com/KAKIMarketing', label: 'Facebook', followers: '590+' },
     { icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>, url: 'https://twitter.com/KAKImarketing', label: 'X (Twitter)', followers: '100+' },
     { icon: <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.761 0 5-2.239 5-5v-14c0-2.761-2.239-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>, url: 'https://in.linkedin.com/company/kakimarketing', label: 'LinkedIn', followers: '200+' },
+  ];
+
+  const faqs = [
+    {
+      question: "What is KAKI Marketing?",
+      answer: "Founded in 2021, KAKI is a full-stack creative agency from Nagaland that helps brands grow through strategy, storytelling, design, technology, and events turning bold ideas into real impact."
+    },
+    {
+      question: "Where is your office located?",
+      answer: "Our office is located at 132 B, 2½ Mile, Darogapather, Dimapur, Nagaland."
+    },
+    {
+      question: "What services does KAKI Studio offer?",
+      answer: "KAKI Studio provides end-to-end media production, including video production, photography, animation, and post-production."
+    },
+    {
+      question: "What services does KAKI Marketing offer?",
+      answer: "KAKI Marketing delivers digital strategy, media buying, and influencer marketing focused on ROI, brand awareness, and audience growth."
+    },
+    {
+      question: "What services does KAKI Design offer?",
+      answer: "KAKI Design offers brand identity, UI/UX design, and packaging solutions from logos to complete brand systems."
+    },
+    {
+      question: "What services does KAKI Tech offer?",
+      answer: "KAKI Tech provides web and app development, custom software, and AR experiences."
+    },
+    {
+      question: "How do I start a project with KAKI?",
+      answer: "Click “Contact” on the top-right of the website or select a project poster and click “Start Your Project.” You can also email us at kaki.helps.brands@gmail.com or DM us."
+    },
+    {
+      question: "Do I need to register to start a project with KAKI?",
+      answer: "No, registration is not required. Simply click on the “Contact” option, fill in the required details, and submit your message. Our team will get in touch with you to get started."
+    },
+    {
+      question: "What is the typical project budget?",
+      answer: "We don’t follow fixed packages. Each project is customized based on your goals and needs, either through a tailored strategy after consultation or by working within your existing budget."
+    },
+    {
+      question: "What is the typical project timeline?",
+      answer: "Timelines vary based on scope, with flexible options: ASAP, 1–3 months, 3–6 months, or 6+ months."
+    },
+    {
+      question: "What are your office hours?",
+      answer: "Our office is open Monday to Saturday from 10:00 AM to 5:00 PM. We remain closed on Sundays."
+    },
+    {
+      question: "Are you active on social media?",
+      answer: "Yes, we maintain an active presence on Instagram, YouTube, Facebook, and LinkedIn. Follow our journey on these platforms."
+    },
+    {
+      question: "Do you offer influencer marketing?",
+      answer: "Yes. We help identify the right influencers, manage collaborations, track performance, and ensure authentic engagement."
+    },
+    {
+      question: "Do you offer customer support?",
+      answer: "Yes, we provide customer support via calls, WhatsApp, direct messages, and emails."
+    }
   ];
 
   return (
@@ -343,6 +408,51 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="section-padding bg-kaki-black">
+        <div className="container-custom">
+          <div className="flex flex-col lg:flex-row gap-16">
+            <div className="lg:w-1/3 fade-in-on-scroll">
+              <div className="inline-flex items-center justify-center p-3 bg-purple-500/10 rounded-2xl mb-6">
+                <HelpCircle className="w-8 h-8 text-purple-400" />
+              </div>
+              <h2 className="text-4xl font-bold mb-6 text-white">Frequently Asked Questions</h2>
+              <p className="text-kaki-grey text-lg leading-relaxed mb-8">
+                Find quick answers to common questions about our services, process, and how we can help your brand grow.
+              </p>
+              <div className="p-6 bg-kaki-dark-grey/50 rounded-3xl border border-white/5 backdrop-blur-sm">
+                <div className="flex items-center gap-4 mb-4 text-white">
+                  <MessageCircle className="w-5 h-5 text-purple-400" />
+                  <span className="font-bold lowercase">Still have questions?</span>
+                </div>
+                <p className="text-sm text-kaki-grey mb-6 leading-relaxed">
+                  Can't find what you're looking for? Reach out through the form and our team will be in touch within 24 hours.
+                </p>
+              </div>
+            </div>
+
+            <div className="lg:w-2/3 fade-in-on-scroll animation-delay-200">
+              <Accordion type="single" collapsible className="space-y-4">
+                {faqs.map((faq, index) => (
+                  <AccordionItem 
+                    key={index} 
+                    value={`item-${index}`}
+                    className="border-none bg-kaki-dark-grey/30 hover:bg-kaki-dark-grey/50 rounded-3xl overflow-hidden px-8 transition-all duration-300 border border-white/5"
+                  >
+                    <AccordionTrigger className="text-white hover:text-purple-400 text-lg font-bold py-6 hover:no-underline">
+                      {faq.question}
+                    </AccordionTrigger>
+                    <AccordionContent className="text-kaki-grey text-base leading-relaxed pb-8">
+                      {faq.answer && <p>{faq.answer}</p>}
+                    </AccordionContent>
+                  </AccordionItem>
+                ))}
+              </Accordion>
             </div>
           </div>
         </div>

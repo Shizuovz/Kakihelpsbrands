@@ -559,25 +559,25 @@
       {
         "title": "Excellence",
         "description": "We don’t settle for “good enough.” Every campaign, design, and frame is crafted with sharp detail and a drive to exceed expectations, because results matter.",
-        "icon": "✨",
+        "icon": "Trophy",
         "color": "from-yellow-500 to-orange-500"
       },
       {
         "title": "Innovation",
         "description": "We move fast and think forward. From emerging tech to creative-first strategies, we stay ahead of trends to help our clients lead — not follow.",
-        "icon": "🚀",
+        "icon": "Innovation",
         "color": "from-blue-500 to-purple-500"
       },
       {
         "title": "Collaboration",
         "description": "Great ideas don’t happen in silos. We build strong, transparent partnerships with our clients, working as one team to bring bold visions to life.",
-        "icon": "🤝",
+        "icon": "Partnership",
         "color": "from-green-500 to-teal-500"
       },
       {
         "title": "Culture",
         "description": "We create more than content. We build cultural relevance. Our work is rooted in Nagaland identity and designed to spark meaningful conversations, online and offline.",
-        "icon": "🎨",
+        "icon": "Culture",
         "color": "from-pink-500 to-red-500"
       }
     ]
@@ -899,19 +899,19 @@
       {
         "title": "Innovation First",
         "description": "We embrace cutting-edge technologies and aren't afraid to push boundaries to achieve extraordinary results.",
-        "icon": "🚀",
+        "icon": "innovation",
         "color": "from-purple-600 to-blue-600"
       },
       {
         "title": "Collaborative Spirit",
         "description": "We believe great ideas can come from anywhere, and our best work happens when diverse minds unite.",
-        "icon": "🤝",
+        "icon": "collaboration",
         "color": "from-pink-600 to-purple-600"
       },
       {
         "title": "Quality Excellence",
         "description": "Everything we create is built with precision, scalability, and user experience in mind.",
-        "icon": "⭐",
+        "icon": "excellence",
         "color": "from-orange-600 to-pink-600"
       }
     ]

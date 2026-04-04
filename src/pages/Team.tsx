@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { API_BASE_URL } from '@/config';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Linkedin, Twitter, Instagram, Mail } from 'lucide-react';
+import { Linkedin, Twitter, Instagram, Mail, Cpu, Handshake, Gem, Sparkles } from 'lucide-react';
 
 const Team = () => {
   const [content, setContent] = useState<any>(null);
@@ -45,6 +45,31 @@ const Team = () => {
 
     return () => observer.disconnect();
   }, [isLoading, content]);
+
+  const getIcon = (iconName: string) => {
+    const iconProps = {
+      size: 32,
+      strokeWidth: 1.5,
+      className: "text-white"
+    };
+
+    const normalizedName = iconName?.toLowerCase().trim();
+
+    switch (normalizedName) {
+      case 'excellence':
+      case '⭐':
+        return <Gem {...iconProps} />;
+      case 'innovation': 
+      case '🚀':
+        return <Cpu {...iconProps} />;
+      case 'partnership': 
+      case 'collaboration':
+      case '🤝':
+        return <Handshake {...iconProps} />;
+      default: 
+        return <Sparkles {...iconProps} />;
+    }
+  };
 
   if (isLoading || !content) {
     return (
@@ -159,16 +184,32 @@ const Team = () => {
             {content.values?.map((value: any, index: number) => (
               <div 
                 key={index} 
-                className="p-8 rounded-3xl bg-kaki-black border border-white/5 hover-lift fade-in-on-scroll group"
-                style={{ animationDelay: `${index * 150}ms` }}
+                className={`group relative p-1 leading-relaxed rounded-[3rem] fade-in-on-scroll animation-delay-${index * 150}`}
               >
-                <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${value.color} flex items-center justify-center text-3xl mb-6 shadow-lg transform transition-transform group-hover:scale-110`}>
-                  {value.icon}
+                {/* Background Glow on Hover */}
+                <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-0 group-hover:opacity-20 blur-3xl transition-opacity duration-700`} />
+                
+                <div className="relative h-full bg-kaki-black/60 backdrop-blur-3xl border border-white/10 rounded-[2.8rem] p-10 flex flex-col items-center text-center hover-lift transition-all duration-500 hover:border-white/20">
+                  {/* Icon Container */}
+                  <div className="relative mb-10">
+                    <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-500`} />
+                    <div className={`relative w-20 h-20 rounded-2xl bg-gradient-to-br ${value.color} p-[1px]`}>
+                      <div className="w-full h-full bg-kaki-black rounded-2xl flex items-center justify-center">
+                        {getIcon(value.icon)}
+                      </div>
+                    </div>
+                  </div>
+
+                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/60 transition-all duration-300">
+                    {value.title}
+                  </h3>
+                  <p className="text-kaki-grey text-lg leading-relaxed group-hover:text-white/80 transition-colors duration-300">
+                    {value.description}
+                  </p>
+
+                  {/* Decorative element */}
+                  <div className={`mt-8 w-12 h-1 rounded-full bg-gradient-to-r ${value.color} opacity-40 group-hover:w-24 group-hover:opacity-100 transition-all duration-500`} />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">{value.title}</h3>
-                <p className="text-kaki-grey leading-relaxed">
-                  {value.description}
-                </p>
               </div>
             ))}
           </div>

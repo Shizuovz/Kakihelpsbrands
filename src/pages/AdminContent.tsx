@@ -154,17 +154,18 @@ export const AdminContent = () => {
           body: formData
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-          const data = await response.json();
           // The admin upload endpoint returns { success: true, files: [{ url: '...' }] }
           const url = data.files && data.files.length > 0 ? data.files[0].url : data.url;
           onSuccess(url);
           toast.success('File uploaded successfully!');
         } else {
-          toast.error('Failed to upload file');
+          toast.error(data.message || 'Failed to upload file');
         }
-      } catch (error) {
-        toast.error('Error uploading file');
+      } catch (error: any) {
+        toast.error(error.message || 'Error uploading file');
       }
     };
     input.click();
