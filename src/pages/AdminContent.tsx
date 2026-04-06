@@ -111,13 +111,33 @@ export const AdminContent = () => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
+      // Create a deep copy to process arrays
+      const processedContent = JSON.parse(JSON.stringify(content));
+      
+      // Process projects to convert newline-separated strings to arrays
+      if (processedContent.works?.projects) {
+        processedContent.works.projects = processedContent.works.projects.map((p: any) => {
+          if (p.category === 'Case Study') {
+            if (typeof p.objectives === 'string') {
+              p.objectives = p.objectives.split('\n').filter((l: string) => l.trim() !== '');
+            }
+            if (typeof p.result === 'string') {
+              p.result = p.result.split('\n').filter((l: string) => l.trim() !== '');
+            } else if (!p.result) {
+              p.result = [];
+            }
+          }
+          return p;
+        });
+      }
+
       const response = await fetch(`${API_BASE_URL}/api/admin/content/all`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         },
-        body: JSON.stringify(content)
+        body: JSON.stringify(processedContent)
       });
 
       if (response.ok) {
@@ -216,6 +236,28 @@ export const AdminContent = () => {
     }
     const newArray = [...current];
     newArray[index] = { ...newArray[index], [field]: value };
+    setContent(updateStateDeep(content, sectionPath, newArray));
+  };
+
+  const updateItemDeep = (sectionPath: string, index: number, fieldPath: string, value: any) => {
+    const keys = sectionPath.split('.');
+    let current = content;
+    for (const key of keys) {
+      current = current[key];
+    }
+    const newArray = [...current];
+    const item = { ...newArray[index] };
+    
+    // update nested field in item
+    const fieldKeys = fieldPath.split('.');
+    let curField = item;
+    for (let i = 0; i < fieldKeys.length - 1; i++) {
+        curField[fieldKeys[i]] = { ...(curField[fieldKeys[i]] || {}) };
+        curField = curField[fieldKeys[i]];
+    }
+    curField[fieldKeys[fieldKeys.length - 1]] = value;
+    
+    newArray[index] = item;
     setContent(updateStateDeep(content, sectionPath, newArray));
   };
 
@@ -821,6 +863,126 @@ export const AdminContent = () => {
                             />
                         </div>
                     </div>
+
+                    {/* Extended Case Study Details */}
+                    {project.category === 'Case Study' && (
+                      <div className="mt-6 pt-6 border-t border-purple-500/20 space-y-6">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-1 w-12 bg-purple-500 rounded-full"></div>
+                          <h5 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Extended Case Study Details</h5>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Detailed Subtitle</label>
+                            <Input 
+                              value={project.subtitle || ''} 
+                              onChange={(e) => updateItem('works.projects', index, 'subtitle', e.target.value)}
+                              className="bg-kaki-black border-white/10"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Timeline (e.g. Dec 2024 – Apr 2025)</label>
+                            <Input 
+                              value={project.timeline || ''} 
+                              onChange={(e) => updateItem('works.projects', index, 'timeline', e.target.value)}
+                              className="bg-kaki-black border-white/10"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Industry</label>
+                            <Input 
+                              value={project.industry || ''} 
+                              onChange={(e) => updateItem('works.projects', index, 'industry', e.target.value)}
+                              className="bg-kaki-black border-white/10"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Location</label>
+                            <Input 
+                              value={project.location || ''} 
+                              onChange={(e) => updateItem('works.projects', index, 'location', e.target.value)}
+                              className="bg-kaki-black border-white/10"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          <label className="text-xs text-kaki-grey">Overview</label>
+                          <Textarea 
+                            value={project.overview || ''} 
+                            onChange={(e) => updateItem('works.projects', index, 'overview', e.target.value)}
+                            className="bg-kaki-black border-white/10 min-h-[100px]"
+                          />
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                          <div className="space-y-4 p-4 bg-purple-500/5 rounded-xl border border-purple-500/10">
+                            <h6 className="text-xs font-bold text-purple-400 uppercase">Brand Identity</h6>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Logo Story</label>
+                              <Textarea value={project.brandIdentity?.logo || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.logo', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Packaging</label>
+                              <Textarea value={project.brandIdentity?.packaging || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.packaging', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Visual Storytelling</label>
+                              <Textarea value={project.brandIdentity?.visualStorytelling || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.visualStorytelling', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                          </div>
+
+                          <div className="space-y-4 p-4 bg-blue-500/5 rounded-xl border border-blue-500/10">
+                            <h6 className="text-xs font-bold text-blue-400 uppercase">Web Development</h6>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Platform</label>
+                              <Textarea value={project.websiteDevelopment?.platform || ''} onChange={(e) => updateItemDeep('works.projects', index, 'websiteDevelopment.platform', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Logistics</label>
+                              <Textarea value={project.websiteDevelopment?.logisticsIntegration || ''} onChange={(e) => updateItemDeep('works.projects', index, 'websiteDevelopment.logisticsIntegration', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                          </div>
+
+                          <div className="space-y-4 p-4 bg-green-500/5 rounded-xl border border-green-500/10">
+                            <h6 className="text-xs font-bold text-green-400 uppercase">Video Production</h6>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Shoots</label>
+                              <Textarea value={project.videoProduction?.shoots || ''} onChange={(e) => updateItemDeep('works.projects', index, 'videoProduction.shoots', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                            <div className="space-y-2">
+                              <label className="text-[10px] text-kaki-grey">Digital Launch</label>
+                              <Textarea value={project.videoProduction?.digitalLaunch || ''} onChange={(e) => updateItemDeep('works.projects', index, 'videoProduction.digitalLaunch', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Objectives (Line by Line)</label>
+                            <Textarea 
+                              placeholder="Enter each objective on a new line"
+                              value={Array.isArray(project.objectives) ? project.objectives.join('\n') : (project.objectives || '')} 
+                              onChange={(e) => updateItem('works.projects', index, 'objectives', e.target.value)}
+                              className="bg-kaki-black border-white/10 h-32"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-xs text-kaki-grey">Results & Impact (Line by Line)</label>
+                            <Textarea 
+                              placeholder="Enter each result on a new line"
+                              value={Array.isArray(project.result) ? project.result.join('\n') : (project.result || '')} 
+                              onChange={(e) => updateItem('works.projects', index, 'result', e.target.value)}
+                              className="bg-kaki-black border-white/10 h-32"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ))}
 

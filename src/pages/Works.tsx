@@ -128,7 +128,16 @@ const Works = () => {
                 <div className={`group relative overflow-hidden rounded-3xl bg-kaki-dark-grey hover-lift fade-in-on-scroll animation-delay-${index % 5 * 100}`}>
                   <div className="aspect-video relative overflow-hidden">
                     {project.video ? (
-                      <div className="w-full h-full cursor-pointer" onClick={() => setOpenVideo(project.id)}>
+                      <div 
+                        className="w-full h-full cursor-pointer" 
+                        onClick={(e) => {
+                          if (project.category === 'Case Study') {
+                            // Let the Link handle it
+                            return;
+                          }
+                          setOpenVideo(project.id);
+                        }}
+                      >
                         <video
                           src={resolveApiUrl(project.video)}
                           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -138,9 +147,13 @@ const Works = () => {
                         />
                         <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/40 transition-colors">
                           <div className="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center group-hover:scale-110 transition-transform">
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
-                              <path d="M8 5v14l11-7z" />
-                            </svg>
+                            {project.category === 'Case Study' ? (
+                              <div className="text-white text-xs font-bold px-2 py-1 bg-purple-600 rounded">View Detail</div>
+                            ) : (
+                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            )}
                           </div>
                         </div>
                       </div>

@@ -1,4 +1,6 @@
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
+import { API_BASE_URL } from "@/config";
 import { ArrowLeft, Calendar, Users, Target, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -14,10 +16,85 @@ const iconMap = {
 
 const CaseStudyDetail = () => {
   const { id } = useParams();
-  const caseStudy = caseStudies.find(
-    (p) => String(p.id) === String(id) && p.category === "Case Study"
+  const [content, setContent] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/content/all`);
+        if (response.ok) {
+          const result = await response.json();
+          setContent(result.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch case study content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchContent();
+  }, [id]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      </div>
+    );
+  }
+
+  // 1. Check static data first (legacy)
+  let caseStudy = caseStudies.find(
+    (p) => String(p.id) === String(id)
   );
-  if (!caseStudy) return <div className="text-white p-10">Case Study Not Found</div>;
+
+  // 2. Check API data if not found in static
+  if (!caseStudy && content?.works?.projects) {
+    const apiProject = content.works.projects.find(
+      (p: any) => String(p.id) === String(id) && p.category === "Case Study"
+    );
+    
+    if (apiProject) {
+      // Create a normalized case study object from API data
+      caseStudy = {
+        ...apiProject,
+        subtitle: apiProject.description, // Use description as subtitle fallback
+        timeline: apiProject.year,
+        industry: "Creative Services",
+        location: "Various",
+        overview: apiProject.description,
+        objectives: ["Establish brand presence", "Drive digital engagement", "Deliver high-impact results"],
+        brandIdentity: {
+          logo: "Comprehensive brand identity development...",
+          packaging: "Strategic packaging design solutions...",
+          visualStorytelling: "Cinematic and compelling visual narratives..."
+        },
+        websiteDevelopment: {
+          platform: "Custom web solutions and digital experiences...",
+          userExperience: "User-centric design focus...",
+          logisticsIntegration: "Seamless systems integration...",
+          inventoryManagement: "Real-time management tools..."
+        },
+        videoProduction: {
+          shoots: "High-quality production and cinematography...",
+          digitalLaunch: "Phased rollout and strategic multi-channel launch..."
+        },
+        result: [
+          "Measurable increase in brand search and recognition",
+          "Successful multi-platform digital launch campaign",
+          "Improved customer retention and engagement metrics"
+        ],
+        metrics: [
+          { label: "Reach", value: "Significant", description: "Broad multi-channel reach" },
+          { label: "Engagement", value: "High", description: "Above industry average engagement" }
+        ]
+      };
+    }
+  }
+
+  if (!caseStudy) return <div className="text-white p-10 mt-10">Case Study Not Found</div>;
 
   // fallback for metrics, if your data doesn't have custom icons
   const metrics = caseStudy.metrics?.map((metric, idx) => ({
