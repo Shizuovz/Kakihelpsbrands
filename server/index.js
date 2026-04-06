@@ -973,7 +973,8 @@ app.get('/api/content/:page', async (req, res) => {
         const collection = db.collection('website_content');
         const dbPages = await collection.find({}).toArray();
         dbPages.forEach(doc => {
-          if (doc.page && doc.data) {
+          // Robust Merge: Only overwrite if there's actual data in the DB
+          if (doc.page && doc.data && typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
             contentData[doc.page] = doc.data;
           }
         });
@@ -1425,9 +1426,13 @@ const server = app.listen(port, '0.0.0.0', async () => {
         // Check if page exists in DB
         const exists = await collection.findOne({ page: page });
         
-        // ONLY sync if missing, OR if it's the critical 'lifeAtKaki' config that the user just restored
-        if (!exists || (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey))) {
-          console.log(`🚀 [Sync] Restoring missing or critical config for: ${page}`);
+        // Check if the current data is valid or needs restoration
+        const needsRestoration = !exists || 
+          (Object.keys(exists.data || {}).length === 0) || 
+          (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey));
+
+        if (needsRestoration && websiteContent[page]) {
+          console.log(`🚀 [Sync] Restoring missing, empty, or critical config for: ${page}`);
           await collection.updateOne(
             { page: page },
             { $set: { data: websiteContent[page], updatedAt: new Date(), syncStatus: 'automated-restoration' } },
