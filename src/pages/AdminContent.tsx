@@ -884,9 +884,29 @@ export const AdminContent = () => {
                     {/* Extended Case Study Details */}
                     {project.category === 'Case Study' && (
                       <div className="mt-6 pt-6 border-t border-purple-500/20 space-y-6">
-                        <div className="flex items-center gap-2 mb-2">
-                          <div className="h-1 w-12 bg-purple-500 rounded-full"></div>
-                          <h5 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Extended Case Study Details</h5>
+                        <div className="flex items-center justify-between mb-2">
+                          <div className="flex items-center gap-2">
+                            <div className="h-1 w-12 bg-purple-500 rounded-full"></div>
+                            <h5 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Extended Case Study Details</h5>
+                          </div>
+                          <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-400">Advanced Mode</Badge>
+                        </div>
+
+                        {/* RAW CONTENT QUICK PASTE */}
+                        <div className="p-4 bg-purple-500/10 rounded-2xl border border-purple-500/20 space-y-3">
+                          <div className="flex items-center justify-between">
+                            <label className="text-xs font-bold text-purple-300 flex items-center gap-2">
+                              <span className="w-1.5 h-1.5 bg-purple-500 rounded-full"></span>
+                              Quick Paste / Full Narrative (Raw Text)
+                            </label>
+                            <span className="text-[10px] text-kaki-grey italic">Use this for quick copy-pasting the entire story</span>
+                          </div>
+                          <Textarea 
+                            placeholder="Paste the entire case study text here..."
+                            value={project.rawContent || ''} 
+                            onChange={(e) => updateItem('works.projects', index, 'rawContent', e.target.value)}
+                            className="bg-kaki-black border-purple-500/10 min-h-[250px] font-mono text-sm leading-relaxed"
+                          />
                         </div>
                         
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

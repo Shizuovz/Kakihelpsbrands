@@ -133,34 +133,18 @@
         "location": "Dimapur, Nagaland",
         "timeline": "Nov 2024 – June 2025",
         "image": "/src/assets/works/casestudy/ohanki.png",
-        "overview": "Ohan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine. They had great products, a loyal local customer base, and a strong cultural identity. But they had bigger dreams: modernise their brand, create standout packaging, sell online across India, and tell their story visually.",
+        "rawContent": "CASE STUDY: Ohan Ki x KAKI\nFrom Local Favourite to National Flavour: Building a Digital-First Naga Food Brand\n\nThe Challenge\nOhan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine.\nThey had great products, a loyal local customer base, and a strong cultural identity.\nBut they had bigger dreams.\nThey wanted to:\n•\tModernise their brand\n•\tCreate clean, standout packaging\n•\tSell their products online across India\n•\tStreamline operations behind the scenes\n•\tAnd tell their story visually, the right way\nThey came to KAKI with a clear vision—build a modern brand that still feels like home.\nAnd that’s exactly what we set out to do.\n\n What We Did\n\n 1. We Refreshed the Brand Identity\nWe gave Ohan Ki a complete brand makeover—one that honoured their roots but made space for growth.\n🔸 Logo Redesign\nWe designed a fresh, bold logo that blends modern design with Naga cultural motifs—making it instantly recognisable across digital and physical platforms.\n🔸 Packaging Redesign\nWe created minimal, clean packaging that lets the product speak for itself.\nFrom smoked pork to pickled bamboo shoots—everything looked premium, consistent, and ready to be placed on shelves or shipped to doorsteps.\n🔸 Visual Storytelling\nThe full visual system—from colours to fonts—was crafted to reflect authenticity, warmth, and quality.\nEvery touchpoint felt connected.\n\n 2. We Built Their E-Commerce Website\n🔸 Custom Web Design & Development\nOur tech team built a mobile-friendly, full-featured e-commerce website, allowing customers to browse, shop, and pay with ease—anywhere in India.\n🔸 Smooth User Experience\nThe site features:\n•\tClear product categorisation\n•\tEasy add-to-cart and checkout\n•\tProduct stories and images that build appetite and trust\n🔸 Logistics & Shipping Integration\nWe connected the platform with Blue Dart and Delivery for reliable shipping.\nWe also built a custom backend tool to auto-generate shipping labels—making order fulfilment faster and simpler.\n🔸 Inventory Management System\nTo help Ohan Ki track stock and orders in real time, we developed a backend system for live inventory updates—reducing manual work and improving control.\n\n 3. We Created Scroll-Stopping Visual Content\nWe didn’t just build systems—we brought the products to life visually.\n🔸 Product Photography & Brand Videos\nOur in-house KAKI Studio produced a full content bank featuring clean, crisp images and videos.\nProducts were styled as the heroes—shot against Naga-inspired backdrops to reflect both tradition and quality.\n🔸 Launch-Ready Visuals\nThe visuals were built for web, Instagram, campaigns, and packaging—ensuring visual consistency across all platforms.\n\nThe Results\n✅ A Cohesive, Modern Brand\nOhan Ki now looks, feels, and speaks like a national-ready brand—without losing its Naga soul.\n✅ PAN-India Reach\nWith their new e-commerce platform, they can now serve customers across the country, expanding their audience and sales potential.\n✅ Efficient Operations\nFrom auto-label generation to live inventory tracking, their backend is built for growth and speed.\n✅Stronger Digital Presence\nTheir visual storytelling, website, and brand design now work together—driving engagement, trust, and loyalty.",
+        "overview": "Ohan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine. They teamed up with KAKI to transition from a local favorite to a national food brand.",
         "objectives": [
           "Modernise their brand with a fresh identity",
-          "Create clean, standout packaging for retail and shipping",
+          "Create clean, standout packaging",
           "Sell products online PAN-India via e-commerce",
-          "Streamline operations and logistics behind the scenes",
-          "Tell their story visually and authentically"
+          "Streamline operations and logistics"
         ],
-        "brandIdentity": {
-          "logo": "Fresh, bold redesign blending modern design with Naga cultural motifs — instantly recognisable.",
-          "packaging": "Minimal, clean packaging that lets the product speak for itself, from smoked pork to pickled bamboo.",
-          "visualStorytelling": "Authenticity, warmth, and quality reflected through a cohesive system of colours and typography."
-        },
-        "websiteDevelopment": {
-          "platform": "Custom mobile-friendly e-commerce site with clear categorisation and سهل payments.",
-          "userExperience": "Intuitive navigation and shopping flow designed to build appetite and trust.",
-          "logisticsIntegration": "Connected with Blue Dart and Delhivery with auto-label generation for faster fulfillment.",
-          "inventoryManagement": "Live inventory tracking system to reduce manual work and improve control."
-        },
-        "videoProduction": {
-          "shoots": "Crisp product styling and cinematic imagery shot against Naga-inspired backdrops.",
-          "digitalLaunch": "A full content bank for web, Instagram, and campaigns ensuring visual consistency."
-        },
         "result": [
-          "A Cohesive, Modern Brand with its Naga soul intact.",
-          "PAN-India Reach serving customers across the countr.",
-          "Efficient Operations with auto-labeling and live tracking.",
-          "Stronger Digital Presence driving trust and loyalty."
+          "A Cohesive, Modern Brand with its soul intact.",
+          "PAN-India Reach serving customers nationwide.",
+          "Efficient Operations with smart backend tools."
         ]
       }
     ]

@@ -150,15 +150,37 @@ const CaseStudyDetail = () => {
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-4xl space-y-16">
 
-          {/* Overview */}
-          <div>
-            <h2 className="text-3xl font-bold mb-6 text-white">Overview</h2>
-            <div className="prose prose-invert max-w-none">
-              <p className="text-gray-300 text-lg leading-relaxed mb-6">
-                {caseStudy.overview}
-              </p>
+          {/* Narrative Content (Raw / Paste) */}
+          {caseStudy.rawContent && (
+            <div className="mb-16">
+              <h2 className="text-3xl font-bold mb-8 text-white flex items-center gap-3">
+                <div className="h-6 w-1 bg-purple-500 rounded-full"></div>
+                Project Narrative
+              </h2>
+              <div className="bg-gray-800/30 border border-gray-700/50 rounded-3xl p-8 md:p-12">
+                <div className="prose prose-invert max-w-none">
+                  <p className="text-gray-300 text-lg leading-relaxed whitespace-pre-wrap font-inter italic tracking-wide opacity-90">
+                    {caseStudy.rawContent}
+                  </p>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Overview */}
+          {caseStudy.overview && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6 text-white flex items-center gap-3">
+                <div className="h-6 w-1 bg-blue-500 rounded-full"></div>
+                Overview
+              </h2>
+              <div className="prose prose-invert max-w-none">
+                <p className="text-gray-300 text-lg leading-relaxed mb-6">
+                  {caseStudy.overview}
+                </p>
+              </div>
+            </div>
+          )}
 
           <Separator className="bg-gray-800" />
 
