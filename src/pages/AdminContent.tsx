@@ -744,7 +744,24 @@ export const AdminContent = () => {
                 <CardTitle>All Projects</CardTitle>
                 <CardDescription className="text-kaki-grey">Manage portfolio items on the works page</CardDescription>
               </div>
-              <Button onClick={() => addItem('works.projects', { id: Date.now(), title: 'New Project', category: 'Studio', description: '', year: new Date().getFullYear().toString(), client: '' })}>
+              <Button onClick={() => addItem('works.projects', { 
+                id: Date.now(), 
+                title: 'New Project', 
+                category: 'Studio', 
+                description: '', 
+                year: new Date().getFullYear().toString(), 
+                client: '',
+                subtitle: '',
+                timeline: '',
+                industry: '',
+                location: '',
+                overview: '',
+                objectives: [],
+                result: [],
+                brandIdentity: { logo: '', packaging: '', visualStorytelling: '' },
+                websiteDevelopment: { platform: '', userExperience: '', logisticsIntegration: '', inventoryManagement: '' },
+                videoProduction: { shoots: '', digitalLaunch: '' }
+              })}>
                 <Plus className="w-4 h-4 mr-2" /> Add Project
               </Button>
             </CardHeader>
@@ -990,7 +1007,24 @@ export const AdminContent = () => {
                 <div className="mt-8 flex items-center justify-between p-6 bg-purple-500/10 border border-purple-500/20 rounded-3xl">
                     <div className="flex items-center gap-4">
                         <Button 
-                            onClick={() => addItem('works.projects', { id: Date.now(), title: 'New Project', category: 'Studio', description: '', year: new Date().getFullYear().toString(), client: '' })}
+                            onClick={() => addItem('works.projects', { 
+                                id: Date.now(), 
+                                title: 'New Project', 
+                                category: 'Studio', 
+                                description: '', 
+                                year: new Date().getFullYear().toString(), 
+                                client: '',
+                                subtitle: '',
+                                timeline: '',
+                                industry: '',
+                                location: '',
+                                overview: '',
+                                objectives: [],
+                                result: [],
+                                brandIdentity: { logo: '', packaging: '', visualStorytelling: '' },
+                                websiteDevelopment: { platform: '', userExperience: '', logisticsIntegration: '', inventoryManagement: '' },
+                                videoProduction: { shoots: '', digitalLaunch: '' }
+                            })}
                             className="bg-white text-black hover:bg-gray-200"
                         >
                             <Plus className="w-4 h-4 mr-2" /> Add Another Project
