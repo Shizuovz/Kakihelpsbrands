@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { API_BASE_URL } from "@/config";
+import { resolveApiUrl } from "@/utils/resolveApiUrl";
 import { ArrowLeft, Calendar, Users, Target, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -137,7 +138,7 @@ const CaseStudyDetail = () => {
 
           <div className="relative rounded-2xl overflow-hidden mb-16 bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-700">
             <img
-              src={caseStudy.image}
+              src={resolveApiUrl(caseStudy.image)}
               alt={caseStudy.title}
               className="w-full h-full object-cover aspect-video"
             />
