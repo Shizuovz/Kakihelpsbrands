@@ -892,7 +892,6 @@ export const AdminContent = () => {
                           <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold border-purple-500/30 text-purple-400">Advanced Mode</div>
                         </div>
 
-                        {/* RAW CONTENT QUICK PASTE */}
                         <div className="p-4 bg-purple-500/10 rounded-2xl border border-purple-500/20 space-y-3">
                           <div className="flex items-center justify-between">
                             <label className="text-xs font-bold text-purple-300 flex items-center gap-2">
@@ -905,118 +904,8 @@ export const AdminContent = () => {
                             placeholder="Paste the entire case study text here..."
                             value={project.rawContent || ''} 
                             onChange={(e) => updateItem('works.projects', index, 'rawContent', e.target.value)}
-                            className="bg-kaki-black border-purple-500/10 min-h-[250px] font-mono text-sm leading-relaxed"
+                            className="bg-kaki-black border-purple-500/10 min-h-[400px] font-mono text-sm leading-relaxed"
                           />
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Detailed Subtitle</label>
-                            <Input 
-                              value={project.subtitle || ''} 
-                              onChange={(e) => updateItem('works.projects', index, 'subtitle', e.target.value)}
-                              className="bg-kaki-black border-white/10"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Timeline (e.g. Dec 2024 – Apr 2025)</label>
-                            <Input 
-                              value={project.timeline || ''} 
-                              onChange={(e) => updateItem('works.projects', index, 'timeline', e.target.value)}
-                              className="bg-kaki-black border-white/10"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Industry</label>
-                            <Input 
-                              value={project.industry || ''} 
-                              onChange={(e) => updateItem('works.projects', index, 'industry', e.target.value)}
-                              className="bg-kaki-black border-white/10"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Location</label>
-                            <Input 
-                              value={project.location || ''} 
-                              onChange={(e) => updateItem('works.projects', index, 'location', e.target.value)}
-                              className="bg-kaki-black border-white/10"
-                            />
-                          </div>
-                        </div>
-
-                        <div className="space-y-2">
-                          <label className="text-xs text-kaki-grey">Overview</label>
-                          <Textarea 
-                            value={project.overview || ''} 
-                            onChange={(e) => updateItem('works.projects', index, 'overview', e.target.value)}
-                            className="bg-kaki-black border-white/10 min-h-[100px]"
-                          />
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                          <div className="space-y-4 p-4 bg-purple-500/5 rounded-xl border border-purple-500/10">
-                            <h6 className="text-xs font-bold text-purple-400 uppercase">Brand Identity</h6>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Logo Story</label>
-                              <Textarea value={project.brandIdentity?.logo || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.logo', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Packaging</label>
-                              <Textarea value={project.brandIdentity?.packaging || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.packaging', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Visual Storytelling</label>
-                              <Textarea value={project.brandIdentity?.visualStorytelling || ''} onChange={(e) => updateItemDeep('works.projects', index, 'brandIdentity.visualStorytelling', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                          </div>
-
-                          <div className="space-y-4 p-4 bg-blue-500/5 rounded-xl border border-blue-500/10">
-                            <h6 className="text-xs font-bold text-blue-400 uppercase">Web Development</h6>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Platform</label>
-                              <Textarea value={project.websiteDevelopment?.platform || ''} onChange={(e) => updateItemDeep('works.projects', index, 'websiteDevelopment.platform', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Logistics</label>
-                              <Textarea value={project.websiteDevelopment?.logisticsIntegration || ''} onChange={(e) => updateItemDeep('works.projects', index, 'websiteDevelopment.logisticsIntegration', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                          </div>
-
-                          <div className="space-y-4 p-4 bg-green-500/5 rounded-xl border border-green-500/10">
-                            <h6 className="text-xs font-bold text-green-400 uppercase">Video Production</h6>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Shoots</label>
-                              <Textarea value={project.videoProduction?.shoots || ''} onChange={(e) => updateItemDeep('works.projects', index, 'videoProduction.shoots', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                            <div className="space-y-2">
-                              <label className="text-[10px] text-kaki-grey">Digital Launch</label>
-                              <Textarea value={project.videoProduction?.digitalLaunch || ''} onChange={(e) => updateItemDeep('works.projects', index, 'videoProduction.digitalLaunch', e.target.value)} className="bg-kaki-black border-white/10 text-xs" />
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Objectives (Line by Line)</label>
-                            <Textarea 
-                              placeholder="Enter each objective on a new line"
-                              value={Array.isArray(project.objectives) ? project.objectives.join('\n') : (project.objectives || '')} 
-                              onChange={(e) => updateItem('works.projects', index, 'objectives', e.target.value)}
-                              className="bg-kaki-black border-white/10 h-32"
-                            />
-                          </div>
-                          <div className="space-y-2">
-                            <label className="text-xs text-kaki-grey">Results & Impact (Line by Line)</label>
-                            <Textarea 
-                              placeholder="Enter each result on a new line"
-                              value={Array.isArray(project.result) ? project.result.join('\n') : (project.result || '')} 
-                              onChange={(e) => updateItem('works.projects', index, 'result', e.target.value)}
-                              className="bg-kaki-black border-white/10 h-32"
-                            />
-                          </div>
                         </div>
                       </div>
                     )}
