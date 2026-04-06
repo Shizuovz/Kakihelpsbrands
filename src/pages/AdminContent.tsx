@@ -28,8 +28,20 @@ import {
   Instagram,
   Mail,
   Clock,
-  Youtube
+  Youtube,
+  PenTool,
+  Bold,
+  Italic,
+  Type,
+  Quote,
+  CaseUpper,
+  CaseLower,
+  Heading,
+  Underline,
+  Strikethrough,
+  List
 } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
 
 export const AdminContent = () => {
   const navigate = useNavigate();
@@ -45,7 +57,8 @@ export const AdminContent = () => {
     works: {
       hero: { title: '', subtitle: '' },
       projects: []
-    }
+    },
+    blogs: []
   });
 
   const [inquiries, setInquiries] = useState<any[]>([]);
@@ -246,7 +259,7 @@ export const AdminContent = () => {
       current = current[key];
     }
     const newArray = [...current];
-    const item = { ...newArray[index] };
+    let item = { ...newArray[index] };
     
     // update nested field in item
     const fieldKeys = fieldPath.split('.');
@@ -259,6 +272,104 @@ export const AdminContent = () => {
     
     newArray[index] = item;
     setContent(updateStateDeep(content, sectionPath, newArray));
+  };
+
+  const handleFormat = (index: number, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough') => {
+    const textarea = document.getElementById(`blog-content-${index}`) as HTMLTextAreaElement;
+    if (!textarea) return;
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const currentText = (content.blogs[index].content || '');
+    const selection = currentText.substring(start, end);
+    
+    let replacement = '';
+    switch (type) {
+      case 'bold': replacement = `**${selection || 'bold text'}**`; break;
+      case 'italic': replacement = `*${selection || 'italic text'}*`; break;
+      case 'header': replacement = `\n## ${selection || 'HEADER'}`; break;
+      case 'quote': replacement = `\n> ${selection || 'QUOTE'}`; break;
+      case 'underline': replacement = `<u>${selection || 'underlined text'}</u>`; break;
+      case 'strikethrough': replacement = `~~${selection || 'strikethrough text'}~~`; break;
+    }
+
+    const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
+    updateItem('blogs', index, 'content', newText);
+    
+    // Set focus back and maintain selection
+    setTimeout(() => {
+      textarea.focus();
+      textarea.setSelectionRange(start + 2, end + 2);
+    }, 0);
+  };
+
+  const parseInline = (text: string) => {
+    // Basic inline markdown parser for preview
+    let parts: any[] = [text];
+    
+    // Bold: **text**
+    const boldRegex = /\*\*(.*?)\*\*/g;
+    let newParts: any[] = [];
+    parts.forEach(p => {
+        if (typeof p !== 'string') { newParts.push(p); return; }
+        let lastIdx = 0;
+        let match;
+        while ((match = boldRegex.exec(p)) !== null) {
+            newParts.push(p.substring(lastIdx, match.index));
+            newParts.push(<strong key={`bold-${match.index}`} className="text-white font-black">{match[1]}</strong>);
+            lastIdx = boldRegex.lastIndex;
+        }
+        newParts.push(p.substring(lastIdx));
+    });
+    parts = newParts.filter(p => p !== '');
+
+    // Italic: *text*
+    newParts = [];
+    const italicRegex = /\*(.*?)\*/g;
+    parts.forEach(p => {
+        if (typeof p !== 'string') { newParts.push(p); return; }
+        let lastIdx = 0;
+        let match;
+        while ((match = italicRegex.exec(p)) !== null) {
+            newParts.push(p.substring(lastIdx, match.index));
+            newParts.push(<em key={`italic-${match.index}`} className="text-purple-300 font-medium italic">{match[1]}</em>);
+            lastIdx = italicRegex.lastIndex;
+        }
+        newParts.push(p.substring(lastIdx));
+    });
+    parts = newParts.filter(p => p !== '');
+
+    // Underline: <u>text</u>
+    newParts = [];
+    const underlineRegex = /<u>(.*?)<\/u>/g;
+    parts.forEach(p => {
+        if (typeof p !== 'string') { newParts.push(p); return; }
+        let lastIdx = 0;
+        let match;
+        while ((match = underlineRegex.exec(p)) !== null) {
+            newParts.push(p.substring(lastIdx, match.index));
+            newParts.push(<u key={`underline-${match.index}`} className="decoration-purple-500/50">{match[1]}</u>);
+            lastIdx = underlineRegex.lastIndex;
+        }
+        newParts.push(p.substring(lastIdx));
+    });
+    parts = newParts.filter(p => p !== '');
+
+    // Strikethrough: ~~text~~
+    newParts = [];
+    const strikeRegex = /~~(.*?)~~/g;
+    parts.forEach(p => {
+        if (typeof p !== 'string') { newParts.push(p); return; }
+        let lastIdx = 0;
+        let match;
+        while ((match = strikeRegex.exec(p)) !== null) {
+            newParts.push(p.substring(lastIdx, match.index));
+            newParts.push(<del key={`strike-${match.index}`} className="opacity-50 line-through">{match[1]}</del>);
+            lastIdx = strikeRegex.lastIndex;
+        }
+        newParts.push(p.substring(lastIdx));
+    });
+    return newParts.filter(p => p !== '');
   };
 
   const handleDeleteInquiry = async (id: string) => {
@@ -361,6 +472,9 @@ export const AdminContent = () => {
             </TabsTrigger>
             <TabsTrigger value="works" className="data-[state=active]:bg-purple-600">
               <Briefcase className="w-4 h-4 mr-2" /> Our Works Page
+            </TabsTrigger>
+            <TabsTrigger value="blogs" className="data-[state=active]:bg-purple-600">
+              <PenTool className="w-4 h-4 mr-2" /> Blogs
             </TabsTrigger>
             <TabsTrigger value="social" className="data-[state=active]:bg-purple-600">
               <Share2 className="w-4 h-4 mr-2" /> Social Links
@@ -741,8 +855,12 @@ export const AdminContent = () => {
           <Card className="bg-white/5 border-white/10 text-white">
             <CardHeader className="flex flex-row items-center justify-between space-y-0">
               <div>
-                <CardTitle>All Projects</CardTitle>
-                <CardDescription className="text-kaki-grey">Manage portfolio items on the works page</CardDescription>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                  <span className="text-[10px] text-green-500 font-bold uppercase tracking-widest">System Sync Active</span>
+                </div>
+                <CardTitle>All Projects - LATEST VERSION</CardTitle>
+                <CardDescription className="text-kaki-grey">Manage portfolio items on the works page (Cleaned UI)</CardDescription>
               </div>
               <Button onClick={() => addItem('works.projects', { 
                 id: Date.now(), 
@@ -948,6 +1066,215 @@ export const AdminContent = () => {
                         {isSaving ? 'Saving...' : <><Save className="w-4 h-4 mr-2" /> Save All Work</>}
                     </Button>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="blogs" className="space-y-6">
+          <Card className="bg-white/5 border-white/10 text-white shadow-2xl overflow-hidden rounded-[2.5rem]">
+            <CardHeader className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/5 gap-6">
+              <div className="space-y-2">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-purple-600/20 rounded-2xl border border-purple-500/20">
+                    <PenTool className="w-8 h-8 text-purple-400" />
+                  </div>
+                  <CardTitle className="text-4xl font-bold tracking-tight">Blog Management</CardTitle>
+                </div>
+                <CardDescription className="text-kaki-grey text-lg pl-1">Craft stories and share professional insights with your audience</CardDescription>
+              </div>
+              <Button 
+                onClick={() => addItem('blogs', { 
+                  id: Date.now(), 
+                  title: 'New Perspective on Brand Strategy', 
+                  author: 'KAKI Team',
+                  category: 'Design Strategy',
+                  date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                  image: '',
+                  excerpt: 'Briefly describe your article here...',
+                  content: '## Start writing your article here...'
+                })}
+                className="bg-purple-600 hover:bg-purple-700 text-white px-10 h-14 rounded-full shadow-2xl shadow-purple-500/30 transition-all hover:scale-105 active:scale-95 text-lg font-bold"
+              >
+                <Plus className="w-6 h-6 mr-3" /> CREATE NEW POST
+              </Button>
+            </CardHeader>
+            <CardContent className="pt-8">
+              <div className="space-y-8">
+                {(!content.blogs || content.blogs.length === 0) ? (
+                  <div className="text-center py-32 bg-white/[0.02] rounded-[3rem] border border-dashed border-white/10 group hover:border-purple-500/20 transition-colors">
+                    <div className="w-24 h-24 bg-white/[0.03] rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
+                      <PenTool className="w-12 h-12 text-white/20" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-white mb-3">No Articles Yet</h3>
+                    <p className="text-kaki-grey max-w-sm mx-auto text-lg leading-relaxed">Your digital garden is currently empty. Start growing it by crafting your first blog post.</p>
+                  </div>
+                ) : (
+                  content.blogs.map((blog: any, index: number) => (
+                    <div key={blog.id || index} className="p-8 md:p-12 border border-white/10 rounded-[3.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] shadow-2xl space-y-10 relative group transition-all hover:border-purple-500/40">
+                      <div className="absolute -top-4 right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
+                        <Button 
+                          variant="destructive" 
+                          size="icon" 
+                          className="w-12 h-12 rounded-full shadow-2xl border-4 border-kaki-black"
+                          onClick={() => removeItem('blogs', index)}
+                        >
+                          <Trash2 className="w-5 h-5" />
+                        </Button>
+                      </div>
+
+                      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                        {/* Sidebar */}
+                        <div className="lg:col-span-4 space-y-8">
+                           <div className="space-y-6">
+                            <div className="space-y-3">
+                              <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Publishing Details</label>
+                              <div className="space-y-4 p-6 bg-kaki-black/60 rounded-[2rem] border border-white/5 backdrop-blur-xl shadow-inner">
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Author</label>
+                                  <Input value={blog.author} onChange={(e) => updateItem('blogs', index, 'author', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Category</label>
+                                  <Input value={blog.category} onChange={(e) => updateItem('blogs', index, 'category', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Publish Date</label>
+                                  <Input value={blog.date} onChange={(e) => updateItem('blogs', index, 'date', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm" />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3">
+                              <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Story Visual</label>
+                              <div className="p-6 bg-kaki-black/60 rounded-[2rem] border border-white/5 backdrop-blur-xl space-y-4">
+                                <div className="flex gap-2">
+                                  <Input value={blog.image} onChange={(e) => updateItem('blogs', index, 'image', e.target.value)} className="bg-kaki-black/50 border-white/10 text-xs h-11 rounded-xl" placeholder="/src/assets/blogs/post1.png" />
+                                  <Button size="icon" className="h-11 w-11 bg-purple-600 rounded-xl" onClick={() => handleFileUpload((url) => updateItem('blogs', index, 'image', url))}>
+                                    <UploadCloud className="w-5 h-5" />
+                                  </Button>
+                                </div>
+                                {blog.image && (
+                                  <div className="aspect-[16/9] rounded-2xl overflow-hidden border border-white/10 ring-8 ring-white/5 shadow-2xl">
+                                    <img src={resolveApiUrl(blog.image)} className="w-full h-full object-cover" />
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                           </div>
+                        </div>
+
+                        {/* Editor Main */}
+                        <div className="lg:col-span-8 space-y-8">
+                          <div className="space-y-4">
+                            <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Headline</label>
+                            <Input 
+                              value={blog.title} 
+                              onChange={(e) => updateItem('blogs', index, 'title', e.target.value)}
+                              className="bg-transparent border-b-2 border-t-0 border-x-0 border-white/10 rounded-none text-4xl font-extrabold h-auto py-4 focus:border-purple-500 transition-colors"
+                              placeholder="Captivating Title..."
+                            />
+                          </div>
+
+                          <div className="space-y-4 pt-4">
+                            <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">The Lead (Summary)</label>
+                            <Textarea 
+                              value={blog.excerpt} 
+                              onChange={(e) => updateItem('blogs', index, 'excerpt', e.target.value)}
+                              className="bg-kaki-black/40 border-white/10 min-h-[100px] rounded-3xl px-8 py-6 focus:border-purple-500/50 leading-relaxed text-lg italic text-white/80"
+                              placeholder="A powerful opening statement..."
+                            />
+                          </div>
+
+                          <div className="space-y-4 pt-4">
+                            <div className="flex items-center justify-between pl-2">
+                              <div className="flex items-center gap-4">
+                                <label className="text-xs text-purple-400 font-bold uppercase tracking-widest">Article Body</label>
+                                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'bold')} title="Add Bold">
+                                    <Bold className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'italic')} title="Add Italic">
+                                    <Italic className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'header')} title="Add Header">
+                                    <Heading className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'quote')} title="Add Blockquote">
+                                    <Quote className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'underline')} title="Add Underline">
+                                    <Underline className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'strikethrough')} title="Add Strikethrough">
+                                    <Strikethrough className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFileUpload((url) => {
+                                    const textarea = document.getElementById(`blog-content-${index}`) as HTMLTextAreaElement;
+                                    const start = textarea.selectionStart;
+                                    const end = textarea.selectionEnd;
+                                    const currentText = content.blogs[index].content;
+                                    const replacement = `\n![Inline Image](${url})\n`;
+                                    const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
+                                    updateItem('blogs', index, 'content', newText);
+                                  }, 'image')} title="Insert Image">
+                                    <ImageIcon className="w-4 h-4" />
+                                  </Button>
+                                  <Separator orientation="vertical" className="h-4 bg-white/10 mx-1" />
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => {
+                                    updateItem('blogs', index, 'content', blog.content.toUpperCase());
+                                  }} title="Convert ALL to Uppercase">
+                                    <CaseUpper className="w-4 h-4" />
+                                  </Button>
+                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => {
+                                    updateItem('blogs', index, 'content', blog.content.toLowerCase());
+                                  }} title="Convert ALL to Lowercase">
+                                    <CaseLower className="w-4 h-4" />
+                                  </Button>
+                                </div>
+                              </div>
+                              <Tabs defaultValue="edit" className="w-[180px]">
+                                <TabsList className="bg-white/5 h-8 p-0.5">
+                                  <TabsTrigger value="edit" className="h-7 text-[10px] uppercase font-bold px-3">Editor</TabsTrigger>
+                                  <TabsTrigger value="preview" className="h-7 text-[10px] uppercase font-bold px-3">Live Preview</TabsTrigger>
+                                </TabsList>
+                              </Tabs>
+                            </div>
+
+                            <Tabs defaultValue="edit" className="w-full">
+                              <TabsContent value="edit" className="mt-0">
+                                <Textarea 
+                                  id={`blog-content-${index}`}
+                                  value={blog.content} 
+                                  onChange={(e) => updateItem('blogs', index, 'content', e.target.value)}
+                                  className="bg-kaki-black/40 border-white/10 min-h-[600px] rounded-[2.5rem] px-10 py-10 focus:border-purple-500/50 leading-relaxed font-inter text-lg"
+                                  placeholder="Tell your story..."
+                                />
+                              </TabsContent>
+                              <TabsContent value="preview" className="mt-0">
+                                <div className="bg-white/5 border border-white/10 min-h-[600px] rounded-[2.5rem] px-10 py-10 overflow-auto prose prose-invert max-w-none">
+                                  {blog.content.split('\n').map((line: string, lIdx: number) => {
+                                    if (line.startsWith('![') && line.includes('](')) {
+                                      const urlMatch = line.match(/\((.*?)\)/);
+                                      if (urlMatch) {
+                                        return <img key={lIdx} src={resolveApiUrl(urlMatch[1])} alt="Blog inline" className="w-full rounded-2xl border border-white/10 my-8 shadow-2xl" />;
+                                      }
+                                    }
+                                    if (line.startsWith('## ')) return <h2 key={lIdx}>{parseInline(line.replace('## ', ''))}</h2>;
+                                    if (line.startsWith('### ')) return <h3 key={lIdx}>{parseInline(line.replace('### ', ''))}</h3>;
+                                    if (line.startsWith('> ')) return <blockquote key={lIdx} className="border-l-4 border-purple-500 pl-4">{parseInline(line.replace('> ', ''))}</blockquote>;
+                                    if (line.trim() === '') return <br key={lIdx} />;
+                                    return <p key={lIdx}>{parseInline(line)}</p>;
+                                  })}
+                                </div>
+                              </TabsContent>
+                            </Tabs>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </div>
             </CardContent>
           </Card>

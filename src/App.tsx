@@ -21,6 +21,8 @@ import Navigation from "./components/Navigation";
 import Preloader from "./components/Preloader";
 import ScrollToTop from "./components/ScrollToTop";
 import CaseStudyDetail from "./pages/CaseStudyDetail";
+import BlogList from "./pages/BlogList";
+import BlogDetail from "./pages/BlogDetail";
 import BillboardAd from "./components/BillboardAd";
 import Hoardings from "./pages/Hoardings";
 import HoardingDetail from "./pages/HoardingDetail";
@@ -67,6 +69,8 @@ const App = () => {
                 <Route path="/departments/tech" element={<Tech />} />
                 <Route path="/works" element={<Works />} />
                 <Route path="/case-studies/:id" element={<CaseStudyDetail />} />
+                <Route path="/blogs" element={<BlogList />} />
+                <Route path="/blogs/:id" element={<BlogDetail />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/team" element={<Team />} />
                 <Route path="/life-at-kaki" element={<LifeAtKaki />} />

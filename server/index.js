@@ -48,6 +48,7 @@ const USERS_FILE = path.join(DATA_DIR, 'users.json');
 const INQUIRIES_FILE = path.join(DATA_DIR, 'inquiries.json');
 const AVAILABILITY_FILE = path.join(DATA_DIR, 'availability.json');
 const WEBSITE_CONTENT_FILE = path.join(DATA_DIR, 'website_content.json');
+const SUBSCRIBERS_FILE = path.join(DATA_DIR, 'subscribers.json');
 
 // Ensure data directory exists
 if (!fs.existsSync(DATA_DIR)) {
@@ -973,9 +974,23 @@ app.get('/api/content/:page', async (req, res) => {
         const collection = db.collection('website_content');
         const dbPages = await collection.find({}).toArray();
         dbPages.forEach(doc => {
-          // Robust Merge: Only overwrite if there's actual data in the DB
-          if (doc.page && doc.data && typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
-            contentData[doc.page] = doc.data;
+          // Robust Merge Strategy:
+          // 1. If it's a page (object), merge content
+          // 2. If it's a list (array, like blogs), only overwrite if DB version has more content or JSON version is missing
+          if (doc.page && doc.data) {
+            console.log(`🔍 [Sync] Merging DB page: ${doc.page}`);
+            
+            if (Array.isArray(doc.data)) {
+              const localCount = (contentData[doc.page] || []).length;
+              const dbCount = doc.data.length;
+              if (dbCount >= localCount || localCount === 0) {
+                contentData[doc.page] = doc.data;
+              } else {
+                console.log(`⚠️ [Sync] Skipping DB overwrite for "${doc.page}": DB(${dbCount}) vs JSON(${localCount})`);
+              }
+            } else if (typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
+              contentData[doc.page] = doc.data;
+            }
           }
         });
       } catch (dbError) {
@@ -1025,12 +1040,16 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
         let saveFailures = [];
         for (const p of pages) {
           try {
+            if (p === 'blogs') {
+              console.log(`💾 [MongoDB] Syncing ${contentData[p].length} blogs to cloud...`);
+            }
             await collection.updateOne(
               { page: p },
               { $set: { data: contentData[p], updatedAt: new Date(), updatedBy: req.admin?.id } },
               { upsert: true }
             );
           } catch (e) {
+            console.error(`❌ [MongoDB] Failed to sync page "${p}":`, e.message);
             saveFailures.push(p);
           }
         }
@@ -1406,6 +1425,44 @@ app.use((err, req, res, next) => {
     success: false,
     message: err.message || 'An unexpected error occurred'
   });
+});
+
+// 15. Newsletter Subscribe
+app.post('/api/newsletter/subscribe', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email || !email.includes('@')) {
+      return res.status(400).json({ success: false, message: 'Valid email is required' });
+    }
+
+    const subscriber = {
+      email,
+      subscribedAt: new Date(),
+      source: 'blog'
+    };
+
+    // Save to JSON fallback
+    let subscribers = loadJsonData(SUBSCRIBERS_FILE, []);
+    if (!subscribers.some(s => s.email === email)) {
+      subscribers.push(subscriber);
+      saveJsonData(SUBSCRIBERS_FILE, subscribers);
+    }
+
+    // Save to MongoDB if available
+    if (db) {
+      const collection = db.collection('newsletter_subscribers');
+      await collection.updateOne(
+        { email: email },
+        { $set: subscriber },
+        { upsert: true }
+      );
+    }
+
+    res.json({ success: true, message: 'Successfully subscribed to KAKI newsletter!' });
+  } catch (error) {
+    console.error('Newsletter error:', error);
+    res.status(500).json({ success: false, message: 'Server error during subscription' });
+  }
 });
 
 const server = app.listen(port, '0.0.0.0', async () => {

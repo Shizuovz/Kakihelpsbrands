@@ -2,7 +2,7 @@
   "hero": {
     "title": "We Build Brands",
     "subtitle": "KAKI is a digital marketing company that builds brands with clarity and helps them grow with purpose.",
-    "videoUrl": "/uploads/files-1774944894311-803334195.mp4",
+    "videoUrl": "/uploads/files-1775304435379-122957513.mp4",
     "posterUrl": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
   },
   "departments": [
@@ -94,24 +94,24 @@
   ],
   "recentWorks": [
     {
-      "title": "Nagaland Super League (NSL)",
+      "title": "Nagaland Wrestling Association",
       "category": "Marketing",
       "description": "Social media marketing, ticketing, media production, and branding.",
-      "image": "/src/assets/works/marketing/nslpf.jpg",
+      "image": "/uploads/files-1775304468703-932994792.jpg",
       "gradient": "from-green-500 to-teal-600"
     },
     {
-      "title": "Studio",
-      "category": "Chef Salang",
+      "title": "Hornbill Music Festival Official Media Partner ",
+      "category": "Studio",
       "description": "Photography, video production, post-production, and brand visuals.",
-      "image": "/src/assets/works/studio/chef.jpg",
+      "image": "/uploads/files-1775304474525-761518025.jpg",
       "gradient": "from-purple-500 to-blue-600"
     },
     {
-      "title": "Melita",
-      "category": "Tech",
-      "description": "Web development, cloud integration, and scalable backend systems.",
-      "image": "/src/assets/works/tech/melita.png",
+      "title": "Hornbill Festival Official Ticketing Partner",
+      "category": "Ticketing",
+      "description": "Official Ticketing Partner For Hornbill Festival and Hornbill Music Festival ",
+      "image": "/uploads/files-1775304478794-23375769.jpg",
       "gradient": "from-cyan-500 to-blue-600"
     }
   ],
@@ -122,33 +122,275 @@
     },
     "projects": [
       {
-        "id": 1775300000000,
-        "title": "Ohan Ki x KAKI",
-        "category": "Case Study",
-        "description": "From Local Favourite to National Flavour: Building a Digital-First Naga Food Brand",
-        "subtitle": "From Local Favourite to National Flavour: Building a Digital-First Naga Food Brand",
+        "id": 1775297010413,
+        "title": "Nagaland Super League (NSL)",
+        "category": "Studio",
+        "description": "Social media marketing, ticketing, media production, and branding.",
         "year": "2024",
-        "client": "Ohan Ki",
-        "industry": "Food & Beverage",
-        "location": "Dimapur, Nagaland",
-        "timeline": "Nov 2024 – June 2025",
-        "image": "/src/assets/works/casestudy/ohanki.png",
-        "rawContent": "CASE STUDY: Ohan Ki x KAKI\nFrom Local Favourite to National Flavour: Building a Digital-First Naga Food Brand\n\nThe Challenge\nOhan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine.\nThey had great products, a loyal local customer base, and a strong cultural identity.\nBut they had bigger dreams.\nThey wanted to:\n•\tModernise their brand\n•\tCreate clean, standout packaging\n•\tSell their products online across India\n•\tStreamline operations behind the scenes\n•\tAnd tell their story visually, the right way\nThey came to KAKI with a clear vision—build a modern brand that still feels like home.\nAnd that’s exactly what we set out to do.\n\n What We Did\n\n 1. We Refreshed the Brand Identity\nWe gave Ohan Ki a complete brand makeover—one that honoured their roots but made space for growth.\n🔸 Logo Redesign\nWe designed a fresh, bold logo that blends modern design with Naga cultural motifs—making it instantly recognisable across digital and physical platforms.\n🔸 Packaging Redesign\nWe created minimal, clean packaging that lets the product speak for itself.\nFrom smoked pork to pickled bamboo shoots—everything looked premium, consistent, and ready to be placed on shelves or shipped to doorsteps.\n🔸 Visual Storytelling\nThe full visual system—from colours to fonts—was crafted to reflect authenticity, warmth, and quality.\nEvery touchpoint felt connected.\n\n 2. We Built Their E-Commerce Website\n🔸 Custom Web Design & Development\nOur tech team built a mobile-friendly, full-featured e-commerce website, allowing customers to browse, shop, and pay with ease—anywhere in India.\n🔸 Smooth User Experience\nThe site features:\n•\tClear product categorisation\n•\tEasy add-to-cart and checkout\n•\tProduct stories and images that build appetite and trust\n🔸 Logistics & Shipping Integration\nWe connected the platform with Blue Dart and Delivery for reliable shipping.\nWe also built a custom backend tool to auto-generate shipping labels—making order fulfilment faster and simpler.\n🔸 Inventory Management System\nTo help Ohan Ki track stock and orders in real time, we developed a backend system for live inventory updates—reducing manual work and improving control.\n\n 3. We Created Scroll-Stopping Visual Content\nWe didn’t just build systems—we brought the products to life visually.\n🔸 Product Photography & Brand Videos\nOur in-house KAKI Studio produced a full content bank featuring clean, crisp images and videos.\nProducts were styled as the heroes—shot against Naga-inspired backdrops to reflect both tradition and quality.\n🔸 Launch-Ready Visuals\nThe visuals were built for web, Instagram, campaigns, and packaging—ensuring visual consistency across all platforms.\n\nThe Results\n✅ A Cohesive, Modern Brand\nOhan Ki now looks, feels, and speaks like a national-ready brand—without losing its Naga soul.\n✅ PAN-India Reach\nWith their new e-commerce platform, they can now serve customers across the country, expanding their audience and sales potential.\n✅ Efficient Operations\nFrom auto-label generation to live inventory tracking, their backend is built for growth and speed.\n✅Stronger Digital Presence\nTheir visual storytelling, website, and brand design now work together—driving engagement, trust, and loyalty.",
-        "overview": "Ohan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine. They teamed up with KAKI to transition from a local favorite to a national food brand.",
-        "objectives": [
-          "Modernise their brand with a fresh identity",
-          "Create clean, standout packaging",
-          "Sell products online PAN-India via e-commerce",
-          "Streamline operations and logistics"
-        ],
-        "result": [
-          "A Cohesive, Modern Brand with its soul intact.",
-          "PAN-India Reach serving customers nationwide.",
-          "Efficient Operations with smart backend tools."
-        ]
+        "client": "Nagaland Super League ",
+        "image": "/uploads/files-1775304676002-436540801.jpg",
+        "video": "/uploads/files-1775462143422-433581823.mp4"
+      },
+      {
+        "id": 1775297107556,
+        "title": " Chef Salang",
+        "category": "Studio",
+        "description": "Photography, video production, post-production, and brand visuals.",
+        "year": "2025",
+        "client": " Chef Salang",
+        "video": "https://kakihelpsbrands.onrender.com/uploads/files-1775297232395-518201522.mp4",
+        "image": "/uploads/files-1775462176212-304846874.jpg"
+      },
+      {
+        "id": 1775297312510,
+        "title": "Melita",
+        "category": "Tech",
+        "description": "Web development, cloud integration, and scalable backend systems.",
+        "year": "2026",
+        "client": "Melita",
+        "image": "/uploads/files-1775304728090-398010633.jpg"
+      },
+      {
+        "id": 1775462040797,
+        "title": "NSL Trophy Reveal Ad",
+        "category": "Studio",
+        "description": "High-energy sports commercial unveiling the NSL Trophy with cinematic flair.",
+        "year": "2024",
+        "client": "Nagaland Super League ",
+        "video": "/uploads/files-1775462113851-797081586.mp4"
+      },
+      {
+        "id": 1775462203381,
+        "title": "Toyota Commercial",
+        "category": "Studio",
+        "description": "Dynamic car commercial driven by the line, “Life is a journey, Toyota is the car.",
+        "year": "2023",
+        "client": "Toyota ",
+        "video": "/uploads/files-1775462231330-895613762.mp4"
+      },
+      {
+        "id": 1775462250574,
+        "title": "Lenskart Boost",
+        "category": "Studio",
+        "description": "Energetic commercial for Lenskart Boost featuring Combat Academy fighters in Dimapur.",
+        "year": "2023",
+        "client": "Lenskart",
+        "video": "/uploads/files-1775462276819-346111411.mp4"
+      },
+      {
+        "id": 1775462294242,
+        "title": "North East Games",
+        "category": "Studio",
+        "description": "High-end Olympic promo film spotlighting Ruopfuzhano Whiso for North East Games.",
+        "year": "2022",
+        "client": "North East Games",
+        "video": "/uploads/files-1775462322898-535352732.mp4"
+      },
+      {
+        "id": 1775462355145,
+        "title": "NFT Commercial",
+        "category": "Studio",
+        "description": "High-end NFT ad film exploring avatar identity, digital ownership, and cyber-culture in Neo Miami.",
+        "year": "2021",
+        "client": "NFT ",
+        "video": "/uploads/files-1775462378498-884087944.mp4"
+      },
+      {
+        "id": 1775462397058,
+        "title": "Nagaland Super League",
+        "category": "Marketing",
+        "description": "KAKI Marketing served as the official media and marketing partner for the inaugural season of the Nagaland Super League (NSL), a landmark football league uniting seven franchise teams from across the state. From brand strategy and visual identity to on-ground media coverage and social media management, our team helped engage over 60,000+ fans and highlight local football talent on a professional stage.",
+        "year": "2024",
+        "client": "Nagaland Super League",
+        "image": "/uploads/files-1775462420599-111633714.jpg"
+      },
+      {
+        "id": 1775462502679,
+        "title": "Tribe Fighting Championship",
+        "category": "Marketing",
+        "description": "KAKI Marketing served as the official marketing partner for the highly anticipated Tribe Fighting Championship Fight Night, a professional MMA event that showcased both local and international fighters. Held at Dimapur's Indoor Badminton Stadium, the event featured five high-impact bouts across multiple weight categories and was widely covered in local media.",
+        "year": "2024",
+        "client": "Tribe Fighting Championship",
+        "image": "/uploads/files-1775462628530-767899421.jpg"
+      },
+      {
+        "id": 1775462659400,
+        "title": "The Big Laugh",
+        "category": "Marketing",
+        "description": "KAKI Marketing was proud to partner on “The Big Laugh,” a landmark stand-up comedy event headlined by international sensation Mark Angel Comedy, alongside Nagaland’s own Dreamz Unlimited, Juztino, and a lineup of local performers. The event was a milestone for the comedy scene in Nagaland.",
+        "year": "2024",
+        "client": "The Big Laugh",
+        "image": "/uploads/files-1775462681165-288624474.jpg"
+      },
+      {
+        "id": 1775462799631,
+        "title": "The Midnight",
+        "category": "Marketing",
+        "description": "KAKI Marketing was part of “Midnight in Nagaland,” a landmark concert featuring the globally acclaimed synthwave band The Midnight on their debut India tour. Held at Noune Resort, the event brought together thousands of music lovers for an unforgettable night of sound, lights, and celebration.",
+        "year": "2024",
+        "client": "The Midnight",
+        "image": "/uploads/files-1775462826618-46220484.jpg"
+      },
+      {
+        "id": 1775462830858,
+        "title": "DMF",
+        "category": "Marketing",
+        "description": "KAKI Marketing proudly served as the official marketing partner for the 5th edition of the Dimapur Music Festival (DMF) 2023, affectionately known as “The Happy Fest.” Held at Noune Resort’s scenic Picnic Island, the event celebrated music, community and creativity, featuring headline acts like Polar Lights, Trance Effect, Euphonic (winner of Tafma’s Battle of Bands), and more .",
+        "year": "2024",
+        "client": "DMF",
+        "image": "/uploads/files-1775462861351-240919649.jpg"
+      },
+      {
+        "id": 1775462871295,
+        "title": "AM to PM with Melita",
+        "category": "Marketing",
+        "description": "KAKI Marketing partnered with Melita Skincare to host “AM to PM with Melita,” an evening of beauty, relaxation, and lifestyle at the upscale Casablanco lounge. The event showcased Melita’s luxury skincare range, with exclusive demos, complimentary drinks, and live performances by DJ Sanaa.",
+        "year": "2024",
+        "client": "Melita",
+        "image": "/uploads/files-1775462910848-474205292.jpg"
+      },
+      {
+        "id": 1775462943231,
+        "title": "Nagaland Super League (NSL) – Visual Identity",
+        "category": "Design",
+        "description": "Complete brand identity and design system for Nagaland’s first professional football league, including logo, visual guidelines, matchday graphics, and digital collateral.\n      Nagaland Super League \n      Created a dynamic league identity that energized fans, elevated the matchday atmosphere, and positioned NSL as a transformative movement for football and youth culture in Nagaland.",
+        "year": "2024",
+        "client": "Nagaland Super League",
+        "image": "/uploads/files-1775462984818-708813541.jpg"
+      },
+      {
+        "id": 1775463013121,
+        "title": "Ohan Ki – Brand & Packaging Design",
+        "category": "Design",
+        "description": "Complete brand identity, logo, packaging, and website design for premium food brand Ohan Ki.\n       Ohan Ki\n      Crafted a fresh, modern look—seamlessly blending tradition with contemporary appeal across all touchpoints, from logo to shelf to screen.",
+        "year": "2024",
+        "client": "Ohanki",
+        "image": "/uploads/files-1775463036522-487854921.png"
+      },
+      {
+        "id": 1775463067929,
+        "title": "JV Foundation Basketball Tournament",
+        "category": "Design",
+        "description": "Complete event branding for Nagaland’s premier youth basketball tournament—covering logo, posters, digital promotions, prize graphics, and partnership collateral.\n      Jonathan and Vikaito (JV) Foundation\n      Energized the tournament with bold visuals, clear information design, and a vibrant sports identity that inspired youth participation and community engagement.",
+        "year": "2024",
+        "client": "Jonathan and Vikaito (JV) Foundation",
+        "image": "/uploads/files-1775463100897-419501552.jpg"
+      },
+      {
+        "id": 1775463126327,
+        "title": "Bloom Bazaar Dimapur – Event Branding",
+        "category": "Design",
+        "description": "Complete event branding for Dimapur’s largest lifestyle bazaar—covering hoardings, social media, merchandise, and newspaper campaigns.\n      Bloom Bazaar\n      Brought the bazaar to life with vibrant, cohesive visuals—creating an energetic marketplace atmosphere across every touchpoint, from print to digital to on-ground experience.",
+        "year": "2023",
+        "client": "Bloom Bazaar",
+        "image": "/uploads/files-1775463153917-125918285.jpg"
+      },
+      {
+        "id": 1775463254420,
+        "title": "Ahibi",
+        "category": "Tech",
+        "description": "Tech-powered event platform built by Kaki to streamline bookings, AR experiences, and ticketing across Nagaland.",
+        "year": "2024",
+        "client": "Ahibi",
+        "image": "/uploads/files-1775463285410-60688885.jpg",
+        "link": "https://ahibi.in/"
+      },
+      {
+        "id": 1775463332491,
+        "title": "Melita",
+        "category": "Tech",
+        "description": "Modern e-commerce site for Milita’s skincare range, combining beauty, wellness, and clean design.",
+        "year": "2023",
+        "client": "Melita",
+        "image": "/uploads/files-1775463352646-18621942.jpg",
+        "link": "https://www.melita.in/?srsltid=AfmBOorNLBVPYE-YzK5QFKkzfmAXlL0lgZYSQEX8KTv0z1PewbU0A8q_"
+      },
+      {
+        "id": 1775463419147,
+        "title": "Ohanki",
+        "category": "Tech",
+        "description": "Clean, functional website crafted for Ohanki to showcase their fresh, ready-to-eat food and delivery model.",
+        "year": "2024",
+        "client": "Ohanki",
+        "image": "/uploads/files-1775463442843-158372776.jpg"
+      },
+      {
+        "id": 1775463486397,
+        "title": "Orija",
+        "category": "Tech",
+        "description": "Warm, accessible website designed for Orija — combining elder care, craft therapy, and lifestyle innovation.",
+        "year": "2023",
+        "client": "Orija",
+        "image": "/uploads/files-1775463510589-465151710.jpg"
+      },
+      {
+        "id": 1775463545043,
+        "title": "Melita Luxury Skincare",
+        "category": "Case Study",
+        "description": "Melita Luxury Skincare is a Bangalore-based, science-driven skincare brand redefining luxury for Indian skin. With a vision to make high-efficacy, vegan, and sustainable skincare accessible, Melita set its sights on the Northeast—an emerging market with unique skin needs and growing demand for premium beauty.",
+        "year": "2024",
+        "client": "Melita",
+        "image": "/uploads/files-1775463581267-569589711.png",
+        "result": [],
+        "rawContent": "Melita Luxury Skincare is a Bangalore-based, science-driven skincare brand redefining luxury for Indian skin. With a vision to make high-efficacy, vegan, and sustainable skincare accessible, Melita set its sights on the Northeast—an emerging market with unique skin needs and growing demand for premium beauty.\nTo make this leap, Melita partnered with KAKI Marketing for a full-scale launch in Nagaland, combining local insight, digital expertise, and creative storytelling. The goal: turn Melita from a “brand from Bangalore” into a trusted name in the Northeast, both online and offline.\nObjectives\n•\tEstablish Melita as a premium skincare brand in Nagaland and the Northeast\n•\tCreate authentic local connections through influencer and event marketing\n•\tEnsure Melita products are easily available—both in top salons and online\n•\tRebuild Melita’s website to reflect its luxury positioning and drive conversions\n•\tDesign content and campaigns tailored to Northeast audiences and skin types\nWhat We Did\n1. Local Launch & Brand Activation\n•\tExclusive Launch Event at Casablanco, Dimapur:\nOn September 14, 2024, KAKI hosted Melita’s debut event at Casablanco Restro, transforming the venue into a luxury skincare experience. The event brought together top influencers, salon partners, and beauty enthusiasts for hands-on product trials, live demos, and honest conversations about skincare.\n•\tInfluencer Collaborations:\nKAKI curated a roster of trusted local influencers, offering them Melita’s Ultra Hydrating Essence and Moisturizer through barter partnerships. Influencers shared their real experiences, creating buzz and authentic word-of-mouth both online and offline.\n•\tIn-store Placement Across Nagaland:\nTo make Melita tangible and trustworthy, KAKI secured shelf space in leading salons and lifestyle stores:\n•\tDimapur: Le Charme, Christy Salon, Glo Skin & Hair, Papillon Lifestyle Salon\n•\tWokha: The Hair Lounge, Renjan Mozhui Makeup Studio\n•\tKohima: Divine Store\nThis strategy ensured Melita was never “just another online brand”—customers could see, touch, and trust the products locally.\n2. Social Media & Content Campaign\n•\tInstagram Takeover & Content Calendar:\nKAKI managed Melita’s Instagram, rolling out a campaign tailored for Northeast skin and stories. Content focused on bite-sized skincare education, influencer-led storytelling, and rituals that felt effortless and local.\n•\tVisual Storytelling:\nEvery post and reel reflected Melita’s soft, elegant tone—showcasing real results, ingredient science, and customer journeys.\n3. Website Transformation\n•\tComplete Digital Facelift:\nMelita’s old website was functional but didn’t reflect its premium identity. KAKI rebuilt the site from scratch:\n•\tMobile-first, lightning-fast, and visually immersive\n•\tSoft pastels, clean layouts, and real skin visuals to evoke trust and care\n•\tSkin Barrier Quiz: A personalized tool guiding users to the right product based on their skin needs\n•\tClear, helpful product information and simplified journeys from discovery to checkout\n•\tSeamless Shopping Experience:\nThe new site made it easy for customers to learn, explore, and purchase—mirroring the luxury and simplicity of Melita’s products.\nResults & Impact\n•\tBrand Awareness:\nMelita quickly became a recognized and trusted name in Nagaland. The launch event and influencer campaign created real buzz, with local customers and salon partners embracing the brand.\n•\tRetail Presence:\nProducts are now available in top salons across Dimapur, Wokha, and Kohima, making Melita accessible to a wide audience.\n•\tDigital Engagement:\n•\tInstagram engagement surged by over 120% during the campaign period.\n•\tInfluencer collaborations and event content drove authentic conversations and repeat orders.\n•\tWebsite Performance:\n•\tHigher conversion rates and longer session times, thanks to a better user experience and smart, educational content.\n•\tCustomers reported enjoying the Skin Barrier Quiz and the ease of finding the right products.\n•\tCustomer Loyalty:\n•\tIncreased repeat orders and positive feedback from both online and offline buyers.\n•\tCustomers started bringing friends and recommending Melita in their circles.\n•\tSustainable Growth:\nMelita’s Northeast sales saw rapid growth, with the brand expecting a 100x increase in sales by the next financial year.\nWhy It Worked\nBecause KAKI didn’t just push products—we built connections.\nBy making Melita feel local, personal, and trustworthy, we ensured every part of the brand—from shelf to screen—told a clear, compelling story.\nFrom event floors to digital screens, Melita’s Northeast journey is proof that when you blend strategy, creativity, and local insight, you don’t just launch a product—you build lasting relationships.\nWant to see how we can help your brand make waves?\nExplore more case studies or contact KAKI Marketing to start your next chapter.\nMelita x KAKI — More than a launch. A story worth telling.\n"
+      },
+      {
+        "id": 1775463605138,
+        "title": "Ohanki",
+        "category": "Case Study",
+        "description": "Ohan Ki. Dimapur’s trusted name for authentic Naga smoked meats and indigenous cuisine.\n",
+        "year": "2024",
+        "client": "Ohanki",
+        "image": "/uploads/files-1775463632108-342552387.png",
+        "rawContent": "CASE STUDY: Ohan Ki x KAKI\nFrom Local Favourite to National Flavour: Building a Digital-First Naga Food Brand\n\nThe Challenge\nOhan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine.\nThey had great products, a loyal local customer base, and a strong cultural identity.\nBut they had bigger dreams.\nThey wanted to:\n•\tModernise their brand\n•\tCreate clean, standout packaging\n•\tSell their products online across India\n•\tStreamline operations behind the scenes\n•\tAnd tell their story visually, the right way\nThey came to KAKI with a clear vision—build a modern brand that still feels like home.\nAnd that’s exactly what we set out to do.\n\n What We Did\n\n 1. We Refreshed the Brand Identity\nWe gave Ohan Ki a complete brand makeover—one that honoured their roots but made space for growth.\n🔸 Logo Redesign\nWe designed a fresh, bold logo that blends modern design with Naga cultural motifs—making it instantly recognisable across digital and physical platforms.\n🔸 Packaging Redesign\nWe created minimal, clean packaging that lets the product speak for itself.\nFrom smoked pork to pickled bamboo shoots—everything looked premium, consistent, and ready to be placed on shelves or shipped to doorsteps.\n🔸 Visual Storytelling\nThe full visual system—from colours to fonts—was crafted to reflect authenticity, warmth, and quality.\nEvery touchpoint felt connected.\n\n 2. We Built Their E-Commerce Website\n🔸 Custom Web Design & Development\nOur tech team built a mobile-friendly, full-featured e-commerce website, allowing customers to browse, shop, and pay with ease—anywhere in India.\n🔸 Smooth User Experience\nThe site features:\n•\tClear product categorisation\n•\tEasy add-to-cart and checkout\n•\tProduct stories and images that build appetite and trust\n🔸 Logistics & Shipping Integration\nWe connected the platform with Blue Dart and Delivery for reliable shipping.\nWe also built a custom backend tool to auto-generate shipping labels—making order fulfilment faster and simpler.\n🔸 Inventory Management System\nTo help Ohan Ki track stock and orders in real time, we developed a backend system for live inventory updates—reducing manual work and improving control.\n\n 3. We Created Scroll-Stopping Visual Content\nWe didn’t just build systems—we brought the products to life visually.\n🔸 Product Photography & Brand Videos\nOur in-house KAKI Studio produced a full content bank featuring clean, crisp images and videos.\nProducts were styled as the heroes—shot against Naga-inspired backdrops to reflect both tradition and quality.\n🔸 Launch-Ready Visuals\nThe visuals were built for web, Instagram, campaigns, and packaging—ensuring visual consistency across all platforms.\n\nThe Results\n✅ A Cohesive, Modern Brand\nOhan Ki now looks, feels, and speaks like a national-ready brand—without losing its Naga soul.\n✅ PAN-India Reach\nWith their new e-commerce platform, they can now serve customers across the country, expanding their audience and sales potential.\n✅ Efficient Operations\nFrom auto-label generation to live inventory tracking, their backend is built for growth and speed.\n✅Stronger Digital Presence\nTheir visual storytelling, website, and brand design now work together—driving engagement, trust, and loyalty.\n\nWhy It Worked\nAt KAKI, we don’t just design—we build with intention.\nWe understood the importance of culture and clarity.\nWe blended design thinking with local insight, and made sure every pixel, every package, and every post helped Ohan Ki grow.\nThis wasn’t a rebrand.\nIt was a reintroduction—with purpose.\n\nReady to Build a Brand People Remember?\nIf you're ready to take your brand from local favourite to national sensation, we’d love to help.\nWhether it’s design, development, strategy, or storytelling—KAKI builds brands with meaning.\nCheck out more case studies or get in touch to start your next chapter.\n\nOhan Ki x KAKI\nYour roots. Our creativity. A brand built to last.\n\n",
+        "result": []
+      },
+      {
+        "id": 1775463654209,
+        "title": "Nagaland Super League",
+        "category": "Case Study",
+        "description": "From zero online presence to 6M+ video views – here’s how we built Nagaland’s biggest football league from the ground up.",
+        "year": "2024",
+        "client": "Nagaland Super League",
+        "image": "/uploads/files-1775463680293-634300636.png",
+        "result": [],
+        "rawContent": "Nagaland Super League\nFrom zero online presence to 6M+ video views – here’s how we built Nagaland’s biggest football league from the ground up.\nClient: Nagaland Super League\nIndustry: Sports\nServices: Branding, Website, Video Production, Social Media Strategy, Content Marketing\nTimeline: Dec 2024 – Apr 2025\nLocation: Nagaland, India\nThe Challenge\nNagaland had the passion. The players. The football culture.\nBut it didn’t have a unified platform to celebrate it.\nWhen the Nagaland Football Association launched the inaugural Nagaland Super League (NSL) in early 2025, they had:\n0 brand presence\n\n\n0 digital channels\n\n\n0 marketing infrastructure\n\n\nAnd just 6 weeks to change that.\nThey needed more than a campaign.\nThey needed an end-to-end digital marketing strategy—a team that could design, produce, strategize, and execute fast.\nThat’s where KAKI came in.\n\n\n\n\nThe Objectives\nNSL’s mission was clear:\nBuild a digital-first football league that puts Nagaland’s talent on the map.\nSo we focused on 5 key goals:\n✅ Craft a complete brand identity for the league and its 7 clubs\n\n\n✅ Build a scalable online presence—from zero to high engagement\n\n\n✅ Capture the matches in high-quality formats for fans, sponsors, and history\n\n\n✅ Fuel fandom with story-driven content\n\n\n✅ Turn viewers into believers—make NSL a movement, not just a league\n\n\nOur Strategy & Execution\nWe treated NSL like a startup launch—with adrenaline, speed, and obsession.\n1. Brand Identity\nWe didn’t just design the league — we evolved it in real-time to mirror its momentum.\nFoundation Phase (Pre-Season to Week 2)\nPrimary Theme: Deep Blue\n\n\nSymbolized trust, new beginnings, and unified ambition\n\n\nUsed in the NSL logo backdrop, matchday kits, headers, website theme\n\n\nMid-Season Shift (Week 3 to Week 6)\nColor Transition: Integration of Green Accents\n\n\nReflected growth, grassroots energy, and on-ground fan support\n\n\nRolled out in banners, reels, social tiles, club highlights\n\n\n Playoffs & Finale (Week 7 Onwards)\nFusion Palette: Blue × Green with touches of Matte Gold & Black\n\n\nSignaled premium positioning, battle-readiness, and the rising stakes\n\n\nFeatured in cinematic visuals, sponsor decks, and branded livestream overlays\n\n\nThe evolution was intentional — from trustworthy foundation, to community ignition, to prestige under spotlight.\nWe created:\nA bold, symbolic NSL logo\n\n\nFull venue branding at Chumoukedima Football Stadium & IG Stadium Kohima\n\n\nMatchday kits, referees’ uniforms, fan banners, merchandise\n\n\nCertificate designs, press kits, letterheads\n\n\n2. Website Development\nBuilt a fully responsive custom Appanel site in 3 weeks:\nClub pages, fixtures, player profiles\n\n\nIntegrated blogs + media hub\n\n\nLive score widgets\n\n\nSEO-ready CMS with auto-scheduling\n\n\n3. Social Media Activation\nFrom zero followers to a buzzing ecosystem:\nIG + FB pages with regional flavor\n\n\nMatchday graphics, video teasers, top goals\n\n\nWeekly content calendar across platforms\n\n\nRegional language snippets for deeper reach\n\n\n4. Video Production via KAKI Studio\nWe unleashed KAKI Studio to build NSL’s video empire:\nMulti-cam match recordings (drones, sidelines, commentary)\n\n\nTrailer-style intros for each team\n\n\nEmotional BTS stories from villages to stadiums\n\n\nYouTube-first edits with cinematic transitions and hero music\n\n\n5. Influencer & Fan Engagement\nWe didn’t just post—we started conversations:\nLocal influencers, commentators, musicians featured in content\n\n\n#NSL2025 and club-specific hashtags gamified engagement\n\n\nOnline contests + giveaways during halftime shows\n\n\nPlayers as creators: Insta-takeovers and locker room reels\n\n\n\n\n\nThe Results\nIn just 60 days, NSL became the most-watched sporting content ever produced in Nagaland.\nEngagement at a Glance:\nMetric\nResult\nYouTube Views\n6.4M+ total views\nInstagram Growth\n0 → 7,800 followers\nYoutube Growth\n0 → 35.6k subscribers\nFacebook Growth\n0 → 13.6k followers\nWebsite Traffic\n3K+ unique visitors\nComments Across Platforms\n6,400+ fan comments\nReel Reach (Top 5)\n580K+ cumulative views\nMedia Coverage\n20+ press features (regional + national)\nAd Campaigns\n3.2x ROAS on boosted content\n\nOur “Toka A Achumi (MOTM)” reel/shorts alone hit 314K views in 10 days.\n\nHighlight Videos\nEmbed or link to:\nMatchday Highlights Playlist\n\n\nTeam Intros\n\n\nNSL x Fans Montage\n\n\nFinal Match Recap Trailer\n\n\n\nBehind the Scenes\nOur Internal Playbook:\n22 person cross-functional KAKI team\n\n\nShot 420+ GB of raw footage\n\n\nEdited over 80 video assets\n\n\nDaily sync with NSL management\n\n\nReal-time coverage via WhatsApp groups + cloud folders\n\n\n\"No power? No problem. Our team once edited in a homestay using portable batteries to meet a midnight upload deadline.\"\nLocal Love, Global Standards:\nWe worked with 7 clubs, 200+ players, and community leaders to ensure NSL wasn’t just a league—it was a mirror of Naga pride.\n\nBefore vs After Snapshot\nCategory\nBefore KAKI\nAfter KAKI\nBranding\nNone\n7 club identities, 1 unified league look\nVideo\nNo coverage\n70+ branded edits\nSocial\nZero presence\n15K+ total followers\nFanbase\nUnengaged\nExploding community\nMedia\nUnnoticed\nCovered by regional + national outlets\n\n\nTestimonial\n“KAKI didn’t just build our brand. They made the NSL feel like a revolution.”\n — NSL Chairman"
+      },
+      {
+        "id": 1775463712269,
+        "title": "Tribe Fighting Championship ",
+        "category": "Case Study",
+        "description": "Tribe Fighting Championship (TFC) was launched by Combat Academy Dimapur as the region’s first premium combat sports event featuring both international and local fighters.",
+        "year": "2023",
+        "client": "Tribe Fighting Championship",
+        "image": "/uploads/files-1775463738958-418371990.jpg",
+        "result": [],
+        "rawContent": "Client\nCombat Academy Dimapur\n\nKAKI Services Used\n\nBrand Identity Development\nSocial Media Campaign Strategy\nEvent Marketing and Paid Ads\nTicketing Infrastructure (via AHIBI)\nCreative Direction (Design + Video + Messaging)\n\nProject Overview\n\nTribe Fighting Championship (TFC) was launched by Combat Academy Dimapur as the region’s first premium combat sports event featuring both international and local fighters. With limited awareness of MMA in Nagaland and zero history of ticketed fight events in Dimapur, the client engaged KAKI and AHIBI to:\n\nBuild TFC as a fight brand with serious credibility\nCreate demand from an audience unfamiliar with combat sports\nDrive ticket sales through digital-first, story-led marketing\nFrom the ground up, we positioned TFC as a cultural disruptor and gave Nagaland its first packed-out indoor arena for a non-entertainment sport. AHIBI, acting as the exclusive ticketing partner, played a pivotal role in monetizing interest and managing conversion channels.\n\nThe Results\n\n2000+ Paid Attendees\n585,400+ Organic Impressions (1 Month campaign sprint)\n400+ Ticket Inquiries via DM\n18% DM-to-Ticket Conversion Rate\n100% Inventory Sell-Out in Final 72 Hours\n\nExecution Breakdown\n1. Account & Brand Audit\nWe created a full-stack brand system from scratch—naming, visual language, fighter profiles, and an event theme built on tribal symbolism mixed with modern combat culture.\n\n2. Fighter-Led Narrative Design\nEach fighter became a narrative touchpoint. We built emotional stakes through visual storytelling, focusing on both international and local appeal.\n\n3. 1 month Social Funnel\nThe campaign was executed in three phases: market education, fighter storytelling, and urgency-based ticket sales.\nAdvertising Strategy & Ticketing\n\nWe used performance-driven micro-campaigns, location-based ads, and community influencers to boost visibility. AHIBI deployed a hybrid ticketing model integrating both offline access points and online conversions.\n\nImpact Beyond the Event\n\nThe event validated that Nagaland is ready for professional sports entertainment. TFC is now being developed as a seasonal IP that brings international MMA to the Northeast, and AHIBI is building out its role as the region's go-to ticketing partner.\n\nWant to Build Your Event into a Brand?\n\nKAKI and AHIBI offer the region’s only full-service digital marketing and ticketing system.\nContact us to activate your audience.\n"
       }
     ]
   },
+  "blogs": [
+    {
+      "id": 1775460000000,
+      "title": "The Art of Digital-First Branding",
+      "author": "KAKI Creative",
+      "category": "Design Strategy",
+      "date": "April 6, 2026",
+      "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1200",
+      "excerpt": "How we helped Ohan Ki transition from a local favorite to a national food brand through strategic design and digital storytelling.",
+      "content": "**Identity is Experience**\n\nIn *today's market*, a brand is no longer just a logo; it's the sum of every digital touchpoint a customer has with you. When we started working with Ohan Ki, our goal was clear: preserve the Naga soul while building a shell that could compete on a national level.\n\n\n### Strategic Storytelling\n\nWe **focused **on three core pillars: Authenticity, Accessibility, and Aesthetic Excellence. By combining traditional Naga motifs with modern, minimal design, we created a visual language that feels both historical and forward-looking.\n\n> \"Design is not just what it looks like and feels like. Design is how it works.\" — Steve Jobs\n\n<u>Our tech team</u> then translated this identity into a custom e-commerce solution that prioritized the user journey above all else."
+    },
+    {
+      "id": 1775470263733,
+      "title": "New Perspective on Brand Strategy (TEST BLOG)",
+      "author": "KAKI ",
+      "category": "Brand Strategy",
+      "date": "April 6, 2026",
+      "image": "/uploads/files-1775470321835-321595410.jpg",
+      "excerpt": "This blog is for testing purpose only",
+      "content": "\n> What is Lorem Ipsum?\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n> Why do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\n![Inline Image](/uploads/files-1775471462478-339869885.jpg)\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."
+    }
+  ],
   "lifeAtKaki": {
     "youtube": {
       "apiKey": "AIzaSyCBPA_VvusazHVm5tKUaBYv00PcdfQirmg",
@@ -176,7 +418,7 @@
     "hero": {
       "title": "We Build Brands ",
       "subtitle": "KAKI delivers full-service digital marketing — strategy, content, and campaigns that engage, convert, and scale.",
-      "videoUrl": "/uploads/files-1774944894311-803334195.mp4",
+      "videoUrl": "http://localhost:3001/uploads/files-1774944894311-803334195.mp4",
       "posterUrl": "https://images.unsplash.com/photo-1605810230434-7631ac76ec81?auto=format&fit=crop&w=1920&q=80"
     },
     "departments": [
@@ -305,15 +547,15 @@
     },
     "intro": {
       "title": "Who We Are",
-      "description": "We’re not just a creative agency. Were builders, brand architects, problem solvers — born in Nagaland, built to take bold ideas to the world. Founded in 2021, KAKI started as a lean crew with a big vision: to give Nagaland and Northeast India the digital firepower it deserves. Today, we’re a growing team of designers, strategists, developers, storytellers, and creators delivering full-stack marketing solutions across India and beyond.",
+      "description": "We’re not just a creative agency. We’re builders, brand architects, problem solvers — born in Nagaland, built to take bold ideas to the world. Founded in 2021, KAKI started as a lean crew with a big vision: to give Nagaland and Northeast India the digital firepower it deserves. Today, we’re a growing team of designers, strategists, developers, storytellers, and creators delivering full-stack marketing solutions across India and beyond.",
       "subDescription": "Whether you’re a startup, social movement, football league, or festival, we’re here to help you show up, stand out, and scale up.",
-      "image": "/uploads/files-1775116681009-390243077.jpeg"
+      "image": "/uploads/files-1775304010662-128423236.jpeg"
     },
     "mission": {
       "title": "Our Mission",
       "description": "At KAKI, we believe in the power of creativity to shape culture and drive meaningful change. Our mission is to craft exceptional experiences that resonate with audiences and leave lasting impressions.",
       "subDescription": "Through our four specialized departments, we offer comprehensive creative solutions that span from initial concept to final execution, ensuring every project reflects our commitment to excellence and innovation.",
-      "image": "/src/assets/team/mission2.jpg"
+      "image": "/uploads/files-1775304016279-828729859.jpg"
     },
     "timeline": [
       {
@@ -353,28 +595,28 @@
         "role": "Founder / Managing Director",
         "description": "Leads the agency’s overall vision...",
         "specialization": "Brand Strategy & Creative Direction",
-        "image": "/src/assets/team/boss.jpg"
+        "image": "/uploads/files-1775304066343-998060828.jpg"
       },
       {
         "name": "Arong",
         "role": "Creative Director",
         "description": "Heads the creative process...",
         "specialization": "Video Production & Cinematography",
-        "image": "/src/assets/team/design/arong.jpg"
+        "image": "/uploads/files-1775304084807-281543540.jpg"
       },
       {
         "name": "Wako",
         "role": "Studio Director",
         "description": "Specializes in visual production...",
         "specialization": "Video Production & Cinematography",
-        "image": "/src/assets/team/studio/wako.jpg"
+        "image": "/uploads/files-1775304094081-165140345.jpg"
       },
       {
         "name": "KC",
         "role": "Tech Director",
         "description": "Builds immersive digital experiences...",
         "specialization": "Brand Identity & UI/UX Design",
-        "image": "/src/assets/team/tech/kc.jpg"
+        "image": "/uploads/files-1775304101055-770069320.jpg"
       }
     ],
     "values": [
@@ -385,8 +627,8 @@
         "color": "from-yellow-500 to-orange-500"
       },
       {
-        "title": "Excellence ",
-        "description": "We don’t settle for “good enough.” Every campaign, design, and frame is crafted with sharp detail and a drive to exceed expectations, because results matter.",
+        "title": "Innovation",
+        "description": "We move fast and think forward. From emerging tech to creative-first strategies, we stay ahead of trends to help our clients lead — not follow.",
         "icon": "Innovation",
         "color": "from-blue-500 to-purple-500"
       },
@@ -414,7 +656,7 @@
         {
           "name": "Kakivi",
           "role": "Founder / Managing Director",
-          "image": "/src/assets/team/boss.jpg",
+          "image": "/uploads/files-1775304113258-162342164.jpg",
           "social": {
             "linkedin": "https://linkedin.com/",
             "instagram": "https://instagram.com/",
@@ -424,7 +666,7 @@
         {
           "name": "Arong",
           "role": "Creative Director",
-          "image": "/src/assets/team/design/arong.jpg",
+          "image": "/uploads/files-1775304118799-637702979.jpg",
           "social": {
             "linkedin": "https://linkedin.com/",
             "instagram": "https://instagram.com/",
@@ -434,7 +676,7 @@
         {
           "name": "Wako",
           "role": "Studio Director",
-          "image": "/src/assets/team/studio/wako.jpg",
+          "image": "/uploads/files-1775304124862-201673594.jpg",
           "social": {
             "linkedin": "https://linkedin.com/",
             "instagram": "https://instagram.com/",
@@ -444,7 +686,7 @@
         {
           "name": "KC",
           "role": "Tech Director",
-          "image": "/src/assets/team/tech/kc.jpg",
+          "image": "/uploads/files-1775304133167-906097468.jpg",
           "social": {
             "linkedin": "https://linkedin.com/",
             "instagram": "https://instagram.com/",
@@ -456,65 +698,65 @@
         {
           "name": "Wako",
           "role": "Studio Director",
-          "image": "/src/assets/team/studio/wako.jpg",
+          "image": "/uploads/files-1775304160543-987325926.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "morgan@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Along",
           "role": "Videographer",
-          "image": "/src/assets/team/studio/along.jpg",
+          "image": "/uploads/files-1775304167607-950504650.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "morgan@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Mego",
           "role": "Videographer/Photographer",
-          "image": "/src/assets/team/studio/mego.png",
+          "image": "/uploads/files-1775304173692-88519108.png",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "jamie@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Akhro",
           "role": "Videoprapher/Photographer",
-          "image": "/src/assets/team/studio/akhro.jpg",
+          "image": "/uploads/files-1775304179613-123727677.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "river@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Maya",
           "role": "Videoprapher/Photographer",
-          "image": "/src/assets/team/studio/maya.jpg",
+          "image": "/uploads/files-1775304183308-372553270.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "river@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Amugha",
           "role": "Photographer",
-          "image": "/src/assets/team/studio/amugha.jpg",
+          "image": "/uploads/files-1775304187165-974730936.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "river@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Nokul",
           "role": "Videoprapher/Photographer",
-          "image": "/src/assets/team/studio/nokul.jpg",
+          "image": "/uploads/files-1775304190757-772426413.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "river@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         }
       ],
@@ -522,101 +764,101 @@
         {
           "name": "Christy",
           "role": "HR (Human Resource)",
-          "image": "/src/assets/team/marketing/christy.jpg",
+          "image": "/uploads/files-1775304200763-217481023.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Ajung",
           "role": "Social Media Manager",
-          "image": "/src/assets/team/marketing/ajung.jpg",
+          "image": "/uploads/files-1775304204180-44601557.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
-          }
-        },
-        {
-          "name": "Meren",
-          "role": "Social Media Manager",
-          "image": "/src/assets/team/marketing/meren.jpg",
-          "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Lepok",
           "role": "Digital Marketing Assistant",
-          "image": "/src/assets/team/marketing/lepok.jpg",
+          "image": "/uploads/files-1775304208562-663610051.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Kuku",
           "role": "Social Media Coordinator",
-          "image": "/src/assets/team/marketing/kuku.jpg",
+          "image": "/uploads/files-1775304212265-402518126.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
-          }
-        },
-        {
-          "name": "Koko",
-          "role": "BDE (Business Development Executive)",
-          "image": "/src/assets/team/marketing/koko.jpg",
-          "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Ngamshing",
           "role": "Content Writer",
-          "image": "/src/assets/team/marketing/ngamshing.jpg",
+          "image": "/uploads/files-1775304215738-238834018.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Akok",
           "role": "Support Manager",
-          "image": "/src/assets/team/marketing/akok.jpg",
+          "image": "/uploads/files-1775304220127-970381574.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Toika",
           "role": "Digital Marketing Executive",
-          "image": "/src/assets/team/marketing/toika.jpg",
+          "image": "/uploads/files-1775304224138-295076079.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Anuvito",
           "role": "Content Writer",
-          "image": "/src/assets/team/marketing/anu.jpg",
+          "image": "/uploads/files-1775304227857-135169693.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "casey@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
+          }
+        },
+        {
+          "name": "Wati",
+          "role": "Support Manager",
+          "image": "/uploads/files-1775304360542-398351258.jpeg",
+          "social": {
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
+          }
+        },
+        {
+          "name": "Meyidemla",
+          "role": "Junior Digital Marketing Executive",
+          "image": "/uploads/files-1775304243459-199416125.jpeg",
+          "social": {
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         }
       ],
@@ -624,30 +866,30 @@
         {
           "name": "Arong",
           "role": "Creative Director",
-          "image": "/src/assets/team/design/arong.jpg",
+          "image": "/uploads/files-1775304345960-102116694.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "email": "quinn@kaki.design"
+            "linkedin": "",
+            "email": ""
           }
         },
         {
           "name": "Sully",
           "role": "Graphic Designer",
-          "image": "/src/assets/team/design/sully.jpg",
+          "image": "/uploads/files-1775304256272-884334266.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "riley@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
-          "name": "Tono",
+          "name": "Senti",
           "role": "Graphic Designer",
-          "image": "/src/assets/team/design/tono.jpg",
+          "image": "/uploads/files-1775304269516-324751273.jpeg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "riley@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         }
       ],
@@ -655,41 +897,41 @@
         {
           "name": "KC",
           "role": "Tech Director",
-          "image": "/src/assets/team/tech/kc.jpg",
+          "image": "/uploads/files-1775304280579-575258509.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "cameron@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Mostafa",
           "role": "Full Stack Developer",
-          "image": "/src/assets/team/tech/mostafa.png",
+          "image": "/uploads/files-1775304284095-342655133.png",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "cameron@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Vinoto",
           "role": "Front-End Web Dev",
-          "image": "/src/assets/team/tech/vinoto.jpg",
+          "image": "/uploads/files-1775304287708-15274260.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "jordan.m@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         },
         {
           "name": "Pabitra",
           "role": "Full Stack Developer",
-          "image": "/src/assets/team/tech/pabitra.jpg",
+          "image": "/uploads/files-1775304291779-948531348.jpg",
           "social": {
-            "linkedin": "https://linkedin.com/",
-            "instagram": "https://instagram.com/",
-            "email": "jordan.m@kaki.design"
+            "linkedin": "",
+            "instagram": "",
+            "email": ""
           }
         }
       ]

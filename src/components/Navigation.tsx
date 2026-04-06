@@ -38,6 +38,7 @@ const Navigation = () => {
     { name: 'Departments', path: '/departments' },
     { name: 'Works', path: '/works' },
     { name: 'Hoardings', path: '/hoardings' },
+    { name: 'Blog', path: '/blogs' },
     { name: 'Team', path: '/team' },
     { name: 'Life at KAKI', path: '/life-at-kaki' },
     { name: 'Contact', path: '/contact' },
