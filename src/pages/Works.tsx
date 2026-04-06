@@ -73,7 +73,11 @@ const Works = () => {
     subtitle: "A showcase of creative excellence across video production, marketing campaigns, design solutions, and cutting-edge technology."
   };
   
-  const projects = content?.projects || [];
+  const projects = [...(content?.projects || [])].sort((a, b) => {
+    const yearA = parseInt(a.year) || 0;
+    const yearB = parseInt(b.year) || 0;
+    return yearB - yearA;
+  });
   const filteredProjects = filter === 'All' ? projects : projects.filter(project => project.category === filter);
   const openProject = projects.find(p => p.id === openVideo);
 
