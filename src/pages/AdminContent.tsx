@@ -889,7 +889,7 @@ export const AdminContent = () => {
                             <div className="h-1 w-12 bg-purple-500 rounded-full"></div>
                             <h5 className="text-sm font-bold text-purple-400 uppercase tracking-widest">Extended Case Study Details</h5>
                           </div>
-                          <Badge variant="outline" className="text-[10px] border-purple-500/30 text-purple-400">Advanced Mode</Badge>
+                          <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-semibold border-purple-500/30 text-purple-400">Advanced Mode</div>
                         </div>
 
                         {/* RAW CONTENT QUICK PASTE */}

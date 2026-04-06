@@ -3,7 +3,6 @@ import { useParams, Link } from "react-router-dom";
 import { API_BASE_URL } from "@/config";
 import { ArrowLeft, Calendar, Users, Target, TrendingUp, Award } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import caseStudies from "@/data/casestudyData";
@@ -109,9 +108,9 @@ const CaseStudyDetail = () => {
       <section className="py-16 px-6">
         <div className="container mx-auto max-w-4xl pt-6">
           <div className="text-center mb-12">
-            <Badge variant="secondary" className="mb-4 bg-blue-900/30 text-blue-400 border-blue-800">
+            <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 mb-4 bg-blue-900/30 text-blue-400 border-blue-800">
               Case Study
-            </Badge>
+            </div>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
               {caseStudy.title}
             </h1>
@@ -185,16 +184,21 @@ const CaseStudyDetail = () => {
           <Separator className="bg-gray-800" />
 
           {/* Objectives */}
-          <div>
-            <h2 className="text-3xl font-bold mb-6 text-white">Objectives</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-              {caseStudy.objectives.map((obj, idx) => (
-                <li key={idx} className="bg-gray-800/50 rounded-xl p-4 text-gray-300 flex items-start">
-                  <span className="mr-2 mt-1 text-purple-400">•</span> {obj}
-                </li>
-              ))}
-            </ul>
-          </div>
+          {caseStudy.objectives && caseStudy.objectives.length > 0 && (
+            <div>
+              <h2 className="text-3xl font-bold mb-6 text-white flex items-center gap-3">
+                <div className="h-6 w-1 bg-purple-500 rounded-full"></div>
+                Objectives
+              </h2>
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+                {caseStudy.objectives.map((obj: any, idx: number) => (
+                  <li key={idx} className="bg-gray-800/50 rounded-xl p-4 text-gray-300 flex items-start">
+                    <span className="mr-2 mt-1 text-purple-400">•</span> {obj}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           <Separator className="bg-gray-800" />
 
@@ -238,7 +242,7 @@ const CaseStudyDetail = () => {
           <div>
             <h2 className="text-3xl font-bold mb-6 text-white">Results & Impact</h2>
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              {caseStudy.result.map((r, idx) => (
+              {caseStudy.result?.map((r: any, idx: number) => (
                 <Card key={idx} className="bg-gray-800/50 border-gray-700 hover:bg-gray-800/70 transition-colors">
                   <CardContent className="py-6">{r}</CardContent>
                 </Card>
