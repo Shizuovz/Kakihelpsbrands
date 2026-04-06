@@ -27,7 +27,8 @@ import {
   Linkedin,
   Instagram,
   Mail,
-  Clock
+  Clock,
+  Youtube
 } from 'lucide-react';
 
 export const AdminContent = () => {
@@ -624,6 +625,48 @@ export const AdminContent = () => {
                 <Button variant="outline" onClick={() => addItem('socialLinks', { icon: 'Instagram', url: '', label: '' })} className="mt-4">
                   <Plus className="w-4 h-4 mr-2" /> Add Link
                 </Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white/5 border-white/10 text-white mt-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                    <Youtube className="w-5 h-5 text-red-500" />
+                    YouTube Global Integration
+                </CardTitle>
+                <CardDescription className="text-kaki-grey">Permanently connect your YouTube channel to the Life at Kaki page</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                        <label className="text-xs text-kaki-grey">YouTube API Key</label>
+                        <Input 
+                            value={content.lifeAtKaki?.youtube?.apiKey || ''} 
+                            onChange={(e) => setContent(updateStateDeep(content, 'lifeAtKaki.youtube.apiKey', e.target.value))}
+                            className="bg-kaki-black border-white/10"
+                            type="password"
+                            placeholder="AIza..."
+                        />
+                    </div>
+                    <div className="space-y-2">
+                        <label className="text-xs text-kaki-grey">Channel Handle/ID</label>
+                        <Input 
+                            value={content.lifeAtKaki?.youtube?.channelId || ''} 
+                            onChange={(e) => setContent(updateStateDeep(content, 'lifeAtKaki.youtube.channelId', e.target.value))}
+                            className="bg-kaki-black border-white/10"
+                            placeholder="@username"
+                        />
+                    </div>
+                </div>
+                <div className="space-y-2">
+                    <label className="text-xs text-kaki-grey">Target Playlist ID (Optional)</label>
+                    <Input 
+                        value={content.lifeAtKaki?.youtube?.playlistId || ''} 
+                        onChange={(e) => setContent(updateStateDeep(content, 'lifeAtKaki.youtube.playlistId', e.target.value))}
+                        className="bg-kaki-black border-white/10"
+                        placeholder="PL..."
+                    />
+                </div>
               </CardContent>
             </Card>
           </TabsContent>

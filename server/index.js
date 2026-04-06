@@ -964,11 +964,26 @@ app.delete('/api/admin/hoardings/:id', async (req, res) => {
 app.get('/api/content/:page', async (req, res) => {
   try {
     const { page } = req.params;
-    let content = null;
+    // Load from local file first as a baseline
+    let contentData = loadJsonData(WEBSITE_CONTENT_FILE, {});
     
+    // If database is available, merge/override with live database content
+    if (db) {
+      try {
+        const collection = db.collection('website_content');
+        const dbPages = await collection.find({}).toArray();
+        dbPages.forEach(doc => {
+          if (doc.page && doc.data) {
+            contentData[doc.page] = doc.data;
+          }
+        });
+      } catch (dbError) {
+        console.error('⚠️ [Sync] Failed to merge database content into "all":', dbError);
+      }
+    }
+
     if (page === 'all') {
-      const allContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
-      res.json({ success: true, data: allContent });
+      res.json({ success: true, data: contentData });
       return;
     }
 
@@ -1397,22 +1412,30 @@ const server = app.listen(port, '0.0.0.0', async () => {
   await connectDB();
   console.log(`Hoardings API listening at http://0.0.0.0:${port}`);
 
-  // Sync Content Engine
+  // Sync Content Engine (Per-page restoration)
   if (db) {
-    console.log('🔄 [Sync] Starting Content Sync Engine...');
     try {
       const websiteContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
       const collection = db.collection('website_content');
       const pages = Object.keys(websiteContent);
       
+      console.log('🔄 [Sync] Checking for missing database configurations...');
+      
       for (const page of pages) {
-        await collection.updateOne(
-          { page: page },
-          { $set: { data: websiteContent[page], updatedAt: new Date(), syncStatus: 'automated' } },
-          { upsert: true }
-        );
+        // Check if page exists in DB
+        const exists = await collection.findOne({ page: page });
+        
+        // ONLY sync if missing, OR if it's the critical 'lifeAtKaki' config that the user just restored
+        if (!exists || (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey))) {
+          console.log(`🚀 [Sync] Restoring missing or critical config for: ${page}`);
+          await collection.updateOne(
+            { page: page },
+            { $set: { data: websiteContent[page], updatedAt: new Date(), syncStatus: 'automated-restoration' } },
+            { upsert: true }
+          );
+        }
       }
-      console.log('✅ [Sync] Website content successfully synced to MongoDB');
+      console.log('✅ [Sync] Verification complete');
     } catch (syncError) {
       console.error('❌ [Sync] Content sync engine failed:', syncError);
     }
