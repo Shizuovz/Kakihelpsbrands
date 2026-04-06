@@ -122,22 +122,46 @@
     },
     "projects": [
       {
-        "id": 1775296355797,
-        "title": "TEST Project",
-        "category": "Studio",
-        "description": "TEST",
-        "year": "2026",
-        "client": "TEST",
-        "video": "/uploads/files-1775296370752-296827807.mp4"
-      },
-      {
-        "id": 1775296560847,
-        "title": "New Project",
-        "category": "Studio",
-        "description": "TEST",
-        "year": "2026",
-        "client": "TEST",
-        "video": "/uploads/files-1775296570911-979240350.mp4"
+        "id": 1775300000000,
+        "title": "Ohan Ki x KAKI",
+        "category": "Case Study",
+        "description": "From Local Favourite to National Flavour: Building a Digital-First Naga Food Brand",
+        "subtitle": "From Local Favourite to National Flavour: Building a Digital-First Naga Food Brand",
+        "year": "2024",
+        "client": "Ohan Ki",
+        "industry": "Food & Beverage",
+        "location": "Dimapur, Nagaland",
+        "timeline": "Nov 2024 – June 2025",
+        "image": "/src/assets/works/casestudy/ohanki.png",
+        "overview": "Ohan Ki has long been a trusted name in Dimapur for authentic smoked meats and indigenous Naga cuisine. They had great products, a loyal local customer base, and a strong cultural identity. But they had bigger dreams: modernise their brand, create standout packaging, sell online across India, and tell their story visually.",
+        "objectives": [
+          "Modernise their brand with a fresh identity",
+          "Create clean, standout packaging for retail and shipping",
+          "Sell products online PAN-India via e-commerce",
+          "Streamline operations and logistics behind the scenes",
+          "Tell their story visually and authentically"
+        ],
+        "brandIdentity": {
+          "logo": "Fresh, bold redesign blending modern design with Naga cultural motifs — instantly recognisable.",
+          "packaging": "Minimal, clean packaging that lets the product speak for itself, from smoked pork to pickled bamboo.",
+          "visualStorytelling": "Authenticity, warmth, and quality reflected through a cohesive system of colours and typography."
+        },
+        "websiteDevelopment": {
+          "platform": "Custom mobile-friendly e-commerce site with clear categorisation and سهل payments.",
+          "userExperience": "Intuitive navigation and shopping flow designed to build appetite and trust.",
+          "logisticsIntegration": "Connected with Blue Dart and Delhivery with auto-label generation for faster fulfillment.",
+          "inventoryManagement": "Live inventory tracking system to reduce manual work and improve control."
+        },
+        "videoProduction": {
+          "shoots": "Crisp product styling and cinematic imagery shot against Naga-inspired backdrops.",
+          "digitalLaunch": "A full content bank for web, Instagram, and campaigns ensuring visual consistency."
+        },
+        "result": [
+          "A Cohesive, Modern Brand with its Naga soul intact.",
+          "PAN-India Reach serving customers across the countr.",
+          "Efficient Operations with auto-labeling and live tracking.",
+          "Stronger Digital Presence driving trust and loyalty."
+        ]
       }
     ]
   },
