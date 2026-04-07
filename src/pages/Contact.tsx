@@ -11,11 +11,36 @@ import {
 } from "@/components/ui/accordion";
 
 const Contact = () => {
+  const [currentStep, setCurrentStep] = useState(0);
   const [formData, setFormData] = useState({
+    // Step 1
     name: '',
+    companyName: '',
     email: '',
-    subject: '',
-    message: ''
+    phone: '',
+    location: '',
+    
+    // Step 2
+    industry: '',
+    industryOther: '',
+    businessBrief: '',
+    onlinePresence: '',
+    onlineLinks: '',
+    
+    // Step 3
+    serviceType: '',
+    serviceTypeOther: '',
+    message: '', // Using common 'message' for project description
+    mainGoal: '',
+    
+    // Step 4
+    budget: '',
+    timeline: '',
+    
+    // Step 5
+    referralSource: '',
+    referralOther: '',
+    additionalNotes: ''
   });
   const { toast } = useToast();
 
@@ -41,6 +66,13 @@ const Contact = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Safety check: Don't submit if we're not on the final step
+    if (currentStep < 4) {
+      nextStep();
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
@@ -51,21 +83,25 @@ const Contact = () => {
         },
         body: JSON.stringify({
           ...formData,
-          type: 'contact_form' // Tag it as coming from the contact page
+          subject: `Project Inquiry: ${formData.serviceType || 'New Project'}`,
+          type: 'detailed_contact_form'
         }),
       });
 
       if (response.ok) {
         toast({
           title: "Inquiry Sent! 🚀",
-          description: "Thank you for reaching out. We will get back to you shortly!",
+          description: "Thank you for reaching out. We will get back to you within 24-48 hours!",
         });
+        // Reset form and go back to step 1
         setFormData({
-          name: '',
-          email: '',
-          subject: '',
-          message: ''
+          name: '', companyName: '', email: '', phone: '', location: '',
+          industry: '', industryOther: '', businessBrief: '', onlinePresence: '', onlineLinks: '',
+          serviceType: '', serviceTypeOther: '', message: '', mainGoal: '',
+          budget: '', timeline: '',
+          referralSource: '', referralOther: '', additionalNotes: ''
         });
+        setCurrentStep(0);
       } else {
         throw new Error('Failed to send message');
       }
@@ -80,11 +116,50 @@ const Contact = () => {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (currentStep < 4) {
+        nextStep();
+      } else {
+        handleSubmit(e);
+      }
+    }
+  };
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const nextStep = () => {
+    // Basic validation for current step
+    if (currentStep === 0) {
+      if (!formData.name || !formData.email || !formData.phone) {
+        toast({ title: "Required Fields", description: "Please fill in all required fields.", variant: "destructive" });
+        return;
+      }
+    } else if (currentStep === 1) {
+      if (!formData.industry) {
+        toast({ title: "Required Field", description: "Please select an industry.", variant: "destructive" });
+        return;
+      }
+    } else if (currentStep === 2) {
+      if (!formData.serviceType || !formData.message || !formData.mainGoal) {
+        toast({ title: "Required Fields", description: "Please fill in all required fields.", variant: "destructive" });
+        return;
+      }
+    } else if (currentStep === 3) {
+      if (!formData.budget || !formData.timeline) {
+        toast({ title: "Required Fields", description: "Please fill in all required fields.", variant: "destructive" });
+        return;
+      }
+    }
+    
+    setCurrentStep(prev => prev + 1);
+    window.scrollTo({ top: 300, behavior: 'smooth' });
   };
 
   const departments = [
@@ -97,7 +172,7 @@ const Contact = () => {
   const contactInfo = [
     {
       title: 'General Inquiries',
-      email: 'kaki.helps.brands@gmail.com',
+      email: 'connect@kakihelpsbrands.com',
       description: 'For general questions and collaboration opportunities',
       icon: <Mail className="w-6 h-6" />,
       color: 'from-blue-500 to-purple-600',
@@ -113,7 +188,7 @@ const Contact = () => {
     },
     {
       title: 'Careers',
-      email: 'kaki.helps.brands@gmail.com',
+      email: 'connect@kakihelpsbrands.com',
       description: 'Join our creative team and craft culture with us',
       icon: <MapPin className="w-6 h-6" />,
       color: 'from-pink-500 to-red-600',
@@ -156,7 +231,7 @@ const Contact = () => {
     },
     {
       question: "How do I start a project with KAKI?",
-      answer: "Click “Contact” on the top-right of the website or select a project poster and click “Start Your Project.” You can also email us at kaki.helps.brands@gmail.com or DM us."
+      answer: "Click “Contact” on the top-right of the website or select a project poster and click “Start Your Project.” You can also email us at connect@kakihelpsbrands.com or DM us."
     },
     {
       question: "Do I need to register to start a project with KAKI?",
@@ -208,87 +283,448 @@ const Contact = () => {
       <section className="section-padding">
         <div className="container-custom">
           <div className="grid grid-cols-1 xl:grid-cols-3 gap-16">
-            {/* Contact Form */}
+            {/* Detailed Multi-step Contact Form */}
             <div className="xl:col-span-2 fade-in-on-scroll">
-              <div className="bg-gradient-to-br from-kaki-dark-grey to-kaki-black p-8 lg:p-12 rounded-3xl border border-purple-500/20">
-                <h2 className="text-3xl font-bold mb-8 text-white">Send an Inquiry</h2>
-                
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-3 text-white">
-                        Full Name *
-                      </label>
-                      <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white placeholder-gray-400"
-                        placeholder="Your full name"
-                      />
+              <div className="bg-gradient-to-br from-kaki-dark-grey/80 to-kaki-black/90 p-8 lg:p-12 rounded-3xl border border-purple-500/20 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
+                {/* Background Glow */}
+                <div className="absolute -top-24 -right-24 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl group-hover:bg-purple-600/20 transition-all duration-700"></div>
+                <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-pink-600/10 rounded-full blur-3xl group-hover:bg-pink-600/20 transition-all duration-700"></div>
+
+                <div className="relative z-10">
+                  <div className="mb-10">
+                    <h2 className="text-3xl font-bold mb-2 text-white">Want to Start A Project with KAKI Marketing?</h2>
+                    <p className="text-kaki-grey text-lg">Greetings from the KAKI Team. Please fill out this form so we can understand your business and project requirements better.</p>
+                  </div>
+
+                  {/* Progress Wrapper */}
+                  <div className="mb-12">
+                    <div className="flex justify-between mb-4">
+                      {[1, 2, 3, 4, 5].map((step) => (
+                        <div 
+                          key={step} 
+                          className={`flex flex-col items-center gap-2 transition-all duration-500 ${
+                            currentStep + 1 >= step ? 'opacity-100' : 'opacity-40'
+                          }`}
+                        >
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm border-2 transition-all duration-500 ${
+                            currentStep + 1 === step 
+                              ? 'bg-purple-600 border-purple-400 text-white shadow-[0_0_15px_rgba(147,51,234,0.5)] scale-110' 
+                              : currentStep + 1 > step 
+                                ? 'bg-green-500 border-green-400 text-white' 
+                                : 'bg-kaki-black/50 border-white/10 text-kaki-grey'
+                          }`}>
+                            {currentStep + 1 > step ? '✓' : step}
+                          </div>
+                          <span className="text-[10px] uppercase tracking-widest font-bold hidden md:block">
+                            {['Contact', 'Business', 'Project', 'Timeline', 'Final'][step - 1]}
+                          </span>
+                        </div>
+                      ))}
                     </div>
-                    
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-3 text-white">
-                        Email Address *
-                      </label>
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        required
-                        className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white placeholder-gray-400"
-                        placeholder="your@email.com"
-                      />
+                    <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                      <div 
+                        className="h-full bg-gradient-to-r from-purple-600 to-pink-600 transition-all duration-700 ease-out"
+                        style={{ width: `${(currentStep / 4) * 100}%` }}
+                      ></div>
                     </div>
                   </div>
+                  
+                  <div className="space-y-8 min-h-[400px] flex flex-col">
+                    {/* Step 1: Contact Information */}
+                    {currentStep === 0 && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-sm">01</span>
+                          Contact Information
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Full Name *</label>
+                            <input
+                              type="text"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-white/20"
+                              onKeyDown={handleKeyDown}
+                              placeholder="e.g. John Doe"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Company / Brand Name</label>
+                            <input
+                              type="text"
+                              name="companyName"
+                              value={formData.companyName}
+                              onChange={handleChange}
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-white/20"
+                              onKeyDown={handleKeyDown}
+                              placeholder="Your brand name"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Email Address *</label>
+                            <input
+                              type="email"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-white/20"
+                              onKeyDown={handleKeyDown}
+                              placeholder="hello@example.com"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Phone Number (WhatsApp preferred) *</label>
+                            <input
+                              type="tel"
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleChange}
+                              required
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-white/20"
+                              onKeyDown={handleKeyDown}
+                              placeholder="+91 XXXXX XXXXX"
+                            />
+                          </div>
+                          <div className="space-y-2 md:col-span-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Location (City/ Town)</label>
+                            <input
+                              type="text"
+                              name="location"
+                              value={formData.location}
+                              onChange={handleChange}
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 focus:ring-4 focus:ring-purple-500/10 transition-all text-white placeholder-white/20"
+                              onKeyDown={handleKeyDown}
+                              placeholder="Dimapur, Nagaland"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
 
-                  <div>
-                    <label htmlFor="subject" className="block text-sm font-medium mb-3 text-white">
-                      Subject *
-                    </label>
-                    <input
-                      type="text"
-                      id="subject"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      required
-                      className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors text-white placeholder-gray-400"
-                      placeholder="What is your inquiry about?"
-                    />
+                    {/* Step 2: Business Details */}
+                    {currentStep === 1 && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center text-sm">02</span>
+                          Business Details
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium text-white/70 ml-1">Industry / Category *</label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                              {['E-commerce', 'Food & Beverage', 'Fashion', 'Events & Entertainment', 'Hospitality', 'Personal Brand', 'Other'].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, industry: opt })}
+                                  className={`px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
+                                    formData.industry === opt 
+                                      ? 'bg-purple-600/20 border-purple-500 text-white shadow-[0_0_15px_rgba(168,85,247,0.2)]' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:border-white/20'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                            {formData.industry === 'Other' && (
+                              <input
+                                type="text"
+                                name="industryOther"
+                                value={formData.industryOther}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Please specify industry"
+                                className="w-full mt-3 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 transition-all text-white"
+                              />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Brief about your business</label>
+                            <textarea
+                              name="businessBrief"
+                              value={formData.businessBrief}
+                              onChange={handleChange}
+                              rows={3}
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-purple-500/50 transition-all text-white placeholder-white/20 resize-none"
+                              onKeyDown={handleKeyDown}
+                              placeholder="Tell us what you do..."
+                            />
+                          </div>
+
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium text-white/70 ml-1">Do you have an existing online presence?</label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                              {['Yes (Website)', 'Yes (Social Media)', 'Both', 'No'].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, onlinePresence: opt })}
+                                  className={`px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
+                                    formData.onlinePresence === opt 
+                                      ? 'bg-pink-600/20 border-pink-500 text-white shadow-[0_0_15px_rgba(236,72,153,0.2)]' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10 hover:border-white/20'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                            {formData.onlinePresence !== 'No' && formData.onlinePresence !== '' && (
+                              <input
+                                type="text"
+                                name="onlineLinks"
+                                value={formData.onlineLinks}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Share links (Website / Instagram / etc.)"
+                                className="w-full mt-3 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-pink-500/50 transition-all text-white"
+                              />
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 3: Project Requirements */}
+                    {currentStep === 2 && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-sm">03</span>
+                          Project Requirements
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium text-white/70 ml-1">What type of service are you looking for? *</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                              {[
+                                'Digital Marketing', 'Influencer Marketing', 'Social Media Marketing', 
+                                'Website Development', 'Software Development', 'App Development', 
+                                'UI/ UX Design', 'Media Production', 'Packaging Design', 
+                                'Branding & Identity', 'Consultation', 'Other'
+                              ].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, serviceType: opt })}
+                                  className={`px-4 py-2 rounded-xl border transition-all text-xs font-bold ${
+                                    formData.serviceType === opt 
+                                      ? 'bg-blue-600/20 border-blue-500 text-white' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                            {formData.serviceType === 'Other' && (
+                              <input
+                                type="text"
+                                name="serviceTypeOther"
+                                value={formData.serviceTypeOther}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Please specify service"
+                                className="w-full mt-2 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-blue-500/50 transition-all text-white"
+                              />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Describe your project / requirement *</label>
+                            <textarea
+                              name="message"
+                              value={formData.message}
+                              onChange={handleChange}
+                              required
+                              rows={4}
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-blue-500/50 transition-all text-white placeholder-white/20 resize-none"
+                              onKeyDown={handleKeyDown}
+                              placeholder="Tell us what you want to achieve..."
+                            />
+                          </div>
+
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium text-white/70 ml-1">What is your main goal? *</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                              {[
+                                'Increase brand awareness', 'Generate leads', 'Increase sales', 
+                                'Launch product/ service', 'Improve online presence', 'Other'
+                              ].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, mainGoal: opt })}
+                                  className={`px-4 py-3 rounded-xl border transition-all text-sm font-medium ${
+                                    formData.mainGoal === opt 
+                                      ? 'bg-blue-600/20 border-blue-500 text-white' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 4: Budget & Timeline */}
+                    {currentStep === 3 && (
+                      <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-yellow-500/10 flex items-center justify-center text-sm">04</span>
+                          Budget & Timeline
+                        </h3>
+                        <div className="space-y-8">
+                          <div className="space-y-4">
+                            <label className="text-sm font-medium text-white/70 ml-1">Estimated Budget for this project *</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+                              {[
+                                'Below ₹10,000', '₹10,000 – ₹25,000', '₹25,000 – ₹50,000', 
+                                '₹50,000+', 'Prefer to discuss'
+                              ].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, budget: opt })}
+                                  className={`px-4 py-4 rounded-2xl border transition-all text-sm font-bold ${
+                                    formData.budget === opt 
+                                      ? 'bg-yellow-600/20 border-yellow-500 text-white shadow-[0_0_15px_rgba(234,179,8,0.1)]' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <label className="text-sm font-medium text-white/70 ml-1">Project Timeline *</label>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                              {['ASAP', '1 – 3 months', '3 – 6 months', '6+ months'].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, timeline: opt })}
+                                  className={`px-4 py-4 rounded-2xl border transition-all text-sm font-bold ${
+                                    formData.timeline === opt 
+                                      ? 'bg-orange-600/20 border-orange-500 text-white shadow-[0_0_15px_rgba(249,115,22,0.1)]' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 5: Final Details */}
+                    {currentStep === 4 && (
+                      <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
+                        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent flex items-center gap-2">
+                          <span className="w-8 h-8 rounded-lg bg-green-500/10 flex items-center justify-center text-sm">05</span>
+                          Final Details
+                        </h3>
+                        <div className="space-y-6">
+                          <div className="space-y-3">
+                            <label className="text-sm font-medium text-white/70 ml-1">How did you hear about us? *</label>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                              {['Instagram', 'YouTube', 'Facebook', 'LinkedIn', 'Website', 'Referral', 'Other'].map((opt) => (
+                                <button
+                                  key={opt}
+                                  type="button"
+                                  onClick={() => setFormData({ ...formData, referralSource: opt })}
+                                  className={`px-4 py-3 rounded-xl border transition-all text-xs font-bold ${
+                                    formData.referralSource === opt 
+                                      ? 'bg-green-600/20 border-green-500 text-white' 
+                                      : 'bg-white/5 border-white/10 text-white/50 hover:bg-white/10'
+                                  }`}
+                                >
+                                  {opt}
+                                </button>
+                              ))}
+                            </div>
+                            {formData.referralSource === 'Other' && (
+                              <input
+                                type="text"
+                                name="referralOther"
+                                value={formData.referralOther}
+                                onChange={handleChange}
+                                onKeyDown={handleKeyDown}
+                                placeholder="Please specify"
+                                className="w-full mt-3 px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-green-500/50 transition-all text-white"
+                              />
+                            )}
+                          </div>
+
+                          <div className="space-y-2">
+                            <label className="text-sm font-medium text-white/70 ml-1">Any additional notes or expectations?</label>
+                            <textarea
+                              name="additionalNotes"
+                              value={formData.additionalNotes}
+                              onChange={handleChange}
+                              rows={4}
+                              className="w-full px-6 py-4 bg-white/5 border border-white/10 rounded-2xl focus:outline-none focus:border-green-500/50 transition-all text-white placeholder-white/20 resize-none"
+                              onKeyDown={handleKeyDown}
+                              placeholder="Anything else we should know?"
+                            />
+                          </div>
+                          
+                          <div className="pt-4 p-6 bg-purple-500/5 rounded-2xl border border-purple-500/10 text-center">
+                            <p className="text-sm text-kaki-grey italic">
+                              Our team will review your details and get in touch with you within 24–48 hours.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Navigation Buttons */}
+                    <div className="mt-auto pt-10 flex gap-4">
+                      {currentStep > 0 && (
+                        <Button 
+                          type="button" 
+                          variant="outline"
+                          onClick={() => setCurrentStep(prev => prev - 1)}
+                          className="flex-1 border-white/10 text-white hover:bg-white/10 py-7 rounded-2xl text-lg font-bold transition-all"
+                        >
+                          Back
+                        </Button>
+                      )}
+                      
+                      {currentStep < 4 ? (
+                        <Button 
+                          type="button" 
+                          onClick={nextStep}
+                          className="flex-[2] bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 py-7 rounded-2xl text-lg font-bold shadow-xl shadow-purple-600/20 group"
+                        >
+                          Next Step
+                          <span className="ml-2 group-hover:translate-x-1 transition-transform">→</span>
+                        </Button>
+                      ) : (
+                        <Button 
+                          type="button" 
+                          onClick={handleSubmit}
+                          disabled={isSubmitting}
+                          className="flex-[2] bg-gradient-to-r from-green-600 to-teal-600 text-white hover:opacity-90 py-7 rounded-2xl text-lg font-bold shadow-xl shadow-green-600/20"
+                        >
+                          {isSubmitting ? "Submitting..." : "Submit Inquiry"}
+                        </Button>
+                      )}
+                    </div>
                   </div>
-
-                  <div>
-                    <label htmlFor="message" className="block text-sm font-medium mb-3 text-white">
-                      Inquiry Details *
-                    </label>
-                    <textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      required
-                      rows={6}
-                      className="w-full px-6 py-4 bg-kaki-black/50 border border-purple-500/30 rounded-2xl focus:outline-none focus:border-purple-400 transition-colors resize-none text-white placeholder-gray-400"
-                      placeholder="Please provide details about your inquiry..."
-                    />
-                  </div>
-
-                  <Button 
-                    type="submit" 
-                    size="lg" 
-                    disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 py-6 md:text-lg"
-                  >
-                    {isSubmitting ? "Sending Inquiry..." : "Send Inquiry"}
-                  </Button>
-                </form>
+                </div>
               </div>
             </div>
 

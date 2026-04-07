@@ -4,9 +4,12 @@ import path from 'path';
 import fs from 'fs';
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
+import { Resend } from 'resend';
 
 // Load environment variables FIRST
 dotenv.config();
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { authMiddleware, register, login, getCurrentUser, resetPassword } from './auth.js';
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
@@ -602,7 +605,154 @@ app.post('/api/inquiries', async (req, res) => {
       await db.collection('inquiries').insertOne(inquiryData);
     }
     
-    console.log('New inquiry received and saved to MongoDB:', inquiryData.id);
+    console.log('✅ New inquiry received for ID:', inquiryData.id);
+    console.log('📦 Questionnaire Payload:', JSON.stringify(req.body, null, 2));
+
+    // Send email via Resend
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_your_api_key_here') {
+      console.log('📨 Attempting to send comprehensive project email via Resend...');
+      try {
+        const data = req.body;
+        
+        // Log the full payload for verification
+        console.log('📦 Questionnaire Payload Received:', JSON.stringify(data, null, 2));
+
+        // Define standard categories to organize the email precisely matching the form
+        const categories = {
+          "👤 Contact Information": ["name", "companyName", "email", "phone", "location"],
+          "💼 Business Details": ["industry", "industryOther", "businessBrief", "onlinePresence", "onlineLinks"],
+          "📋 Project Requirements": ["serviceType", "serviceTypeOther", "message", "mainGoal"],
+          "📅 Budget & Timeline": ["budget", "timeline"],
+          "📣 Final Details": ["referralSource", "referralOther", "additionalNotes"],
+          "🏙️ Hoarding Details": [
+            "hoardingTitle", "hoardingLocation", "hoardingPrice", "hoardingDimensions", 
+            "hoardingType", "hoardingPrintingCharges", "hoardingMountingCharges", "hoardingTotalCharges"
+          ]
+        };
+
+        // Track which fields we've already handled
+        const handledFields = new Set([
+          "id", "status", "createdAt", "subject", "type", "submittedAt", 
+          "message", "hoardingId", "_id"
+        ]);
+        Object.values(categories).flat().forEach(f => handledFields.add(f));
+
+        // Function to format field names for display
+        const formatLabel = (key) => {
+          return key
+            .replace(/([A-Z])/g, ' $1')
+            .replace(/^./, (str) => str.toUpperCase())
+            .replace("Url", " URL")
+            .replace("Id", " ID");
+        };
+
+        // Function to format values
+        const formatValue = (val) => {
+          if (val === null || val === undefined || val === "") return "N/A";
+          if (typeof val === "object") {
+            if (val.startDate && val.endDate) {
+              return `${new Date(val.startDate).toLocaleDateString()} to ${new Date(val.endDate).toLocaleDateString()}`;
+            }
+            return `<pre style="font-size: 11px; color: #666; margin: 0;">${JSON.stringify(val, null, 2)}</pre>`;
+          }
+          return val.toString();
+        };
+
+        // Build sections
+        let sectionsHtml = "";
+        
+        // 1. Prominent Message Section first
+        if (data.message) {
+          sectionsHtml += `
+            <div style="background: #fdf4ff; border: 1px solid #f5d0fe; border-radius: 16px; padding: 25px; margin-bottom: 30px;">
+              <h2 style="color: #c026d3; margin: 0 0 10px 0; font-size: 18px; display: flex; items-center: center;">📝 Project Description</h2>
+              <p style="margin: 0; color: #4b5563; white-space: pre-line; line-height: 1.6;">${data.message}</p>
+            </div>
+          `;
+        }
+
+        // 2. Map Categorized Fields
+        for (const [sectionTitle, fields] of Object.entries(categories)) {
+          const sectionData = fields
+            .filter(f => data[f] && data[f] !== "N/A" && data[f] !== "")
+            .map(f => {
+              let label = formatLabel(f);
+              let value = formatValue(data[f]);
+              if (f === "industry" && data[f] === "Other") return null;
+              if (f === "industryOther") label = "Industry";
+              if (f === "serviceType" && data[f] === "Other") return null;
+              if (f === "serviceTypeOther") label = "Service Type";
+              if (f === "referralSource" && data[f] === "Other") return null;
+              if (f === "referralOther") label = "Referral Source";
+              return `<tr><td style="padding: 10px 0; font-weight: bold; width: 160px; color: #6b7280; font-size: 14px;">${label}</td><td style="padding: 10px 0; color: #1f2937; font-size: 14px; font-weight: 500;">${value}</td></tr>`;
+            })
+            .filter(Boolean);
+
+          if (sectionData.length > 0) {
+            sectionsHtml += `
+              <div style="margin-top: 35px;">
+                <h2 style="color: #9333ea; border-bottom: 2px solid #f3f4f6; padding-bottom: 8px; margin-bottom: 12px; font-size: 16px; text-transform: uppercase; letter-spacing: 0.5px;">${sectionTitle}</h2>
+                <table style="width: 100%; border-collapse: collapse;">
+                  ${sectionData.join("")}
+                </table>
+              </div>
+            `;
+          }
+        }
+
+        // 3. Dynamic "All Questionnaire Responses" logic (Catches everything else)
+        const miscellaneousFields = Object.keys(data)
+          .filter(key => !handledFields.has(key) && data[key] !== null && data[key] !== undefined && data[key] !== "")
+          .map(key => `<tr><td style="padding: 10px 0; font-weight: bold; width: 160px; color: #6b7280; font-size: 14px;">${formatLabel(key)}</td><td style="padding: 10px 0; color: #1f2937; font-size: 14px; font-weight: 500;">${formatValue(data[key])}</td></tr>`);
+
+        if (miscellaneousFields.length > 0) {
+          sectionsHtml += `
+            <div style="margin-top: 35px; background: #f9fafb; border-radius: 16px; padding: 20px;">
+              <h2 style="color: #4b5563; border-bottom: 1px solid #e5e7eb; padding-bottom: 8px; margin-bottom: 12px; font-size: 14px; text-transform: uppercase;">🧩 Extended Questionnaire Data</h2>
+              <table style="width: 100%; border-collapse: collapse;">
+                ${miscellaneousFields.join("")}
+              </table>
+            </div>
+          `;
+        }
+
+        const htmlContent = `
+          <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 650px; margin: 20px auto; color: #111827; line-height: 1.5; border: 1px solid #e5e7eb; border-radius: 24px; overflow: hidden; background: #ffffff;">
+            <div style="background: #9333ea; background: linear-gradient(135deg, #9333ea 0%, #db2777 100%); padding: 45px 30px; text-align: center; color: #ffffff;">
+              <span style="background: rgba(255,255,255,0.2); padding: 5px 12px; border-radius: 100px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: #ffffff; margin-bottom: 15px; display: inline-block;">Incoming Inquiry</span>
+              <h1 style="margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.025em; text-shadow: 0 2px 4px rgba(0,0,0,0.1);">Business Inquiry Received</h1>
+              <p style="margin: 12px 0 0; opacity: 0.9; font-size: 16px; font-weight: 500;">A complete questionnaire response has been captured from your website.</p>
+            </div>
+            
+            <div style="padding: 40px 30px;">
+              ${sectionsHtml}
+
+              <div style="margin-top: 50px; padding-top: 30px; border-top: 1px solid #f3f4f6; text-align: center; font-size: 12px; color: #9ca3af;">
+                <p style="margin-bottom: 10px; font-weight: 500; color: #6b7280;">Sent via KAKI Intelligent Backend Engine</p>
+                <div style="font-family: monospace; background: #f9fafb; display: inline-block; padding: 4px 10px; border-radius: 6px; color: #374151; font-weight: bold; border: 1px solid #e5e7eb;">
+                  ID: ${inquiryData.id}
+                </div>
+                <p style="margin-top: 20px;">© ${new Date().getFullYear()} KAKI Marketing. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+        `;
+
+        await resend.emails.send({
+          from: 'KAKI Marketing <onboarding@resend.dev>',
+          to: 'connect@kakihelpsbrands.com',
+          subject: `New Inquiry: ${data.name || 'Inquiry'} - ${data.serviceType || 'Project'}`,
+          html: htmlContent,
+          replyTo: data.email
+        });
+
+        console.log('✅ Notification email sent successfully by Backend Engine');
+      } catch (emailError) {
+        console.error('❌ Error sending email from backend:', emailError);
+      }
+    } else {
+      console.warn('⚠️ EMAIL NOT SENT: RESEND_API_KEY is missing or invalid in server/.env');
+    }
     
     res.json({
       success: true,

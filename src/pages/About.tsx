@@ -289,7 +289,7 @@ const About = () => {
                 <Link to="/contact">Work With Us</Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-purple-900 px-8">
-                <a href="mailto:kaki.helps.brands@gmail.com">Join Our Team</a>
+                <a href="mailto:connect@kakihelpsbrands.com">Join Our Team</a>
               </Button>
             </div>
           </div>

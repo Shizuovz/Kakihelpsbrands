@@ -18,11 +18,10 @@ Thumbs.db
 .env
 
 # Big binaries (move to LFS or external storage)
+# Keep uploaded works/assets for persistence
+!server/uploads/*.mp4
+!server/uploads/*.mov
 *.zip
-*.rar
-*.7z
-*.mp4
-*.mov
 *.avi
 *.psd
 *.ai

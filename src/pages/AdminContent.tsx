@@ -1840,56 +1840,121 @@ export const AdminContent = () => {
                       const inquiryId = inquiry.id || inquiry._id;
                       const isUnread = inquiry.status === 'new' || inquiry.status === 'unread';
                       
-                      return (
-                        <div key={inquiryId} className={`p-6 bg-white/5 border ${isUnread ? 'border-purple-500/50 bg-purple-500/[0.03]' : 'border-white/10'} rounded-3xl hover:bg-white/[0.07] transition-all relative group`}>
-                          <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
-                            <div>
-                                <div className="flex items-center gap-2 mb-1">
-                                <h3 className={`font-bold text-lg ${isUnread ? 'text-white' : 'text-white/80'}`}>{inquiry.name}</h3>
-                                {isUnread && (
-                                    <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
-                                )}
-                                {(inquiry.type === 'contact_form' || !inquiry.type) ? (
-                                    <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] rounded uppercase font-bold tracking-wider">General Inquiry</span>
-                                ) : (
-                                    <span className="px-2 py-0.5 bg-green-500/20 text-green-400 text-[10px] rounded uppercase font-bold tracking-wider">Service Lead</span>
-                                )}
+                        return (
+                          <div key={inquiryId} className={`p-6 bg-white/5 border ${isUnread ? 'border-purple-500/50 bg-purple-500/[0.03]' : 'border-white/10'} rounded-3xl hover:bg-white/[0.07] transition-all relative group`}>
+                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-4 mb-4">
+                              <div className="flex-1">
+                                  <div className="flex flex-wrap items-center gap-2 mb-1">
+                                  <h3 className={`font-bold text-lg ${isUnread ? 'text-white' : 'text-white/80'}`}>{inquiry.name}</h3>
+                                  {isUnread && (
+                                      <span className="w-2 h-2 bg-purple-500 rounded-full animate-pulse"></span>
+                                  )}
+                                  {inquiry.type === 'detailed_contact_form' ? (
+                                      <span className="px-2 py-0.5 bg-purple-500/20 text-purple-400 text-[10px] rounded-full uppercase font-black tracking-wider border border-purple-500/30">Detailed Lead</span>
+                                  ) : (
+                                      <span className="px-2 py-0.5 bg-blue-500/20 text-blue-400 text-[10px] rounded-full uppercase font-bold tracking-wider border border-blue-500/30">General Inquiry</span>
+                                  )}
+                                  {inquiry.industry && (
+                                    <span className="px-2 py-0.5 bg-white/5 text-kaki-grey text-[10px] rounded-full font-medium border border-white/10">{inquiry.industry}</span>
+                                  )}
+                                  {inquiry.budget && (
+                                    <span className="px-2 py-0.5 bg-yellow-500/10 text-yellow-500 text-[10px] rounded-full font-bold border border-yellow-500/20">{inquiry.budget}</span>
+                                  )}
+                                </div>
+                                <p className="text-purple-400 text-sm mb-3">{inquiry.email} {inquiry.phone && ` • ${inquiry.phone}`}</p>
+                                
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                                  {inquiry.companyName && (
+                                    <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Company</label>
+                                      <span className="text-xs text-white/80 font-medium">{inquiry.companyName}</span>
+                                    </div>
+                                  )}
+                                  {inquiry.location && (
+                                    <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Location</label>
+                                      <span className="text-xs text-white/80 font-medium">{inquiry.location}</span>
+                                    </div>
+                                  )}
+                                  {inquiry.timeline && (
+                                    <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Timeline</label>
+                                      <span className="text-xs text-white/80 font-bold text-orange-400">{inquiry.timeline}</span>
+                                    </div>
+                                  )}
+                                  {inquiry.referralSource && (
+                                    <div className="bg-white/5 p-2 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Source</label>
+                                      <span className="text-xs text-white/80 font-medium">{inquiry.referralSource}</span>
+                                    </div>
+                                  )}
+                                </div>
+
+                                <div className="flex flex-wrap gap-3 text-xs text-kaki-grey mb-4">
+                                  {inquiry.subject && <span className="flex items-center"><Briefcase className="w-3 h-3 mr-1" /> {inquiry.subject}</span>}
+                                  <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {new Date(inquiry.createdAt || Date.now()).toLocaleString()}</span>
+                                </div>
                               </div>
-                              <p className="text-purple-400 text-sm mb-2">{inquiry.email}</p>
-                              <div className="flex flex-wrap gap-3 text-xs text-kaki-grey">
-                                {inquiry.phone && <span className="flex items-center"><Plus className="w-3 h-3 mr-1" /> {inquiry.phone}</span>}
-                                {inquiry.subject && <span className="flex items-center"><Briefcase className="w-3 h-3 mr-1" /> {inquiry.subject}</span>}
-                                <span className="flex items-center"><Clock className="w-3 h-3 mr-1" /> {new Date(inquiry.createdAt || Date.now()).toLocaleString()}</span>
+                              <div className="flex items-center gap-2">
+                                 <Button 
+                                    size="sm" 
+                                    variant="ghost" 
+                                    onClick={() => handleMarkAsRead(inquiryId, inquiry.status)}
+                                    className={`text-xs ${isUnread ? 'text-purple-400 hover:text-purple-300' : 'text-kaki-grey hover:text-white'}`}
+                                 >
+                                    {isUnread ? 'Mark as Read' : 'Unmark'}
+                                 </Button>
+                                 <a href={`mailto:${inquiry.email}`} className="px-4 py-2 bg-purple-600 rounded-xl hover:bg-purple-700 transition-colors text-sm font-medium">Reply</a>
+                                 <Button 
+                                    size="icon" 
+                                    variant="ghost" 
+                                    onClick={() => handleDeleteInquiry(inquiryId)}
+                                    className="text-white/30 hover:text-red-500 hover:bg-red-500/10"
+                                 >
+                                    <Trash2 className="w-4 h-4" />
+                                 </Button>
                               </div>
                             </div>
-                            <div className="flex items-center gap-2">
-                               <Button 
-                                  size="sm" 
-                                  variant="ghost" 
-                                  onClick={() => handleMarkAsRead(inquiryId, inquiry.status)}
-                                  className={`text-xs ${isUnread ? 'text-purple-400 hover:text-purple-300' : 'text-kaki-grey hover:text-white'}`}
-                               >
-                                  {isUnread ? 'Mark as Read' : 'Unmark'}
-                               </Button>
-                               <a href={`mailto:${inquiry.email}`} className="px-4 py-2 bg-purple-600 rounded-xl hover:bg-purple-700 transition-colors text-sm font-medium">Reply</a>
-                               <Button 
-                                  size="icon" 
-                                  variant="ghost" 
-                                  onClick={() => handleDeleteInquiry(inquiryId)}
-                                  className="text-white/30 hover:text-red-500 hover:bg-red-500/10"
-                               >
-                                  <Trash2 className="w-4 h-4" />
-                               </Button>
+                            
+                            <div className="space-y-3">
+                              {inquiry.mainGoal && (
+                                <div className="flex items-center gap-2 text-xs font-bold text-green-400 bg-green-500/5 p-2 rounded-lg inline-block border border-green-500/10 mb-2">
+                                  🎯 GOAL: {inquiry.mainGoal}
+                                </div>
+                              )}
+                              
+                              <div className={`p-4 ${isUnread ? 'bg-kaki-black/80' : 'bg-kaki-black/40'} rounded-2xl border border-white/5 text-sm ${isUnread ? 'text-white/90' : 'text-kaki-grey'} whitespace-pre-wrap leading-relaxed`}>
+                                {inquiry.message}
+                              </div>
+                              
+                              {(inquiry.businessBrief || inquiry.additionalNotes || inquiry.onlineLinks) && (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                                  {inquiry.businessBrief && (
+                                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Business Brief</label>
+                                      <p className="text-xs text-white/70 line-clamp-3">{inquiry.businessBrief}</p>
+                                    </div>
+                                  )}
+                                  {inquiry.additionalNotes && (
+                                    <div className="p-3 bg-white/5 rounded-xl border border-white/5">
+                                      <label className="text-[10px] uppercase opacity-40 block mb-1">Notes</label>
+                                      <p className="text-xs text-white/70 line-clamp-3">{inquiry.additionalNotes}</p>
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              {inquiry.onlineLinks && (
+                                <div className="p-3 bg-purple-500/5 rounded-xl border border-purple-500/10 mt-3">
+                                  <label className="text-[10px] uppercase text-purple-400 block mb-1">Online Presence</label>
+                                  <p className="text-xs text-purple-200/70 truncate">{inquiry.onlineLinks}</p>
+                                </div>
+                              )}
                             </div>
                           </div>
-                          <div className={`p-4 ${isUnread ? 'bg-kaki-black/80' : 'bg-kaki-black/40'} rounded-2xl border border-white/5 text-sm ${isUnread ? 'text-white/90' : 'text-kaki-grey'} whitespace-pre-wrap leading-relaxed`}>
-                            {inquiry.message}
-                          </div>
-                        </div>
-                      );
-                    })
-                  )}
-                </div>
+                        );
+                      })
+                    )}
+                  </div>
               </CardContent>
             </Card>
           </TabsContent>
