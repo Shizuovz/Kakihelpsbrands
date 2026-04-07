@@ -416,7 +416,11 @@ const Contact = () => {
                           <div className="space-y-3">
                             <label className="text-sm font-medium text-white/70 ml-1">Industry / Category *</label>
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                              {['E-commerce', 'Food & Beverage', 'Fashion', 'Events & Entertainment', 'Hospitality', 'Personal Brand', 'Other'].map((opt) => (
+                              {[
+                                'E-commerce', 'Food & Beverage', 'Fashion', 'Events & Entertainment', 
+                                'Hospitality', 'Personal Brand', 'Government Organization', 
+                                'Business Organization', 'Nonprofit (NGO)', 'Other'
+                              ].map((opt) => (
                                 <button
                                   key={opt}
                                   type="button"
