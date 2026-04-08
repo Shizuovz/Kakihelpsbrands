@@ -58,7 +58,14 @@ const Index = () => {
     if (!video) return;
 
     if (video.paused || video.ended) {
-      video.play();
+      const playPromise = video.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(error => {
+          if (error.name !== 'AbortError') {
+            console.error('Video play error:', error);
+          }
+        });
+      }
       setIsPlaying(true);
     } else {
       video.pause();

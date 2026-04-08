@@ -11,8 +11,16 @@ dotenv.config();
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+import { v2 as cloudinary } from 'cloudinary';
 import { authMiddleware, register, login, getCurrentUser, resetPassword } from './auth.js';
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
+
+// Cloudinary connection
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -302,56 +310,84 @@ app.get('/api/auth/me', authMiddleware, getCurrentUser);
 // Separate ADMIN only auth routes
 app.post('/api/admin/login', adminLogin);
 app.get('/api/admin/me', adminAuthMiddleware, getAdminMe);
-app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), (req, res) => {
+app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), async (req, res) => {
   try {
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
-    const uploadedFiles = req.files.map(file => {
-      return {
-        url: `/uploads/${file.filename}`
-      };
+    
+    console.log(`🚀 [Cloudinary] Uploading ${req.files.length} files...`);
+    
+    const uploadPromises = req.files.map(file => 
+      cloudinary.uploader.upload(file.path, {
+        resource_type: 'auto',
+        folder: 'kaki_assets'
+      })
+    );
+    
+    const results = await Promise.all(uploadPromises);
+    
+    // Cleanup local files
+    req.files.forEach(file => {
+      try { fs.unlinkSync(file.path); } catch(e) {}
     });
+
+    const uploadedFiles = results.map(result => ({
+      url: result.secure_url
+    }));
+    
+    console.log('✅ [Cloudinary] Upload successful');
     res.json({ success: true, files: uploadedFiles });
   } catch (error) {
+    console.error('❌ [Cloudinary] Upload error:', error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
 
 // File upload endpoint
-app.post('/api/upload', authMiddleware, upload.array('images', 5), (req, res) => {
+app.post('/api/upload', authMiddleware, upload.array('images', 5), async (req, res) => {
   try {
-    console.log('Upload request received:', req.files);
-    
     if (!req.files || req.files.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No files uploaded'
-      });
+      return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
+    
+    console.log(`🚀 [Cloudinary] User upload: uploading ${req.files.length} files...`);
 
-    const uploadedFiles = req.files.map(file => {
+    const uploadPromises = req.files.map(file => 
+      cloudinary.uploader.upload(file.path, {
+        resource_type: 'auto',
+        folder: 'kaki_user_uploads'
+      })
+    );
+    
+    const results = await Promise.all(uploadPromises);
+    
+    // Cleanup local files
+    req.files.forEach(file => {
+      try { fs.unlinkSync(file.path); } catch(e) {}
+    });
+
+    const uploadedFiles = results.map((result, index) => {
+      const originalFile = req.files[index];
       return {
-        filename: file.filename,
-        originalname: file.originalname,
-        size: file.size,
-        url: `/uploads/${file.filename}`
+        filename: originalFile.filename,
+        originalname: originalFile.originalname,
+        size: originalFile.size,
+        url: result.secure_url
       };
     });
 
-
-    console.log('Files processed:', uploadedFiles);
-
+    console.log('✅ [Cloudinary] User upload successful');
     res.json({
       success: true,
-      message: 'Files uploaded successfully',
+      message: 'Files uploaded successfully to Cloud',
       data: uploadedFiles
     });
   } catch (error) {
-    console.error('Error uploading files:', error);
+    console.error('❌ [Cloudinary] User upload error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to upload files'
+      message: 'Failed to upload files to Cloud: ' + error.message
     });
   }
 });
@@ -739,11 +775,11 @@ app.post('/api/inquiries', async (req, res) => {
         `;
 
         await resend.emails.send({
-          from: 'KAKI Marketing <onboarding@resend.dev>',
+          from: 'Kaki Marketing <onboarding@resend.dev>',
           to: 'connect@kakihelpsbrands.com',
-          subject: `New Inquiry: ${data.name || 'Inquiry'} - ${data.serviceType || 'Project'}`,
+          subject: `New Inquiry: ${data.name || 'Inquiry'}`,
           html: htmlContent,
-          replyTo: data.email
+          replyTo: data.email || 'connect@kakihelpsbrands.com'
         });
 
         console.log('✅ Notification email sent successfully by Backend Engine');
@@ -756,15 +792,15 @@ app.post('/api/inquiries', async (req, res) => {
     
     res.json({
       success: true,
-      message: 'Inquiry submitted successfully',
+      message: 'Inquiry captured in database',
       inquiryId: inquiryData.id
     });
     
   } catch (error) {
-    console.error('Error submitting inquiry:', error);
+    console.error('Submission Error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to submit inquiry'
+      message: 'Processing Error: ' + error.message
     });
   }
 });
@@ -1124,27 +1160,37 @@ app.get('/api/content/:page', async (req, res) => {
         const collection = db.collection('website_content');
         const dbPages = await collection.find({}).toArray();
         dbPages.forEach(doc => {
-          // Robust Merge Strategy:
-          // 1. If it's a page (object), merge content
-          // 2. If it's a list (array, like blogs), only overwrite if DB version has more content or JSON version is missing
           if (doc.page && doc.data) {
-            console.log(`🔍 [Sync] Merging DB page: ${doc.page}`);
-            
+            // Robust Merge Strategy:
+            // 1. If it's a list (array, like blogs), only overwrite if DB version has >= content or JSON is empty
             if (Array.isArray(doc.data)) {
               const localCount = (contentData[doc.page] || []).length;
               const dbCount = doc.data.length;
               if (dbCount >= localCount || localCount === 0) {
                 contentData[doc.page] = doc.data;
               } else {
-                console.log(`⚠️ [Sync] Skipping DB overwrite for "${doc.page}": DB(${dbCount}) vs JSON(${localCount})`);
+                console.log(`⚠️ [Sync] Skipping DB overwrite for "${doc.page}" (array): DB(${dbCount}) < JSON(${localCount})`);
               }
-            } else if (typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
+            } 
+            // 2. Specialized handling for "works" (object with projects list)
+            else if (doc.page === 'works' && doc.data.projects && Array.isArray(doc.data.projects)) {
+              const localCount = (contentData.works?.projects || []).length;
+              const dbCount = doc.data.projects.length;
+              if (dbCount >= localCount || localCount === 0) {
+                contentData.works = doc.data;
+              } else {
+                console.log(`⚠️ [Sync] Skipping DB overwrite for "works" (projects): DB(${dbCount}) < JSON(${localCount})`);
+              }
+            }
+            // 3. For other pages (objects), merge if not empty
+            else if (typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
               contentData[doc.page] = doc.data;
             }
           }
         });
+        console.log('✅ [Sync] Cloud content merge complete');
       } catch (dbError) {
-        console.error('⚠️ [Sync] Failed to merge database content into "all":', dbError);
+        console.error('⚠️ [Sync] Failed to merge database content:', dbError);
       }
     }
 
@@ -1153,23 +1199,14 @@ app.get('/api/content/:page', async (req, res) => {
       return;
     }
 
-    if (db) {
-      const collection = db.collection('website_content');
-      content = await collection.findOne({ page: page }) || await collection.findOne({ id: page });
-    }
-    
-    if (content) {
-      res.json({ success: true, data: content.data || content });
+    const pageContent = contentData[page];
+    if (pageContent) {
+      res.json({ success: true, data: pageContent });
     } else {
-      const allContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
-      const pageContent = allContent[page];
-      if (pageContent) {
-        res.json({ success: true, data: pageContent });
-      } else {
-        res.status(404).json({ success: false, message: 'Content not found' });
-      }
+      res.status(404).json({ success: false, message: 'Content not found: ' + page });
     }
   } catch (error) {
+    console.error(`❌ Content API Error (${req.params.page}):`, error);
     res.status(500).json({ success: false, message: error.message });
   }
 });
