@@ -5,6 +5,12 @@ import fs from 'fs';
 import { MongoClient, ObjectId } from 'mongodb';
 import dotenv from 'dotenv';
 import { Resend } from 'resend';
+import jwt from 'jsonwebtoken';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
+import xss from 'xss-clean';
+import hpp from 'hpp';
+import cors from 'cors';
 
 // Load environment variables FIRST
 dotenv.config();
@@ -25,31 +31,67 @@ cloudinary.config({
 const app = express();
 const port = process.env.PORT || 3001;
 
-// 1. GLOBAL MIDDLEWARE (MUST BE FIRST)
+// 1. SECURITY MIDDLEWARE (MUST BE FIRST)
+// Use Helmet to set various security-related HTTP headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images from other origins if needed
+  contentSecurityPolicy: false, // Disable CSP if it interferes with development, or configure properly
+}));
+
+// Rate limiting to prevent brute force and DoS
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use('/api/', limiter);
+
+// CORS configuration - Lockdown
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:3000',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'https://kakihelpsbrands.com', // Production domain
+  'https://www.kakihelpsbrands.com'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) === -1) {
+      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true
+}));
+
+// Body parser with sensible limits
+app.use(express.json({ limit: '10kb' })); // Small limit for typical JSON
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+
+// Data sanitization - xss-clean removed due to compatibility issues with Express 5
+
+// Prevent HTTP Parameter Pollution
+app.use(hpp());
+
+// Logging middleware
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${origin}`);
-  
-  if (req.url.includes('/upload')) {
-    console.log(`[UPLOAD DEBUG] ${req.method} ${req.url} - Content-Length: ${req.headers['content-length']}`);
-  }
-  // Allow all origins by reflecting the origin header or defaulting to *
-  res.setHeader('Access-Control-Allow-Origin', origin || '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  
-  // Instantly handle preflight OPTIONS requests
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-  
   next();
 });
 
-
-app.use(express.json({ limit: '500mb' }));
-app.use(express.urlencoded({ extended: true, limit: '500mb' }));
+// Special large body limit for specific upload routes ONLY
+app.post('/api/upload', express.json({ limit: '500mb' }));
+app.post('/api/admin/upload', express.json({ limit: '500mb' }));
 
 
 // Path for JSON fallback storage
@@ -180,16 +222,38 @@ const connectDB = async () => {
         
         return {
           find: (query = {}) => {
-            const result = col.filter(item => {
-              for (const key in query) {
-                if (key === '$text' || key === 'price' || key === 'hoardingId' || key === 'ownerId') {
-                  if (key === 'ownerId' && query[key] !== item[key]) return false;
-                  continue; 
+            const matchesQuery = (item, q) => {
+              for (const key in q) {
+                if (key === '$or') {
+                  if (!q.$or.some(subQ => matchesQuery(item, subQ))) return false;
+                  continue;
                 }
-                if (query[key] !== undefined && item[key] !== query[key]) return false;
+                if (key === '$and') {
+                  if (!q.$and.every(subQ => matchesQuery(item, subQ))) return false;
+                  continue;
+                }
+                if (key === '$exists') continue; // Skip complex logic for mock
+                
+                // Special handling for price/ownerId/etc in mock
+                if (key === 'price' && q[key].$lte) {
+                   if (item.price > q[key].$lte) return false;
+                   continue;
+                }
+
+                if (q[key] !== undefined && item[key] !== q[key]) {
+                  // Handle { ownerId: { $exists: false } } or null
+                  if (typeof q[key] === 'object' && q[key] !== null) {
+                    if (q[key].$exists === false && item[key]) return false;
+                    if (q[key].$exists === true && !item[key]) return false;
+                  } else if (item[key] !== q[key]) {
+                    return false;
+                  }
+                }
               }
               return true;
-            });
+            };
+
+            const result = col.filter(item => matchesQuery(item, query));
             return {
               sort: () => ({ toArray: () => Promise.resolve(result) }),
               toArray: () => Promise.resolve(result)
@@ -392,61 +456,22 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), async (req, r
   }
 });
 
-// Health check endpoint
+// Health check endpoint (minimal info for security)
 app.get('/api/health', (req, res) => {
   res.json({
     success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-    database: db?.isMock ? 'Fallback (JSON/Memory)' : 'MongoDB Atlas',
-    isMock: !!db?.isMock,
-    uploads: fs.existsSync('./uploads')
+    status: 'up',
+    timestamp: new Date().toISOString()
   });
 });
 
-// Database status endpoint
-app.get('/api/db-status', (req, res) => {
+// Database status endpoint (Admin only)
+app.get('/api/db-status', adminAuthMiddleware, (req, res) => {
   res.json({
     success: true,
     isMock: !!db?.isMock,
     storageType: db?.isMock ? 'JSON Files (Persistent Fallback)' : 'MongoDB Atlas',
-    warning: db?.isMock ? '⚠️ System is in Fallback Mode. Data is saved in server/data/ but not in MongoDB cloud.' : null
   });
-});
-
-// Test upload endpoint without authentication (for debugging)
-app.post('/api/upload-test', upload.array('images', 5), (req, res) => {
-  try {
-    console.log('Test upload request received:', req.files);
-    
-    if (!req.files || req.files.length === 0) {
-      return res.status(400).json({
-        success: false,
-        message: 'No files uploaded'
-      });
-    }
-
-    const uploadedFiles = req.files.map(file => ({
-      filename: file.filename,
-      originalname: file.originalname,
-      size: file.size,
-      url: `/uploads/${file.filename}`
-    }));
-
-    console.log('Test files processed:', uploadedFiles);
-
-    res.json({
-      success: true,
-      message: 'Test upload successful',
-      data: uploadedFiles
-    });
-  } catch (error) {
-    console.error('Error in test upload:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to upload files'
-    });
-  }
 });
 
 // Helper function to generate realistic impressions based on location and size
@@ -515,50 +540,6 @@ app.get('/api/hoardings', async (req, res) => {
   }
 });
 
-app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
-  try {
-    if (!db) {
-      console.log('Database not connected - cannot fetch user hoardings');
-      return res.status(500).json({
-        success: false,
-        message: 'Database not available'
-      });
-    }
-    
-    const collection = db.collection('hoardings');
-    const { region, type, maxPrice, searchQuery, sortBy } = req.query;
-    
-    // Build query - only return hoardings owned by this user
-    const query = { ownerId: req.user.id };
-    
-    console.log('🔍 DEBUG: User hoardings - Collection type:', typeof collection);
-    console.log('🔍 DEBUG: User hoardings - Collection methods:', Object.keys(collection));
-    
-    if (region && region !== 'All') query.region = region;
-    if (type && type !== 'All') query.type = type;
-    if (maxPrice && maxPrice < 25000) query.price = { $lte: parseInt(maxPrice) };
-    if (searchQuery) {
-      query.$text = { $search: searchQuery };
-    }
-    
-    // Build sort
-    let sort = {};
-    switch (sortBy) {
-      case 'price-asc': sort = { price: 1 }; break;
-      case 'price-desc': sort = { price: -1 }; break;
-      default: sort = { featured: -1, createdAt: -1 };
-    }
-    
-    const hoardings = await collection.find(query).sort(sort).toArray();
-    const mappedHoardings = hoardings.map(normalizeHoarding);
-
-    res.json({ success: true, data: mappedHoardings });
-    
-  } catch (error) {
-    console.error('Error fetching user hoardings:', error);
-    res.status(500).json({ success: false, message: error.message });
-  }
-});
 
 app.get('/api/hoardings/:id', async (req, res) => {
   try {
@@ -649,6 +630,23 @@ app.post('/api/inquiries', async (req, res) => {
       console.log('📨 Attempting to send comprehensive project email via Resend...');
       try {
         const data = req.body;
+        
+        // Find owner email if it's a hoarding inquiry
+        let providerEmail = null;
+        if (db && data.hoardingId) {
+          try {
+            const hoarding = await db.collection('hoardings').findOne({ 
+              $or: [{ id: data.hoardingId }, { _id: data.hoardingId }] 
+            });
+            if (hoarding && hoarding.ownerId) {
+              const owner = await db.collection('users').findOne({ id: hoarding.ownerId });
+              providerEmail = owner?.email;
+              if (providerEmail) console.log(`📧 Found provider email: ${providerEmail}`);
+            }
+          } catch (dbError) {
+            console.error('Error fetching owner email:', dbError);
+          }
+        }
         
         // Log the full payload for verification
         console.log('📦 Questionnaire Payload Received:', JSON.stringify(data, null, 2));
@@ -774,10 +772,15 @@ app.post('/api/inquiries', async (req, res) => {
           </div>
         `;
 
+        const recipients = ['connect@kakihelpsbrands.com'];
+        if (providerEmail) {
+          recipients.push(providerEmail);
+        }
+
         await resend.emails.send({
           from: 'Kaki Marketing <onboarding@resend.dev>',
-          to: 'connect@kakihelpsbrands.com',
-          subject: `New Inquiry: ${data.name || 'Inquiry'}`,
+          to: recipients,
+          subject: `New Inquiry: ${data.name || 'Inquiry'} ${data.hoardingTitle ? 'for ' + data.hoardingTitle : ''}`,
           html: htmlContent,
           replyTo: data.email || 'connect@kakihelpsbrands.com'
         });
@@ -832,8 +835,8 @@ app.get('/api/user/inquiries', authMiddleware, async (req, res) => {
   }
 });
 
-// Get all inquiries (for admin purposes)
-app.get('/api/inquiries', async (req, res) => {
+// Get all inquiries (Admin Only)
+app.get('/api/inquiries', adminAuthMiddleware, async (req, res) => {
   try {
     if (!db) return res.json({ success: true, data: [] });
     // Sort by latest first
@@ -847,19 +850,51 @@ app.get('/api/inquiries', async (req, res) => {
   }
 });
 
-// Delete an inquiry
+// Delete an inquiry - Enhanced security
+// This can be done by the hoarding owner OR an admin
 app.delete('/api/inquiries/:id', async (req, res) => {
   try {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
+    const token = req.headers.authorization?.split(' ')[1];
     
-    // Check both id string and MongoDB ObjectID
-    const result = await db.collection('inquiries').deleteOne({ 
-      $or: [
-        { id: id },
-        { _id: id }
-      ] 
-    });
+    if (!token) return res.status(401).json({ success: false, message: 'Auth required' });
+
+    let isAuthorized = false;
+    let query = { id: id };
+    try {
+      if (ObjectId.isValid(id)) {
+        query = { $or: [{ _id: new ObjectId(id) }, { id: id }] };
+      }
+    } catch (e) {}
+
+    // 1. Try to verify as Admin first (highest privilege)
+    try {
+      const decodedAdmin = jwt.verify(token, process.env.JWT_ADMIN_SECRET || 'your-admin-secret-key');
+      if (decodedAdmin.isAdmin) isAuthorized = true;
+    } catch (adminErr) {
+      // 2. Try to verify as User/Provider
+      try {
+        const decodedUser = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        const inq = await db.collection('inquiries').findOne(query);
+        if (inq) {
+          const hoardingId = inq.hoardingId;
+          let hQuery = { id: hoardingId };
+          try {
+            if (ObjectId.isValid(hoardingId)) {
+              hQuery = { $or: [{ _id: new ObjectId(hoardingId) }, { id: hoardingId }] };
+            }
+          } catch (e) {}
+          
+          const h = await db.collection('hoardings').findOne(hQuery);
+          if (h && h.ownerId?.toString() === decodedUser.id?.toString()) isAuthorized = true;
+        }
+      } catch (userErr) {}
+    }
+
+    if (!isAuthorized) return res.status(403).json({ success: false, message: 'Unauthorized' });
+
+    const result = await db.collection('inquiries').deleteOne(query);
     
     if (result.deletedCount === 1) {
       res.json({ success: true, message: 'Inquiry deleted successfully' });
@@ -871,25 +906,93 @@ app.delete('/api/inquiries/:id', async (req, res) => {
   }
 });
 
-// Update inquiry status (Mark as read)
-app.put('/api/inquiries/:id/status', async (req, res) => {
+// Update inquiry (status, notes, etc.) - For Providers
+app.put('/api/inquiries/:id', authMiddleware, async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
+    const { id } = req.params;
+    const updateData = req.body;
+    
+    console.log(`[Inquiry Update] ID: ${id}, User: ${req.user.id}`);
+    
+    // Ownership check: Find the inquiry first
+    let query = { id: id };
+    try {
+      if (ObjectId.isValid(id)) {
+        query = { $or: [{ _id: new ObjectId(id) }, { id: id }] };
+      }
+    } catch (e) {}
+
+    const inquiry = await db.collection('inquiries').findOne(query);
+    if (!inquiry) {
+      console.log(`[Inquiry Update] Inquiry not found: ${id}`);
+      return res.status(404).json({ success: false, message: 'Inquiry not found' });
+    }
+    
+    // Find the hoarding to check owner
+    const hoardingId = inquiry.hoardingId;
+    let hQuery = { id: hoardingId };
+    try {
+      if (ObjectId.isValid(hoardingId)) {
+        hQuery = { $or: [{ _id: new ObjectId(hoardingId) }, { id: hoardingId }] };
+      }
+    } catch (e) {
+      console.log(`[Inquiry Update] Invalid hoardingId format: ${hoardingId}`);
+    }
+
+    const hoarding = await db.collection('hoardings').findOne(hQuery);
+    
+    if (!hoarding) {
+      console.log(`[Inquiry Update] Associated hoarding not found: ${hoardingId}`);
+      return res.status(403).json({ success: false, message: 'Access denied (Hoarding not found)' });
+    }
+
+    if (hoarding.ownerId?.toString() !== req.user.id?.toString()) {
+      console.log(`[Inquiry Update] Ownership mismatch! Hoarding Owner: ${hoarding.ownerId}, Current User: ${req.user.id}`);
+      return res.status(403).json({ success: false, message: 'Access denied (Ownership mismatch)' });
+    }
+
+    const allowedFields = ['status', 'internalNotes', 'lastContacted', 'paymentStatus'];
+    const filteredUpdate = {};
+    Object.keys(updateData).forEach(key => {
+      if (allowedFields.includes(key)) filteredUpdate[key] = updateData[key];
+    });
+
+    filteredUpdate.updatedAt = new Date().toISOString();
+
+    await db.collection('inquiries').updateOne(
+      query,
+      { $set: filteredUpdate }
+    );
+    
+    // If status is confirmed, we keep the hoarding available but the calendar will block the dates
+    if (filteredUpdate.status === 'confirmed') {
+      console.log(`[Inquiry Update] Inquiry ${id} confirmed. Dates will be blocked in calendar.`);
+      // We don't mark as 'Booked' globally unless you want it to be completely unavailable
+    }
+    
+    console.log(`[Inquiry Update] Successfully updated inquiry: ${id}`);
+    res.json({ success: true, message: 'Inquiry updated' });
+  } catch (error) {
+    console.error('[Inquiry Update] Error:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+// Update inquiry - FOR ADMIN CMS (Compatibility)
+app.put('/api/inquiries/:id/status', adminAuthMiddleware, async (req, res) => {
   try {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
     const { status } = req.body;
     
-    const result = await db.collection('inquiries').updateOne(
+    await db.collection('inquiries').updateOne(
       { $or: [{ id: id }, { _id: id }] },
-      { $set: { status: status || 'read' } }
+      { $set: { status: status || 'read', updatedAt: new Date().toISOString() } }
     );
-    
-    if (result.matchedCount === 1) {
-      res.json({ success: true, message: 'Inquiry status updated' });
-    } else {
-      res.status(404).json({ success: false, message: 'Inquiry not found' });
-    }
+    res.json({ success: true });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false });
   }
 });
 
@@ -901,7 +1004,7 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
     
     let availability = [];
     if (db) {
-      // Robust lookup: check both hoardingId and potentially id if it was saved differently
+      // 1. Get manual availability data
       const doc = await db.collection('availability').findOne({ 
         $or: [
           { hoardingId: id },
@@ -911,10 +1014,47 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
       
       if (doc) {
         availability = doc.data || [];
-        console.log(`[API] Found ${availability.length} dates for ${id}`);
-      } else {
-        console.log(`[API] No custom availability found for ${id}, using default`);
       }
+
+      // 2. Automatically find inquiries and mark those dates as booked
+      // For now including 'contacted' as well to match user testing data
+      const blockingInquiries = await db.collection('inquiries').find({
+        $or: [
+          { hoardingId: id },
+          { hoardingId: new ObjectId(id) }
+        ],
+        status: { $in: ['confirmed', 'Confirmed', 'contacted', 'Contacted'] }
+      }).toArray();
+
+      blockingInquiries.forEach(inq => {
+        if (inq.selectedDates && inq.selectedDates.startDate && inq.selectedDates.endDate) {
+          try {
+            // Use local date parts to avoid UTC shifting
+            const [sYear, sMonth, sDay] = inq.selectedDates.startDate.split('-').map(Number);
+            const [eYear, eMonth, eDay] = inq.selectedDates.endDate.split('-').map(Number);
+            
+            const start = new Date(sYear, sMonth - 1, sDay);
+            const end = new Date(eYear, eMonth - 1, eDay);
+            
+            let count = 0;
+            let current = new Date(start);
+            while (current <= end && count < 366) {
+              count++;
+              const y = current.getFullYear();
+              const m = String(current.getMonth() + 1).padStart(2, '0');
+              const d = String(current.getDate()).padStart(2, '0');
+              const dateStr = `${y}-${m}-${d}`;
+              
+              if (!availability.some(a => a.date === dateStr)) {
+                availability.push({ date: dateStr, status: 'booked' });
+              }
+              current.setDate(current.getDate() + 1);
+            }
+          } catch (e) {
+            console.error('Error processing inquiry dates:', e);
+          }
+        }
+      });
     }
     
     res.json({
@@ -927,7 +1067,36 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
   }
 });
 
-app.post('/api/hoardings/:id/availability', async (req, res) => {
+// Get public bookings for a hoarding
+app.get('/api/hoardings/:id/bookings', async (req, res) => {
+  try {
+    const { id } = req.params;
+    if (!db) return res.json({ success: true, data: [] });
+
+    const bookings = await db.collection('inquiries').find({
+      $or: [
+        { hoardingId: id },
+        { hoardingId: new ObjectId(id) }
+      ],
+      status: { $in: ['confirmed', 'Confirmed', 'contacted', 'Contacted'] }
+    }).project({
+      name: 1,
+      company: 1,
+      selectedDates: 1,
+      status: 1,
+      submittedAt: 1
+    }).sort({ 'selectedDates.startDate': 1 }).toArray();
+
+    res.json({
+      success: true,
+      data: bookings
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
+app.post('/api/hoardings/:id/availability', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const { availability } = req.body;
@@ -958,7 +1127,7 @@ app.post('/api/hoardings/:id/availability', async (req, res) => {
 });
 
 // Hoarding CRUD endpoints for admin
-app.get('/api/admin/hoardings', async (req, res) => {
+app.get('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
   try {
     const collection = db.collection('hoardings');
     const hoardings = await collection.find({}).toArray();
@@ -974,7 +1143,7 @@ app.get('/api/admin/hoardings', async (req, res) => {
   }
 });
 
-app.post('/api/admin/hoardings', async (req, res) => {
+app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
   try {
     const newHoarding = req.body;
     
@@ -1020,7 +1189,7 @@ app.post('/api/admin/hoardings', async (req, res) => {
   }
 });
 
-app.put('/api/admin/hoardings/:id', async (req, res) => {
+app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const updatedHoardingData = req.body;
@@ -1092,7 +1261,7 @@ app.put('/api/admin/hoardings/:id', async (req, res) => {
   }
 });
 
-app.delete('/api/admin/hoardings/:id', async (req, res) => {
+app.delete('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     
@@ -1277,57 +1446,6 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
   }
 });
 
-// Test hoarding creation endpoint without authentication (for debugging)
-app.post('/api/user/hoardings-test', async (req, res) => {
-  try {
-    console.log('POST /api/user/hoardings-test - Request received');
-    console.log('Request body:', req.body);
-    
-    const newHoardingData = req.body;
-    
-    // Generate new hoarding with mock user info
-    const newHoarding = {
-      ...newHoardingData,
-      ownerId: 'test-user-001',
-      ownerName: 'Test User',
-      ownerCompany: 'Test Company',
-      ownerPhone: '+91 12345 67890',
-      ownerEmail: 'test@example.com',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      // Use first uploaded image as primary, or fallback to generated image
-      imageUrl: (newHoardingData.images && newHoardingData.images.length > 0) 
-        ? newHoardingData.images[0] 
-        : (newHoardingData.imageUrl || generateImageUrl(newHoardingData.title || 'New Hoarding', 0)),
-      totalSqft: newHoardingData.totalSqft || 1000,
-      printingCharges: newHoardingData.printingCharges || 0,
-      mountingCharges: newHoardingData.mountingCharges || 0,
-      totalCharges: newHoardingData.totalCharges || (newHoardingData.price || 0) + (newHoardingData.printingCharges || 0) + (newHoardingData.mountingCharges || 0),
-      availability: newHoardingData.availability || 'available',
-    };
-    
-    // Insert into MongoDB
-    const collection = db.collection('hoardings');
-    const result = await collection.insertOne(newHoarding);
-    
-    console.log('Created new test hoarding:', result.insertedId);
-    console.log('Hoarding images:', newHoarding.images);
-    console.log('Hoarding imageUrl:', newHoarding.imageUrl);
-    
-    res.json({
-      success: true,
-      message: 'Test hoarding created successfully',
-      data: { ...newHoarding, _id: result.insertedId }
-    });
-    
-  } catch (error) {
-    console.error('Error creating test hoarding:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to create test hoarding'
-    });
-  }
-});
 
 // User-specific hoarding endpoints
 app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
@@ -1336,13 +1454,48 @@ app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
        return res.status(500).json({ success: false, message: 'Database not available' });
     }
     const userId = req.user.id;
+    const { region, type, maxPrice, searchQuery, sortBy } = req.query;
+    
+    // Build query - only return hoardings owned by this user OR hoardings with no owner (legacy/unclaimed)
+    const ownershipFilter = { 
+      $or: [
+        { ownerId: userId },
+        { ownerId: { $exists: false } },
+        { ownerId: null },
+        { ownerId: "" }
+      ]
+    };
+
+    let query = { ...ownershipFilter };
+    
+    if (region && region !== 'All') query.region = region;
+    if (type && type !== 'All') query.type = type;
+    if (maxPrice) query.price = { $lte: parseInt(maxPrice) };
+    if (searchQuery) {
+      query = {
+        $and: [
+          ownershipFilter,
+          {
+            $or: [
+              { title: { $regex: searchQuery, $options: 'i' } },
+              { location: { $regex: searchQuery, $options: 'i' } }
+            ]
+          }
+        ]
+      };
+    }
+    
+    // Build sort
+    let sort = {};
+    switch (sortBy) {
+      case 'price-asc': sort = { price: 1 }; break;
+      case 'price-desc': sort = { price: -1 }; break;
+      default: sort = { createdAt: -1 };
+    }
     
     // Get hoardings owned by this user
-    const userHoardings = await db.collection('hoardings').find({ ownerId: userId }).toArray();
-    const mappedUserHoardings = userHoardings.map(h => ({
-      ...h,
-      id: h.id || (h._id ? h._id.toString() : null)
-    }));
+    const userHoardings = await db.collection('hoardings').find(query).sort(sort).toArray();
+    const mappedUserHoardings = userHoardings.map(normalizeHoarding);
     
     res.json({
       success: true,
@@ -1490,7 +1643,11 @@ app.put('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
       });
     }
     
-    if (hoarding.ownerId !== req.user.id) {
+    // Allow update if either the user owns it OR if it has no owner yet (transition/claiming)
+    const isOwner = hoarding.ownerId === req.user.id;
+    const isUnowned = !hoarding.ownerId || hoarding.ownerId === "" || hoarding.ownerId === null;
+
+    if (!isOwner && !isUnowned) {
       return res.status(403).json({
         success: false,
         message: 'You can only update your own hoardings'
@@ -1558,7 +1715,11 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
       });
     }
     
-    if (hoarding.ownerId !== req.user.id) {
+    // Allow delete if either the user owns it OR if it has no owner yet (transition)
+    const isOwner = hoarding.ownerId === req.user.id;
+    const isUnowned = !hoarding.ownerId || hoarding.ownerId === "" || hoarding.ownerId === null;
+
+    if (!isOwner && !isUnowned) {
       return res.status(403).json({
         success: false,
         message: 'You can only delete your own hoardings'
@@ -1588,6 +1749,62 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
       success: false,
       message: 'Failed to delete hoarding'
     });
+  }
+});
+
+// 14. Update user profile
+app.put('/api/user/profile', authMiddleware, async (req, res) => {
+  try {
+    if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
+    
+    const userId = req.user.id;
+    const { name, email, company, phone, role } = req.body;
+    
+    const updateData = {
+      name,
+      company,
+      phone,
+      role,
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Email is usually preserved or requires special verification, 
+    // but for now we'll allow updating it if provided and unique
+    if (email && email !== req.user.email) {
+      const existingUser = await db.collection('users').findOne({ email: email.toLowerCase() });
+      if (existingUser) {
+        return res.status(400).json({ success: false, message: 'Email already in use' });
+      }
+      updateData.email = email.toLowerCase();
+    }
+    
+    const result = await db.collection('users').updateOne(
+      { id: userId },
+      { $set: updateData }
+    );
+    
+    if (result.matchedCount === 1) {
+      // Get updated user data
+      const updatedUser = await db.collection('users').findOne({ id: userId });
+      const { password: _, ...userResponse } = updatedUser;
+      
+      // Sync JSON fallback
+      if (!db.isMock && fs.existsSync(USERS_FILE)) {
+        const users = loadJsonData(USERS_FILE);
+        const index = users.findIndex(u => u.id === userId);
+        if (index > -1) {
+          users[index] = { ...users[index], ...updateData };
+          saveJsonData(USERS_FILE, users);
+        }
+      }
+      
+      res.json({ success: true, message: 'Profile updated successfully', data: userResponse });
+    } else {
+      res.status(404).json({ success: false, message: 'User not found' });
+    }
+  } catch (error) {
+    console.error('Profile update error:', error);
+    res.status(500).json({ success: false, message: error.message });
   }
 });
 

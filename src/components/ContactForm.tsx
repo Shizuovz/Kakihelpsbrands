@@ -22,6 +22,7 @@ import {
 import { Calendar, Phone, Mail, User, Building, MessageSquare } from "lucide-react";
 import { Hoarding } from "@/data/hoardings";
 import { formatINR } from "@/utils/currency";
+import { API_BASE_URL } from "@/config";
 
 // Form validation schema
 const inquirySchema = z.object({
@@ -88,7 +89,7 @@ export const ContactForm = ({ hoarding, isOpen, onClose, selectedDates }: Contac
     setIsSubmitting(true);
     try {
       // Submit inquiry to backend
-      const response = await fetch('http://localhost:3001/api/inquiries', {
+      const response = await fetch(`${API_BASE_URL}/api/inquiries`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

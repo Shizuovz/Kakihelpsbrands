@@ -15,6 +15,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import { API_BASE_URL } from "@/config";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -22,7 +23,7 @@ export const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
-  
+
   // Forgot Password state
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState('');
@@ -98,16 +99,16 @@ export const Login = () => {
   const handleForgotPassword = async (e: React.FormEvent) => {
     e.preventDefault();
     setResetStatus('loading');
-    
+
     try {
-      const response = await fetch('http://localhost:3001/api/auth/reset-password', {
+      const response = await fetch(`${API_BASE_URL}/api/auth/reset-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: forgotPasswordEmail }),
       });
-      
+
       const result = await response.json();
-      
+
       if (response.ok) {
         setResetStatus('success');
         setResetMessage(result.message);
@@ -122,12 +123,12 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-kaki-black flex items-center justify-center p-4">
+    <div className="min-h-screen bg-kaki-black flex flex-col items-center justify-center p-4 pt-20">
       <div className="w-full max-w-md">
         {/* Logo */}
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">KAKI Hoardings</h1>
-          <p className="text-kaki-grey">Manage your advertising spaces</p>
+        <div className="text-center mb-10 mt-12">
+          <h1 className="text-4xl font-bold text-white mb-3">KAKI Hoardings</h1>
+          <p className="text-kaki-grey text-lg">Manage your advertising spaces</p>
         </div>
 
         <Card className="bg-kaki-dark-grey border-white/10">
@@ -272,7 +273,7 @@ export const Login = () => {
                       <Label htmlFor="role" className="text-white">Account Type</Label>
                       <Select
                         value={registerData.role}
-                        onValueChange={(value: 'organizer' | 'provider') => 
+                        onValueChange={(value: 'organizer' | 'provider') =>
                           setRegisterData({ ...registerData, role: value })
                         }
                       >
@@ -358,8 +359,8 @@ export const Login = () => {
 
         {/* Back to Home */}
         <div className="text-center mt-6">
-          <Link 
-            to="/" 
+          <Link
+            to="/"
             className="text-kaki-grey hover:text-white transition-colors"
           >
             ← Back to Home
@@ -389,13 +390,13 @@ export const Login = () => {
                   <p className="text-sm text-green-400/80 mt-1">{resetMessage}</p>
                 </div>
               </div>
-              
+
               <div className="bg-white/5 p-4 rounded-lg flex items-center justify-between">
                 <div>
                   <span className="text-xs text-kaki-grey block mb-1 uppercase tracking-wider">Access Token</span>
                   <p className="text-xl font-mono text-purple-400 font-bold">kaki123</p>
                 </div>
-                <Button 
+                <Button
                   onClick={() => setIsForgotPasswordOpen(false)}
                   className="bg-purple-600 hover:bg-purple-700"
                 >

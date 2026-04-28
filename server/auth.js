@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
+import bcrypt from 'bcryptjs';
 
 // Load environment variables
 dotenv.config();
@@ -105,11 +106,13 @@ const register = async (req, res) => {
       return res.status(400).json({ success: false, message: 'User with this email already exists' });
     }
     
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
     const newUser = {
       id: 'provider-' + Date.now(),
       name,
       email: normalizedEmail,
-      password,
+      password: hashedPassword,
       company,
       phone,
       role,
@@ -135,7 +138,7 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const normalizedEmail = email?.toLowerCase().trim();
     
-    console.log(`\n🔑 [DEBUG] LOGIN ATTEMPT: [${normalizedEmail}] with PW: [${password}]`);
+    console.log(`\n🔑 [DEBUG] LOGIN ATTEMPT: [${normalizedEmail}]`);
     
     const usersCollection = await initUsersCollection();
     
@@ -144,25 +147,29 @@ const login = async (req, res) => {
       $or: [{ email: normalizedEmail }, { email: email }]
     });
 
-    if (password === 'kaki123' && user) {
-        console.log(`🚀 [MASTER ACCESS] Forced login for: [${user.email}]`);
-        const token = generateToken(user);
-        const { password: _, ...userWithoutPassword } = user;
-        return res.json({ success: true, message: 'Master Access Granted', data: { user: userWithoutPassword, token } });
-    }
-    
-    // Check if user exists (already handled by 'user' found above)
-
     if (!user) {
       console.log(`❌ AUTH: No user found for email [${normalizedEmail}]`);
-      return res.status(401).json({ success: false, message: 'No account found with this email' });
+      return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
     
     console.log(`🔍 AUTH: User found [${user.email}]. Checking password...`);
 
-    if (user.password !== password) {
+    // Check if it's a hashed password or plain text (migration fallback)
+    let isMatch = false;
+    if (user.password && (user.password.startsWith('$2a$') || user.password.startsWith('$2b$'))) {
+      isMatch = await bcrypt.compare(password, user.password);
+    } else {
+      // Fallback for plain text passwords in DB - allow once and update to hash
+      isMatch = user.password === password;
+      if (isMatch) {
+        console.log(`⚠️ AUTH: Plain text password detected for [${user.email}]. Updating to hash...`);
+        const newHash = await bcrypt.hash(password, 10);
+        await usersCollection.updateOne({ id: user.id }, { $set: { password: newHash } });
+      }
+    }
+
+    if (!isMatch) {
       console.log(`❌ AUTH: Password MISMATCH for user [${user.email}]`);
-      // For security, still return generic error to user, but WE see the cause in the server log
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
@@ -223,10 +230,9 @@ const resetPassword = async (req, res) => {
     const usersCollection = await initUsersCollection();
     
     if (!usersCollection) {
-      // Fallback mode (In-Memory)
-      return res.json({ 
-        success: true, 
-        message: 'Security Verified! For this demo session, your password is temporarily reset to: kaki123' 
+      return res.status(503).json({ 
+        success: false, 
+        message: 'Password reset is currently unavailable. Please try again later.' 
       });
     }
     
@@ -234,35 +240,30 @@ const resetPassword = async (req, res) => {
       $or: [{ email: normalizedEmail }, { email: email }]
     });
     
-    let message = 'Security Check Passed! Your temporary password is: kaki123';
-    
     if (!user) {
-      // FAIL-SAFE: If account doesn't exist, let's create a new one!
-      // This ensures the user is NEVER locked out during development.
-      console.log(`🛡️ AUTH: Provisioning fresh account for [${normalizedEmail}]`);
-      const newUser = {
-        id: 'provider-' + Date.now(),
-        name: normalizedEmail.split('@')[0], // Extract name from email
-        email: normalizedEmail,
-        password: 'kaki123',
-        company: 'Default Company',
-        phone: 'Not provided',
-        role: 'provider',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      await usersCollection.insertOne(newUser);
-      message = 'I couldn\'t find your old account, so I\'ve created a NEW one for you! Your password is: kaki123';
-    } else {
-      // Reset existing user
-      await usersCollection.updateOne(
-        { id: user.id },
-        { $set: { password: 'kaki123', updatedAt: new Date().toISOString() } }
-      );
+      // Security best practice: don't reveal if user exists
+      return res.json({ 
+        success: true, 
+        message: 'If an account exists with this email, you will receive password reset instructions.' 
+      });
     }
     
-    res.json({ success: true, message });
+    // In a real app, we'd send an email with a reset link.
+    // For now, we'll generate a random temporary password and hash it.
+    const tempPassword = Math.random().toString(36).slice(-8);
+    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    
+    await usersCollection.updateOne(
+      { id: user.id },
+      { $set: { password: hashedPassword, updatedAt: new Date().toISOString() } }
+    );
+    
+    // In a production environment, this would be EMAILED to the user.
+    // Displaying it here is ONLY for the current development/demonstration phase.
+    res.json({ 
+      success: true, 
+      message: `Security Check Passed! Your temporary password is: ${tempPassword}. Please change it after logging in.` 
+    });
   } catch (error) {
     console.error('💥 RESET ERROR:', error.message);
     res.status(500).json({ success: false, message: 'Recovery failed' });

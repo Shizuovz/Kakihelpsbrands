@@ -12,15 +12,15 @@ import { AvailabilityCalendar } from '@/components/AvailabilityCalendar';
 import { type Hoarding } from '@/data/hoardings';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatINR } from '@/utils/currency';
-import { 
-  Plus, 
-  Edit, 
-  Trash2, 
-  Save, 
-  X, 
-  Eye, 
-  MapPin, 
-  Maximize2, 
+import {
+  Plus,
+  Edit,
+  Trash2,
+  Save,
+  X,
+  Eye,
+  MapPin,
+  Maximize2,
   DollarSign,
   Calendar,
   Users,
@@ -30,17 +30,18 @@ import {
 
 interface UserHoardingsManagerProps {
   hoardings: Hoarding[];
+  inquiries: any[];
   onHoardingsUpdate: (hoardings: Hoarding[]) => void;
   isLoading: boolean;
 }
 
-export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }: UserHoardingsManagerProps) => {
+export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, isLoading }: UserHoardingsManagerProps) => {
   const { user } = useAuth();
   const [editingHoarding, setEditingHoarding] = useState<Hoarding | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [formData, setFormData] = useState<Partial<Hoarding>>({});
-  const [availabilityData, setAvailabilityData] = useState<Array<{date: string, status: 'available' | 'limited' | 'booked'}>>([]);
+  const [availabilityData, setAvailabilityData] = useState<Array<{ date: string, status: 'available' | 'limited' | 'booked' }>>([]);
 
   const handleCreateNew = () => {
     const newHoarding: Partial<Hoarding> = {
@@ -62,7 +63,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
-    
+
     setEditingHoarding(newHoarding as Hoarding);
     setFormData(newHoarding);
     setIsCreatingNew(true);
@@ -73,7 +74,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
     setEditingHoarding({ ...hoarding });
     setFormData({ ...hoarding });
     setIsCreatingNew(false);
-    
+
     try {
       if (hoarding.id) {
         const response = await fetch(`${API_BASE_URL}/api/hoardings/${hoarding.id}/availability`);
@@ -108,10 +109,10 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
         ownerId: user?.id
       };
 
-      const url = isCreatingNew 
-        ? `${API_BASE_URL}/api/user/hoardings` 
+      const url = isCreatingNew
+        ? `${API_BASE_URL}/api/user/hoardings`
         : `${API_BASE_URL}/api/user/hoardings/${updatedHoarding.id}`;
-      
+
       const method = isCreatingNew ? 'POST' : 'PUT';
 
       const response = await fetch(url, {
@@ -125,7 +126,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
 
       if (response.ok) {
         const result = await response.json();
-        
+
         if (isCreatingNew) {
           onHoardingsUpdate([...hoardings, result.data]);
         } else {
@@ -159,7 +160,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
 
   const handleDelete = async (hoardingId: string) => {
     if (!confirm('Are you sure you want to delete this hoarding?')) return;
-    
+
     try {
       const response = await fetch(`${API_BASE_URL}/api/user/hoardings/${hoardingId}`, {
         method: 'DELETE',
@@ -212,7 +213,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
                   <Settings className="w-5 h-5 text-purple-400" />
                   Basic Information
                 </h3>
-                
+
                 <div className="space-y-2">
                   <Label className="text-white">Title</Label>
                   <Input
@@ -276,7 +277,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
                     <Input type="number" value={formData.totalSqft || 0} onChange={(e) => handleInputChange('totalSqft', parseInt(e.target.value))} className="bg-black/40 border-white/10 text-white" />
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-white">Impressions</Label>
@@ -315,7 +316,7 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
                     </Select>
                   </div>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label className="text-white">Printing Charges</Label>
@@ -373,35 +374,59 @@ export const UserHoardingsManager = ({ hoardings, onHoardingsUpdate, isLoading }
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {hoardings.map((h) => (
-          <Card key={h.id} className="bg-white/5 border-white/10 overflow-hidden group hover:border-green-500/50 transition-all">
-            <div className="relative h-48">
-              <img 
-                src={resolveApiUrl(h.imageUrl) || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80'} 
-                alt={h.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <Badge className={`absolute top-2 right-2 ${h.status === 'Available' ? 'bg-green-500' : 'bg-red-500'}`}>
-                {h.status}
-              </Badge>
-            </div>
-            <CardContent className="p-4">
-              <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{h.title}</h3>
-              <div className="space-y-2 text-sm text-kaki-grey mb-4">
-                <p className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {h.location}</p>
-                <p className="flex items-center gap-2"><DollarSign className="w-4 h-4" /> {formatINR(h.price)}/mo</p>
+        {hoardings.map((h) => {
+          // Find the most relevant inquiry for this hoarding if it's booked
+          // Priority: 1. Confirmed status, 2. Latest inquiry if hoarding is booked
+          const confirmedInq = inquiries
+            .filter(inq => (inq.hoardingId === (h.id || (h as any)._id?.toString())))
+            .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+            .find(inq => inq.status?.toLowerCase() === 'confirmed') || 
+            (h.status === 'Booked' ? inquiries.find(inq => (inq.hoardingId === (h.id || (h as any)._id?.toString()))) : null);
+
+          return (
+            <Card key={h.id} className="bg-white/5 border-white/10 overflow-hidden group hover:border-green-500/50 transition-all">
+              <div className="relative h-48">
+                <img
+                  src={resolveApiUrl(h.imageUrl) || 'https://images.unsplash.com/photo-1542204165-65bf26472b9b?auto=format&fit=crop&w=800&q=80'}
+                  alt={h.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <Badge className={`absolute top-2 right-2 ${h.status === 'Available' ? 'bg-green-500' : 'bg-red-500'}`}>
+                  {h.status}
+                </Badge>
               </div>
-              <div className="flex gap-2">
-                <Button variant="outline" size="sm" onClick={() => handleEdit(h)} className="flex-1 bg-white/5 border-white/10 text-white">
-                  <Edit className="w-4 h-4 mr-2" /> Edit
-                </Button>
-                <Button size="sm" onClick={() => handleDelete(h.id)} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20">
-                  <Trash2 className="w-4 h-4" />
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              <CardContent className="p-4">
+                <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{h.title}</h3>
+                <div className="space-y-2 text-sm text-kaki-grey mb-4">
+                  <p className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {h.location}</p>
+                  <p className="flex items-center gap-2 font-medium text-white">{formatINR(h.price)}/mo</p>
+                  
+                  {confirmedInq && (
+                    <div className="mt-3 p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                      <div className="flex items-center gap-2 text-xs text-purple-400 mb-1 font-bold">
+                        <Calendar className="w-3 h-3" /> CAMPAIGN DATES
+                      </div>
+                      <p className="text-white text-xs font-medium">
+                        {confirmedInq.selectedDates ? (
+                          `${new Date(confirmedInq.selectedDates.startDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })} - ${new Date(confirmedInq.selectedDates.endDate).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}`
+                        ) : 'Dates N/A'}
+                      </p>
+                      <p className="text-kaki-grey text-[10px] mt-1 italic">Client: {confirmedInq.name}</p>
+                    </div>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => handleEdit(h)} className="flex-1 bg-white/5 border-white/10 text-white">
+                    <Edit className="w-4 h-4 mr-2" /> Edit
+                  </Button>
+                  <Button size="sm" onClick={() => handleDelete(h.id)} className="bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border border-red-500/20">
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     </div>
   );

@@ -6,6 +6,8 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { User, Mail, Phone, Building, Edit2, Save, X } from 'lucide-react';
+import { authAPI } from '@/data/auth';
+import { toast } from 'sonner';
 
 interface UserProfileProps {
   user: any;
@@ -26,13 +28,16 @@ export const UserProfile = ({ user }: UserProfileProps) => {
   const handleSave = async () => {
     setIsSaving(true);
     try {
-      // Here you would normally call an API to update the user profile
-      // For now, we'll just update the local state
-      const updatedUser = { ...user, ...formData };
+      const token = localStorage.getItem('authToken');
+      if (!token) throw new Error('No auth token found');
+
+      const updatedUser = await authAPI.updateProfile(token, formData);
       updateUser(updatedUser);
+      toast.success('Profile updated successfully');
       setIsEditing(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to update profile:', error);
+      toast.error(error.message || 'Failed to update profile');
     } finally {
       setIsSaving(false);
     }

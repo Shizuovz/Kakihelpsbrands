@@ -24,6 +24,7 @@ import {
   Zap
 } from "lucide-react";
 import { formatINR } from "@/utils/currency";
+import { API_BASE_URL } from "@/config";
 
 export const HoardingDetail = () => {
   const { id } = useParams<{ id: string }>();
@@ -67,7 +68,7 @@ export const HoardingDetail = () => {
   const loadAvailability = async (hoardingId: string) => {
     try {
       console.log('Loading availability for hoarding:', hoardingId);
-      const response = await fetch(`http://localhost:3001/api/hoardings/${hoardingId}/availability`);
+      const response = await fetch(`${API_BASE_URL}/api/hoardings/${hoardingId}/availability`);
       if (response.ok) {
         const result = await response.json();
         console.log('Availability data loaded:', result.data);
@@ -81,7 +82,7 @@ export const HoardingDetail = () => {
   };
 
   const handleBookNow = () => {
-    if (hoarding?.status !== 'Booked') {
+    if (selectedDates) {
       setIsContactFormOpen(true);
     }
   };
@@ -303,52 +304,33 @@ export const HoardingDetail = () => {
 
               {/* CTA Section */}
               <div className="space-y-4">
-                {hoarding.status !== 'Booked' ? (
-                  // User View - Booking Button
-                  <>
-                    <Button 
-                      onClick={handleBookNow}
-                      className="w-full bg-purple-600 hover:bg-purple-700 text-white h-14 text-lg font-semibold"
-                      disabled={!selectedDates}
-                    >
-                      {selectedDates ? (hoarding.status === 'Limited' ? 'Request Inquire' : 'Book This Space') : 'Select Dates to Book'}
-                    </Button>
-                    {!selectedDates ? (
-                      <p className="text-center text-sm text-kaki-grey mt-2">
-                        Please select your campaign dates from calendar above
-                      </p>
-                    ) : (
-                      <p className="text-center text-sm text-yellow-500/80 mt-2">
-                        {hoarding.status === 'Limited' && 'Availability is limited for this hoarding. Secure your dates quickly!'}
-                      </p>
-                    )}
-                    <div className="flex items-center justify-center gap-6 text-sm text-kaki-grey mt-4">
-                      <div className="flex items-center gap-2">
-                        <Phone className="w-4 h-4" />
-                        <span>+91 98765 43210</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Mail className="w-4 h-4" />
-                        <span>advertising@kaki.com</span>
-                      </div>
-                    </div>
-                  </>
+                <Button 
+                  onClick={handleBookNow}
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white h-14 text-lg font-semibold"
+                  disabled={!selectedDates}
+                >
+                  {selectedDates ? (hoarding.status === 'Booked' ? 'Book Available Slots' : 'Book This Space') : 'Select Dates to Book'}
+                </Button>
+                {!selectedDates ? (
+                  <p className="text-center text-sm text-kaki-grey mt-2">
+                    Please select your campaign dates from calendar above
+                  </p>
                 ) : (
-                  // User View - Booked Status
-                  <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-6 text-center">
-                    <Clock className="w-8 h-8 text-red-400 mx-auto mb-3" />
-                    <h4 className="text-lg font-semibold text-white mb-2">Currently Booked</h4>
-                    <p className="text-kaki-grey mb-4">
-                      This space is currently occupied. Join our waitlist to be notified when it becomes available.
-                    </p>
-                    <Button 
-                      variant="outline"
-                      className="border-red-500/30 text-red-400 hover:bg-red-500/10"
-                    >
-                      Join Waitlist
-                    </Button>
-                  </div>
+                  <p className="text-center text-sm text-yellow-500/80 mt-2">
+                    {hoarding.status === 'Limited' && 'Availability is limited for this hoarding.'}
+                    {availabilityData.some(a => a.status === 'booked') && 'This hoarding has existing bookings. You can book the remaining dates.'}
+                  </p>
                 )}
+                <div className="flex items-center justify-center gap-6 text-sm text-kaki-grey mt-4">
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    <span>+91 98765 43210</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    <span>advertising@kaki.com</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

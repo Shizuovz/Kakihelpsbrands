@@ -82,6 +82,25 @@ export const authAPI = {
   logout: (): void => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('currentUser');
+  },
+
+  updateProfile: async (token: string, data: Partial<User>): Promise<User> => {
+    const response = await fetch(`${API_BASE_URL}/api/user/profile`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Profile update failed');
+    }
+    
+    const result = await response.json();
+    return result.data;
   }
 };
 

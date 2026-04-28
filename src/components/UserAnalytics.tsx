@@ -16,30 +16,41 @@ import { formatINR } from '@/utils/currency';
 
 interface UserAnalyticsProps {
   hoardings: Hoarding[];
+  inquiries: any[];
 }
 
-export const UserAnalytics = ({ hoardings }: UserAnalyticsProps) => {
+export const UserAnalytics = ({ hoardings, inquiries }: UserAnalyticsProps) => {
+  // Use inquiries for booking-related stats
+  const confirmedInquiries = inquiries.filter(inq => inq.status?.toLowerCase() === 'confirmed');
+  
   // Calculate analytics
   const analytics = {
     totalHoardings: hoardings.length,
     availableHoardings: hoardings.filter(h => h.status === 'Available').length,
-    bookedHoardings: hoardings.filter(h => h.status === 'Booked').length,
-    totalValue: hoardings.reduce((sum, h) => sum + h.price, 0),
+    bookedCount: confirmedInquiries.length,
+    totalRevenue: confirmedInquiries.reduce((sum, inq) => sum + (Number(inq.hoardingTotalCharges) || 0), 0),
     avgPrice: hoardings.length > 0 ? hoardings.reduce((sum, h) => sum + h.price, 0) / hoardings.length : 0,
-    occupancyRate: hoardings.length > 0 ? (hoardings.filter(h => h.status === 'Booked').length / hoardings.length) * 100 : 0,
+    occupancyRate: hoardings.length > 0 ? (confirmedInquiries.length / hoardings.length) * 100 : 0,
   };
 
-  // Group by region
+  // Group by region - using confirmed inquiries to see actual performance
   const regionData = hoardings.reduce((acc, hoarding) => {
     const region = hoarding.region || 'Unknown';
     if (!acc[region]) {
       acc[region] = { count: 0, value: 0, booked: 0 };
     }
     acc[region].count++;
-    acc[region].value += hoarding.price;
-    if (hoarding.status === 'Booked') {
-      acc[region].booked++;
-    }
+    
+    // Find confirmed inquiries for this hoarding
+    const hInqs = confirmedInquiries.filter(inq => {
+      const inqHid = String(inq.hoardingId || '').trim();
+      const hId = String(hoarding.id || (hoarding as any)._id || '').trim();
+      return inqHid === hId;
+    });
+    
+    acc[region].value += hInqs.reduce((sum, inq) => sum + (Number(inq.hoardingTotalCharges) || 0), 0);
+    acc[region].booked += hInqs.length;
+    
     return acc;
   }, {} as Record<string, { count: number; value: number; booked: number }>);
 
@@ -50,10 +61,17 @@ export const UserAnalytics = ({ hoardings }: UserAnalyticsProps) => {
       acc[type] = { count: 0, value: 0, booked: 0 };
     }
     acc[type].count++;
-    acc[type].value += hoarding.price;
-    if (hoarding.status === 'Booked') {
-      acc[type].booked++;
-    }
+    
+    // Find confirmed inquiries for this hoarding
+    const hInqs = confirmedInquiries.filter(inq => {
+      const inqHid = String(inq.hoardingId || '').trim();
+      const hId = String(hoarding.id || (hoarding as any)._id || '').trim();
+      return inqHid === hId;
+    });
+    
+    acc[type].value += hInqs.reduce((sum, inq) => sum + (Number(inq.hoardingTotalCharges) || 0), 0);
+    acc[type].booked += hInqs.length;
+    
     return acc;
   }, {} as Record<string, { count: number; value: number; booked: number }>);
 
@@ -70,10 +88,10 @@ export const UserAnalytics = ({ hoardings }: UserAnalyticsProps) => {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-white">
-              ₹{analytics.totalValue.toLocaleString()}
+              {formatINR(analytics.totalRevenue)}
             </div>
             <p className="text-xs text-kaki-grey">
-              Monthly potential
+              Confirmed total
             </p>
           </CardContent>
         </Card>
@@ -90,7 +108,7 @@ export const UserAnalytics = ({ hoardings }: UserAnalyticsProps) => {
               {Math.round(analytics.occupancyRate)}%
             </div>
             <p className="text-xs text-kaki-grey">
-              {analytics.bookedHoardings} of {analytics.totalHoardings} spaces
+              {analytics.bookedCount} campaigns active
             </p>
           </CardContent>
         </Card>

@@ -377,7 +377,10 @@ export const AdminContent = () => {
     
     try {
       const response = await fetch(`${API_BASE_URL}/api/inquiries/${id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        }
       });
       if (response.ok) {
         setInquiries(prev => prev.filter(item => (item.id || item._id) !== id));
@@ -393,7 +396,10 @@ export const AdminContent = () => {
     try {
       const response = await fetch(`${API_BASE_URL}/api/inquiries/${id}/status`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+        },
         body: JSON.stringify({ status: newStatus })
       });
       if (response.ok) {

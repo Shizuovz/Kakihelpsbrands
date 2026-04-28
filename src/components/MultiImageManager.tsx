@@ -10,8 +10,10 @@ import {
   Trash2,
   MoveUp,
   MoveDown,
-  Check
+  Check,
+  Loader2
 } from "lucide-react";
+import { API_BASE_URL } from "@/config";
 
 interface MultiImageManagerProps {
   images: string[];
@@ -24,6 +26,7 @@ export const MultiImageManager = ({
   onImagesChange, 
   maxImages = 8 
 }: MultiImageManagerProps) => {
+  const [isUploading, setIsUploading] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [newImageUrl, setNewImageUrl] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -33,47 +36,58 @@ export const MultiImageManager = ({
     if (!files || files.length === 0) return;
 
     const fileArray = Array.from(files);
-    const newImages: string[] = [];
     
-    // Process each file
-    for (const file of fileArray) {
-      if (images.length + newImages.length >= maxImages) {
-        alert(`Maximum ${maxImages} images allowed. Skipping remaining files.`);
-        break;
-      }
-
-      // Check if file is an image
-      if (!file.type.startsWith('image/')) {
-        alert(`${file.name} is not an image file. Skipping.`);
-        continue;
-      }
-
-      // Check file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        alert(`${file.name} is too large (max 5MB). Skipping.`);
-        continue;
-      }
-
-      try {
-        const result = await new Promise<string>((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target?.result as string);
-          reader.onerror = (e) => reject(e);
-          reader.readAsDataURL(file);
-        });
-        newImages.push(result);
-      } catch (error) {
-        console.error(`Error reading file ${file.name}:`, error);
-      }
+    // Check if total count will exceed max
+    if (images.length + fileArray.length > maxImages) {
+      alert(`Maximum ${maxImages} images allowed.`);
+      return;
     }
 
-    if (newImages.length > 0) {
-      onImagesChange([...images, ...newImages]);
-    }
+    setIsUploading(true);
+    const newImageUrls: string[] = [];
+    
+    try {
+      // We can upload all files at once as an array
+      const formData = new FormData();
+      fileArray.forEach(file => {
+        // Validate each file
+        if (file.type.startsWith('image/') && file.size <= 5 * 1024 * 1024) {
+          formData.append('images', file);
+        }
+      });
 
-    // Clear the input so the same file can be selected again
-    if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      if (formData.getAll('images').length === 0) {
+        alert('No valid images selected (max 5MB, JPG/PNG/WebP)');
+        setIsUploading(false);
+        return;
+      }
+
+      const response = await fetch(`${API_BASE_URL}/api/upload`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+        },
+        body: formData
+      });
+
+      const result = await response.json();
+      
+      if (result.success && result.data) {
+        // Extract URLs from result.data array
+        const uploadedUrls = result.data.map((item: any) => item.url);
+        onImagesChange([...images, ...uploadedUrls]);
+      } else {
+        throw new Error(result.message || 'Upload failed');
+      }
+    } catch (error) {
+      console.error('Upload Error:', error);
+      alert('Failed to upload images to cloud. Please try again.');
+    } finally {
+      setIsUploading(false);
+      // Clear the input so the same file can be selected again
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -161,21 +175,33 @@ export const MultiImageManager = ({
         <div
           onDragOver={handleDragOver}
           onDrop={handleDrop}
-          className="border-2 border-dashed border-white/20 rounded-xl p-8 text-center hover:border-purple-400/50 transition-colors cursor-pointer"
-          onClick={triggerFileInput}
+          className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
+            isUploading ? 'border-purple-400 bg-purple-400/5' : 'border-white/20 hover:border-purple-400/50'
+          }`}
+          onClick={isUploading ? undefined : triggerFileInput}
         >
-          <Upload className="w-12 h-12 text-purple-400 mx-auto mb-4" />
-          <p className="text-white font-medium mb-2">
-            Upload Images from Your System
-          </p>
-          <p className="text-kaki-grey text-sm mb-4">
-            Drag & drop images here or click to browse
-          </p>
-          <div className="text-xs text-kaki-grey">
-            <p>• Supported formats: JPG, PNG, GIF, WebP</p>
-            <p>• Maximum file size: 5MB per image</p>
-            <p>• Maximum {maxImages} images total</p>
-          </div>
+          {isUploading ? (
+            <div className="flex flex-col items-center">
+              <Loader2 className="w-12 h-12 text-purple-400 mx-auto mb-4 animate-spin" />
+              <p className="text-white font-medium mb-2">Uploading to Cloud...</p>
+              <p className="text-kaki-grey text-sm">Please wait while we secure your assets</p>
+            </div>
+          ) : (
+            <>
+              <Upload className="w-12 h-12 text-purple-400 mx-auto mb-4" />
+              <p className="text-white font-medium mb-2">
+                Upload Images from Your System
+              </p>
+              <p className="text-kaki-grey text-sm mb-4">
+                Drag & drop images here or click to browse
+              </p>
+              <div className="text-xs text-kaki-grey">
+                <p>• Supported formats: JPG, PNG, GIF, WebP</p>
+                <p>• Maximum file size: 5MB per image</p>
+                <p>• Maximum {maxImages} images total</p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* URL Input Section */}

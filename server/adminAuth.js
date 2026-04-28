@@ -2,6 +2,7 @@ import jwt from 'jsonwebtoken';
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 
 dotenv.config();
 
@@ -46,13 +47,37 @@ export const adminAuthMiddleware = (req, res, next) => {
   }
 };
 
-export const adminLogin = (req, res) => {
+export const adminLogin = async (req, res) => {
   const { email, password } = req.body;
   const admins = loadAdmins();
   
-  const admin = admins.find(a => a.email.toLowerCase() === email?.toLowerCase() && a.password === password);
+  const admin = admins.find(a => a.email.toLowerCase() === email?.toLowerCase());
   
-  if (admin) {
+  if (!admin) {
+    return res.status(401).json({ success: false, message: 'Invalid admin credentials' });
+  }
+
+  // Check if it's a hashed password or plain text (migration fallback)
+  let isMatch = false;
+  if (admin.password.startsWith('$2a$') || admin.password.startsWith('$2b$')) {
+    isMatch = await bcrypt.compare(password, admin.password);
+  } else {
+    // Fallback for plain text passwords - allow once and update to hash
+    isMatch = admin.password === password;
+    if (isMatch) {
+      console.log(`⚠️ ADMIN AUTH: Plain text password detected for [${admin.email}]. Updating to hash...`);
+      const newHash = await bcrypt.hash(password, 10);
+      admin.password = newHash;
+      // Save updated admins list back to file
+      try {
+        fs.writeFileSync(ADMINS_FILE, JSON.stringify(admins, null, 2), 'utf8');
+      } catch (err) {
+        console.error('Error updating admin password to hash:', err);
+      }
+    }
+  }
+  
+  if (isMatch) {
     const token = generateAdminToken(admin);
     const { password: _, ...adminData } = admin;
     res.json({

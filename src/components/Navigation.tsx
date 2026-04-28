@@ -6,10 +6,19 @@ import {
   X, 
   ChevronDown,
   User,
-  LogOut
+  LogOut,
+  LayoutDashboard
 } from "lucide-react";
 import logo from '../assets/logos/logo-no-bg.png';
 import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,27 +59,56 @@ const Navigation = () => {
   const getAuthSection = () => {
     if (user) {
       return (
-        <div className="flex items-center space-x-3 ml-4 pl-4 border-l border-white/20">
-          <div className="flex items-center space-x-2 text-green-400">
-            <User className="w-4 h-4" />
-            <span className="text-sm font-medium">{user?.name || 'User'}</span>
-          </div>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/dashboard')}
-            className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
-          >
-            Dashboard
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={handleLogout}
-            className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-          >
-            <LogOut className="w-4 h-4" />
-          </Button>
+        <div className="ml-4 pl-4 border-l border-white/20">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button 
+                variant="ghost" 
+                className="flex items-center space-x-2 text-green-400 hover:text-green-300 hover:bg-green-500/10 px-3 transition-all duration-300"
+              >
+                <div className="w-8 h-8 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20 mr-1">
+                  <User className="w-4 h-4" />
+                </div>
+                <span className="text-sm font-semibold max-w-[120px] truncate">{user?.name || 'User'}</span>
+                <ChevronDown className="w-3 h-3 opacity-50" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent 
+              className="bg-kaki-dark-grey border border-white/10 text-white w-56 p-1 mt-1 shadow-2xl animate-in fade-in zoom-in-95 duration-200" 
+              align="end"
+              sideOffset={8}
+            >
+              <DropdownMenuLabel className="px-3 py-2 text-kaki-grey text-[10px] font-bold uppercase tracking-[0.2em]">
+                Provider Management
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator className="bg-white/5 mx-1 my-1" />
+              
+              <DropdownMenuItem 
+                onClick={() => navigate('/dashboard')}
+                className="rounded-md px-3 py-3 focus:bg-green-500/10 hover:bg-green-500/10 cursor-pointer flex items-center gap-3 transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center group-hover:bg-green-500/30 transition-colors">
+                   <LayoutDashboard className="w-4 h-4 text-green-400" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-sm font-medium">Dashboard</span>
+                  <span className="text-[10px] text-kaki-grey">Manage inventory & inquiries</span>
+                </div>
+              </DropdownMenuItem>
+
+              <DropdownMenuSeparator className="bg-white/5 mx-1 my-1" />
+              
+              <DropdownMenuItem 
+                onClick={handleLogout}
+                className="rounded-md px-3 py-2.5 text-red-400 focus:bg-red-500/10 hover:bg-red-500/10 cursor-pointer flex items-center gap-3 transition-colors group"
+              >
+                <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center group-hover:bg-red-500/20 transition-colors">
+                  <LogOut className="w-4 h-4" />
+                </div>
+                <span className="text-sm font-medium">Sign Out</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       );
     }
@@ -152,37 +190,53 @@ const Navigation = () => {
             ))}
             
             {/* Auth Section for Mobile */}
-            <div className="border-t border-white/20 pt-4 mt-4">
+            <div className="border-t border-white/10 pt-4 mt-4">
               {user ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between py-3">
-                    <div className="flex items-center space-x-2 text-green-400">
-                      <User className="w-4 h-4" />
-                      <span className="text-sm font-medium">{user?.name || 'User'}</span>
+                <div className="space-y-4">
+                  <div className="flex items-center gap-3 px-2">
+                    <div className="w-10 h-10 rounded-full bg-green-500/10 flex items-center justify-center border border-green-500/20">
+                      <User className="w-5 h-5 text-green-400" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-sm font-bold text-white leading-none">{user?.name || 'User'}</span>
+                      <span className="text-[10px] text-kaki-grey mt-1 uppercase tracking-wider">Provider Account</span>
                     </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
+                  <div className="grid grid-cols-1 gap-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => {
+                        navigate('/dashboard');
+                        setIsMobileMenuOpen(false);
+                      }}
+                      className="w-full justify-start text-green-400 hover:text-green-300 hover:bg-green-500/10 h-12 px-4 rounded-xl"
+                    >
+                      <LayoutDashboard className="w-4 h-4 mr-3" />
+                      Go to Dashboard
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      onClick={handleLogout}
+                      className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-500/10 h-12 px-4 rounded-xl"
+                    >
+                      <LogOut className="w-4 h-4 mr-3" />
+                      Sign Out
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="px-2 pb-2">
+                  <Button 
                     onClick={() => {
-                      navigate('/dashboard');
+                      navigate('/login');
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white h-12 rounded-xl shadow-lg shadow-purple-500/20 font-bold"
                   >
-                    Dashboard
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleLogout}
-                    className="w-full text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                  >
-                    <LogOut className="w-4 h-4 mr-2" />
-                    Logout
+                    Sign In / Sign Up
                   </Button>
                 </div>
-              ) : null}
+              )}
             </div>
           </div>
         )}

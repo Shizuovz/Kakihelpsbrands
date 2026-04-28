@@ -5,12 +5,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { AvailabilityCalendar } from '@/components/AvailabilityCalendar';
 import { Calendar as CalendarIcon, Save, MapPin } from 'lucide-react';
 import { Hoarding } from '@/data/hoardings';
+import { API_BASE_URL } from '@/config';
+
+import { resolveApiUrl } from '@/utils/resolveApiUrl';
 
 interface CalendarManagerProps {
   hoardings: Hoarding[];
+  inquiries: any[];
 }
 
-export const CalendarManager = ({ hoardings }: CalendarManagerProps) => {
+export const CalendarManager = ({ hoardings, inquiries }: CalendarManagerProps) => {
   const [selectedHoardingId, setSelectedHoardingId] = useState<string>('');
   const [availabilityData, setAvailabilityData] = useState<Array<{date: string, status: 'available' | 'limited' | 'booked'}>>([]);
   const [selectedRange, setSelectedRange] = useState<{startDate: string, endDate: string} | null>(null);
@@ -29,7 +33,7 @@ export const CalendarManager = ({ hoardings }: CalendarManagerProps) => {
   const loadAvailability = async (hoardingId: string) => {
     setIsLoading(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/hoardings/${hoardingId}/availability`);
+      const response = await fetch(`${API_BASE_URL}/api/hoardings/${hoardingId}/availability`);
       if (response.ok) {
         const result = await response.json();
         setAvailabilityData(result.data || []);
@@ -78,7 +82,7 @@ export const CalendarManager = ({ hoardings }: CalendarManagerProps) => {
     
     setIsSaving(true);
     try {
-      const response = await fetch(`http://localhost:3001/api/hoardings/${selectedHoardingId}/availability`, {
+      const response = await fetch(`${API_BASE_URL}/api/hoardings/${selectedHoardingId}/availability`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -165,7 +169,7 @@ export const CalendarManager = ({ hoardings }: CalendarManagerProps) => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {selectedHoarding.imageUrl && (
-                  <img src={selectedHoarding.imageUrl} alt={selectedHoarding.title} className="w-full h-32 object-cover rounded-lg border border-white/5" />
+                  <img src={resolveApiUrl(selectedHoarding.imageUrl)} alt={selectedHoarding.title} className="w-full h-32 object-cover rounded-lg border border-white/5" />
                 )}
                 <div>
                   <h4 className="text-white font-medium text-lg leading-tight">{selectedHoarding.title}</h4>
@@ -173,6 +177,33 @@ export const CalendarManager = ({ hoardings }: CalendarManagerProps) => {
                     <MapPin className="w-3 h-3 mr-1" />
                     {selectedHoarding.location}, {selectedHoarding.region}
                   </div>
+                  
+                  {/* Active Booking Detail for Calendar Sidebar */}
+                  {selectedHoarding.status === 'Booked' && (
+                    <div className="mt-4 p-3 bg-purple-500/10 rounded-lg border border-purple-500/20">
+                      <p className="text-[10px] text-purple-400 uppercase tracking-wider font-bold mb-1">Active Booking</p>
+                      {(() => {
+                        const activeInq = inquiries
+                          .filter(inq => (inq.hoardingId === (selectedHoarding.id || (selectedHoarding as any)._id?.toString())))
+                          .sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime())
+                          .find(inq => inq.status?.toLowerCase() === 'confirmed') || 
+                          (selectedHoarding.status === 'Booked' ? inquiries.find(inq => (inq.hoardingId === (selectedHoarding.id || (selectedHoarding as any)._id?.toString()))) : null);
+                        if (activeInq) {
+                          return (
+                            <>
+                              <p className="text-white text-xs font-semibold">
+                                {activeInq.selectedDates ? (
+                                  `${new Date(activeInq.selectedDates.startDate).toLocaleDateString()} - ${new Date(activeInq.selectedDates.endDate).toLocaleDateString()}`
+                                ) : 'Dates Not Set'}
+                              </p>
+                              <p className="text-kaki-grey text-[10px] mt-1">Client: {activeInq.name}</p>
+                            </>
+                          );
+                        }
+                        return <p className="text-kaki-grey text-xs italic">Inquiry data not found</p>;
+                      })()}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

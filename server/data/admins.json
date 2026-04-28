@@ -3,7 +3,7 @@
     "id": "admin-001",
     "name": "Super Admin",
     "email": "admin@kaki.in",
-    "password": "kakiadmin123",
+    "password": "$2b$10$BcicP5O9rBO9JJngyEuW7.hDzQPAcPHQajvv9eRW1lp5H6Ofk1vyi",
     "role": "admin",
     "createdAt": "2026-03-31T07:44:21Z"
   }
