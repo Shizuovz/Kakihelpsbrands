@@ -1,8 +1,6 @@
 import { Hoarding } from "@/data/hoardings";
 import { Button } from "@/components/ui/button";
 import { MapPin, Maximize2, Users, ArrowRight, Square } from "lucide-react";
-import { useState } from "react";
-import { ContactForm } from "./ContactForm";
 import { formatINR } from "@/utils/currency";
 import { useNavigate } from "react-router-dom";
 
@@ -11,19 +9,15 @@ interface HoardingCardProps {
 }
 
 export const HoardingCard = ({ hoarding }: HoardingCardProps) => {
-  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    // Regular users go to detail page
     navigate(`/hoardings/${hoarding.id}`);
   };
 
   const handleBookNow = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent navigation when clicking book now
-    if (hoarding.status !== 'Booked') {
-      setIsContactFormOpen(true);
-    }
+    e.stopPropagation();
+    navigate(`/hoardings/${hoarding.id}`);
   };
 
   return (
@@ -149,14 +143,6 @@ export const HoardingCard = ({ hoarding }: HoardingCardProps) => {
         </div>
       </div>
 
-      {/* Contact Form Modal */}
-      {isContactFormOpen && (
-        <ContactForm
-          hoarding={hoarding}
-          isOpen={isContactFormOpen}
-          onClose={() => setIsContactFormOpen(false)}
-        />
-      )}
     </>
   );
 };

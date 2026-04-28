@@ -44,7 +44,7 @@ export const Hoardings = () => {
           fetchRegions(),
           fetchTypes()
         ]);
-        
+
         setHoardings(hoardingsData);
         setRegions(["All", ...regionsData]);
         setTypes(["All", ...typesData]);
@@ -56,15 +56,15 @@ export const Hoardings = () => {
     };
 
     loadData();
-    
+
     // Listen for hoarding creation events
     const handleHoardingCreated = () => {
       console.log('New hoarding created, refreshing data...');
       loadData();
     };
-    
+
     window.addEventListener('hoardingCreated', handleHoardingCreated);
-    
+
     return () => {
       window.removeEventListener('hoardingCreated', handleHoardingCreated);
     };
@@ -73,12 +73,12 @@ export const Hoardings = () => {
   // Filter and sort active hoardings
   const filteredHoardings = useMemo(() => {
     let result = hoardings.filter((h) => {
-      const matchesSearch = h.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                            h.location.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = h.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        h.location.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesRegion = selectedRegion === "All" || h.region === selectedRegion;
       const matchesType = selectedType === "All" || h.type === selectedType;
       const matchesPrice = h.price <= maxPrice;
-      
+
       return matchesSearch && matchesRegion && matchesType && matchesPrice;
     });
 
@@ -88,7 +88,7 @@ export const Hoardings = () => {
     } else if (sortBy === "price-desc") {
       result.sort((a, b) => b.price - a.price);
     }
-    
+
     return result;
   }, [searchQuery, selectedRegion, selectedType, maxPrice, sortBy, hoardings]);
 
@@ -100,9 +100,9 @@ export const Hoardings = () => {
     setSortBy("featured");
   };
 
-  const activeFilterCount = (selectedRegion !== "All" ? 1 : 0) + 
-                            (selectedType !== "All" ? 1 : 0) + 
-                            (maxPrice < 100000 ? 1 : 0);
+  const activeFilterCount = (selectedRegion !== "All" ? 1 : 0) +
+    (selectedType !== "All" ? 1 : 0) +
+    (maxPrice < 100000 ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-kaki-black pt-32 pb-20">
@@ -110,7 +110,7 @@ export const Hoardings = () => {
         {/* Auth Button for Providers/Advertisers */}
         <div className="flex justify-end mb-8">
           {!isAuthenticated ? (
-            <Button 
+            <Button
               onClick={() => navigate("/login")}
               className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-6 shadow-lg shadow-purple-500/20 group"
             >
@@ -118,7 +118,7 @@ export const Hoardings = () => {
               <User className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
             </Button>
           ) : (
-            <Button 
+            <Button
               onClick={() => navigate("/dashboard")}
               variant="outline"
               className="border-purple-500/30 text-purple-400 hover:bg-purple-600/10 rounded-full px-6 flex items-center gap-2 hover:border-purple-400 transition-all"
@@ -146,7 +146,7 @@ export const Hoardings = () => {
         <div className="bg-kaki-dark-grey/50 border border-white/10 rounded-2xl p-4 md:p-6 mb-12 backdrop-blur-xl shadow-2xl relative overflow-hidden group">
           {/* Decorative background for the filter bar */}
           <div className="absolute top-0 right-0 w-32 h-32 bg-purple-600/5 blur-3xl -mr-16 -mt-16 group-hover:bg-purple-600/10 transition-colors duration-500"></div>
-          
+
           <div className="relative space-y-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
               {/* Search - Takes 5 columns on desktop */}
@@ -163,7 +163,7 @@ export const Hoardings = () => {
                   />
                 </div>
               </div>
-              
+
               {/* Region & Type Grid - Takes 4 columns on desktop */}
               <div className="lg:col-span-4 grid grid-cols-2 gap-4">
                 <Select value={selectedRegion} onValueChange={(value: string) => setSelectedRegion(value)}>
@@ -220,25 +220,25 @@ export const Hoardings = () => {
                   <span className="text-sm font-medium text-white whitespace-nowrap">Price Range</span>
                 </div>
                 <div className="flex-1 px-2">
-                  <Slider 
-                    value={[maxPrice]} 
-                    max={100000} 
-                    step={1000} 
+                  <Slider
+                    value={[maxPrice]}
+                    max={100000}
+                    step={1000}
                     onValueChange={(val) => setMaxPrice(val[0])}
                     className="py-4"
                   />
                 </div>
                 <div className="bg-purple-600/20 border border-purple-500/30 rounded-lg px-4 py-2 min-w-[120px] text-center">
                   <span className="text-sm font-bold text-purple-400">
-                    ≤ ₹{maxPrice.toLocaleString('en-IN')}
+                    ₹{maxPrice.toLocaleString('en-IN')}
                   </span>
                 </div>
               </div>
 
               {/* Clear Filters Button */}
               {activeFilterCount > 0 && (
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   onClick={resetFilters}
                   className="w-full md:w-auto text-purple-400 hover:text-white hover:bg-white/5 h-12 px-6 rounded-xl border border-dashed border-purple-500/30 hover:border-solid transition-all"
                 >
@@ -263,9 +263,9 @@ export const Hoardings = () => {
         {/* Grid */}
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-             {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-               <div key={`skeleton-${i}`} className="h-96 bg-white/5 animate-pulse rounded-2xl border border-white/5"></div>
-             ))}
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={`skeleton-${i}`} className="h-96 bg-white/5 animate-pulse rounded-2xl border border-white/5"></div>
+            ))}
           </div>
         ) : filteredHoardings.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
