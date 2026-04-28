@@ -391,14 +391,13 @@ export const Login = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 p-4 rounded-lg flex items-center justify-between">
-                <div>
-                  <span className="text-xs text-kaki-grey block mb-1 uppercase tracking-wider">Access Token</span>
-                  <p className="text-xl font-mono text-purple-400 font-bold">kaki123</p>
-                </div>
+              <div className="bg-white/5 p-4 rounded-lg flex items-center justify-between gap-4">
+                <p className="text-xs text-kaki-grey leading-relaxed">
+                  Please check the message above for your temporary credentials. Use them to sign in and change your password immediately.
+                </p>
                 <Button
                   onClick={() => setIsForgotPasswordOpen(false)}
-                  className="bg-purple-600 hover:bg-purple-700"
+                  className="bg-purple-600 hover:bg-purple-700 shrink-0"
                 >
                   Sign In Now
                 </Button>

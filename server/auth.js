@@ -3,6 +3,8 @@ import { MongoClient } from 'mongodb';
 import dotenv from 'dotenv';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
+import Joi from 'joi';
+import logger from './logger.js';
 
 // Load environment variables
 dotenv.config();
@@ -38,7 +40,7 @@ const initUsersCollection = async () => {
 };
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '24h' });
+  return jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '4h' }); // Reduced from 24h to 4h for security
 };
 
 const verifyToken = (token) => {
@@ -68,6 +70,21 @@ const authMiddleware = async (req, res, next) => {
 
 const register = async (req, res) => {
   try {
+    // Phase 2: Schema Validation
+    const schema = Joi.object({
+      name: Joi.string().required().min(2).max(100),
+      email: Joi.string().email().required(),
+      password: Joi.string().required().min(8),
+      company: Joi.string().allow('', null),
+      phone: Joi.string().allow('', null),
+      role: Joi.string().valid('provider', 'client').default('provider')
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
     const { name, email, password, company, phone, role = 'provider' } = req.body;
     const normalizedEmail = email?.toLowerCase().trim();
     
@@ -122,14 +139,14 @@ const register = async (req, res) => {
     };
     
     await usersCollection.insertOne(newUser);
-    console.log(`✅ REGISTER: Success for [${normalizedEmail}]`);
+    logger.info(`✅ [AUTH] User Registered: ${normalizedEmail}`);
     
     const token = generateToken(newUser);
     const { password: _, ...userWithoutPassword } = newUser;
     res.status(201).json({ success: true, message: 'Registration successful', data: { user: userWithoutPassword, token } });
   } catch (error) {
-    console.error('💥 REGISTER ERROR:', error.message);
-    res.status(500).json({ success: false, message: 'Registration failed', error: error.message });
+    logger.error('💥 [AUTH] Registration Error:', error.message);
+    res.status(500).json({ success: false, message: 'Registration failed' });
   }
 };
 
@@ -169,17 +186,17 @@ const login = async (req, res) => {
     }
 
     if (!isMatch) {
-      console.log(`❌ AUTH: Password MISMATCH for user [${user.email}]`);
+      logger.warn(`🛑 [SECURITY] Failed login attempt for: ${user.email}`);
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    console.log(`✅ AUTH: Login SUCCESS for user [${user.email}]`);
+    logger.info(`✅ [AUTH] Login Success: ${user.email}`);
     const token = generateToken(user);
     const { password: _, ...userWithoutPassword } = user;
     res.json({ success: true, message: 'Login successful', data: { user: userWithoutPassword, token } });
   } catch (error) {
-    console.error('💥 AUTH ERROR:', error.message);
-    res.status(500).json({ success: false, message: 'Login failed', error: error.message });
+    logger.error('💥 [AUTH] Login Error:', error.message);
+    res.status(500).json({ success: false, message: 'Login failed' });
   }
 };
 
@@ -258,14 +275,14 @@ const resetPassword = async (req, res) => {
       { $set: { password: hashedPassword, updatedAt: new Date().toISOString() } }
     );
     
-    // In a production environment, this would be EMAILED to the user.
-    // Displaying it here is ONLY for the current development/demonstration phase.
+    // In production, this would be emailed.
+    logger.info(`🔑 [AUTH] Password recovery initiated for: ${normalizedEmail}`);
     res.json({ 
       success: true, 
       message: `Security Check Passed! Your temporary password is: ${tempPassword}. Please change it after logging in.` 
     });
   } catch (error) {
-    console.error('💥 RESET ERROR:', error.message);
+    logger.error('💥 [AUTH] Recovery Error:', error.message);
     res.status(500).json({ success: false, message: 'Recovery failed' });
   }
 };

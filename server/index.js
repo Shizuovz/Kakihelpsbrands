@@ -11,6 +11,11 @@ import rateLimit from 'express-rate-limit';
 import xss from 'xss-clean';
 import hpp from 'hpp';
 import cors from 'cors';
+import sanitize from 'mongo-sanitize';
+import Joi from 'joi';
+import morgan from 'morgan';
+import logger from './logger.js';
+import { fileTypeFromFile } from 'file-type';
 
 // Load environment variables FIRST
 dotenv.config();
@@ -82,10 +87,27 @@ app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 // Prevent HTTP Parameter Pollution
 app.use(hpp());
 
-// Logging middleware
+// NoSQL Injection Protection
+app.use((req, res, next) => {
+  req.body = sanitize(req.body);
+  req.query = sanitize(req.query);
+  req.params = sanitize(req.params);
+  next();
+});
+
+// Logging middleware - Development
+app.use(morgan('dev', {
+  skip: (req, res) => res.statusCode < 400
+}));
+
+// Production Auditing
+app.use(morgan('combined', {
+  stream: { write: (message) => logger.info(message.trim()) }
+}));
+
 app.use((req, res, next) => {
   const origin = req.headers.origin;
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url} - Origin: ${origin}`);
+  logger.info(`${req.method} ${req.url} - Origin: ${origin}`);
   next();
 });
 
@@ -391,6 +413,20 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), asy
     
     const results = await Promise.all(uploadPromises);
     
+    // Phase 3: File Signature Validation (Magic Numbers)
+    for (const file of req.files) {
+      const type = await fileTypeFromFile(file.path);
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
+      const fileExt = path.extname(file.originalname).toLowerCase();
+      
+      if (!type || !allowedExtensions.includes(`.${type.ext}`)) {
+        logger.warn(`🛑 [SECURITY] Rejected file with spoofed extension: ${file.originalname} (Detected: ${type?.mime})`);
+        // Cleanup all local files
+        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch(e) {} });
+        return res.status(400).json({ success: false, message: 'Invalid file signature detected.' });
+      }
+    }
+
     // Cleanup local files
     req.files.forEach(file => {
       try { fs.unlinkSync(file.path); } catch(e) {}
@@ -400,11 +436,11 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), asy
       url: result.secure_url
     }));
     
-    console.log('✅ [Cloudinary] Upload successful');
+    logger.info(`✅ [Cloudinary] Admin Upload successful: ${req.files.length} files`);
     res.json({ success: true, files: uploadedFiles });
   } catch (error) {
-    console.error('❌ [Cloudinary] Upload error:', error);
-    res.status(500).json({ success: false, message: error.message });
+    logger.error('❌ [Cloudinary] Admin Upload error:', error);
+    next(error); // Pass to global error handler
   }
 });
 
@@ -426,6 +462,18 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), async (req, r
     
     const results = await Promise.all(uploadPromises);
     
+    // Phase 3: File Signature Validation (Magic Numbers)
+    for (const file of req.files) {
+      const type = await fileTypeFromFile(file.path);
+      const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
+      
+      if (!type || !allowedExtensions.includes(`.${type.ext}`)) {
+        logger.warn(`🛑 [SECURITY] User upload rejected (spoofed): ${file.originalname}`);
+        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch(e) {} });
+        return res.status(400).json({ success: false, message: 'Invalid file signature.' });
+      }
+    }
+
     // Cleanup local files
     req.files.forEach(file => {
       try { fs.unlinkSync(file.path); } catch(e) {}
@@ -441,18 +489,15 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), async (req, r
       };
     });
 
-    console.log('✅ [Cloudinary] User upload successful');
+    logger.info(`✅ [Cloudinary] User upload successful: ${req.user.email}`);
     res.json({
       success: true,
       message: 'Files uploaded successfully to Cloud',
       data: uploadedFiles
     });
   } catch (error) {
-    console.error('❌ [Cloudinary] User upload error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Failed to upload files to Cloud: ' + error.message
-    });
+    logger.error('❌ [Cloudinary] User upload error:', error);
+    next(error);
   }
 });
 
@@ -607,9 +652,47 @@ app.get('/api/types', async (req, res) => {
   }
 });
 
-// Contact form submission endpoint
+// Contact form submission endpoint with Joi validation
 app.post('/api/inquiries', async (req, res) => {
   try {
+    // Phase 2: Schema Validation
+    const schema = Joi.object({
+      name: Joi.string().required().max(100),
+      email: Joi.string().email().required(),
+      phone: Joi.string().allow('', null),
+      companyName: Joi.string().allow('', null),
+      location: Joi.string().allow('', null),
+      industry: Joi.string().allow('', null),
+      industryOther: Joi.string().allow('', null),
+      businessBrief: Joi.string().allow('', null),
+      onlinePresence: Joi.string().allow('', null),
+      onlineLinks: Joi.string().allow('', null),
+      serviceType: Joi.string().allow('', null),
+      serviceTypeOther: Joi.string().allow('', null),
+      mainGoal: Joi.string().allow('', null),
+      budget: Joi.string().allow('', null),
+      timeline: Joi.string().allow('', null),
+      referralSource: Joi.string().allow('', null),
+      referralOther: Joi.string().allow('', null),
+      additionalNotes: Joi.string().allow('', null),
+      message: Joi.string().allow('', null),
+      hoardingId: Joi.string().allow('', null),
+      hoardingTitle: Joi.string().allow('', null),
+      hoardingLocation: Joi.string().allow('', null),
+      hoardingPrice: Joi.number().allow(null),
+      hoardingDimensions: Joi.string().allow('', null),
+      hoardingType: Joi.string().allow('', null),
+      hoardingPrintingCharges: Joi.number().allow(null),
+      hoardingMountingCharges: Joi.number().allow(null),
+      hoardingTotalCharges: Joi.number().allow(null),
+    }).unknown(true);
+
+    const { error } = schema.validate(req.body);
+    if (error) {
+      console.log('⚠️ Validation Error:', error.details[0].message);
+      return res.status(400).json({ success: false, message: error.details[0].message });
+    }
+
     const inquiryData = {
       id: `inquiry-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
       ...req.body,
@@ -852,7 +935,8 @@ app.get('/api/inquiries', adminAuthMiddleware, async (req, res) => {
 
 // Delete an inquiry - Enhanced security
 // This can be done by the hoarding owner OR an admin
-app.delete('/api/inquiries/:id', async (req, res) => {
+// Delete inquiry (Admin Only - Phase 2)
+app.delete('/api/inquiries/:id', adminAuthMiddleware, async (req, res) => {
   try {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
@@ -1810,7 +1894,7 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
 
 // Global error handler for Multer and other errors
 app.use((err, req, res, next) => {
-  console.error('[Global Error Handler]:', err);
+  logger.error(`💥 [Global Error]: ${err.message}`, { stack: err.stack, path: req.path, method: req.method });
   
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
@@ -1825,9 +1909,13 @@ app.use((err, req, res, next) => {
     });
   }
 
-  res.status(err.status || 500).json({
+  const statusCode = err.status || 500;
+  const isProduction = process.env.NODE_ENV === 'production';
+  
+  res.status(statusCode).json({
     success: false,
-    message: err.message || 'An unexpected error occurred'
+    message: isProduction ? 'An internal server error occurred.' : err.message,
+    ...(isProduction ? {} : { stack: err.stack })
   });
 });
 
@@ -1872,7 +1960,7 @@ app.post('/api/newsletter/subscribe', async (req, res) => {
 const server = app.listen(port, '0.0.0.0', async () => {
   // Connect to MongoDB first
   await connectDB();
-  console.log(`Hoardings API listening at http://0.0.0.0:${port}`);
+  logger.info(`🚀 KAKI Backend Engine listening at http://0.0.0.0:${port}`);
 
   // Sync Content Engine (Per-page restoration)
   if (db) {

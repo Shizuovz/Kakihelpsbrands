@@ -3,6 +3,8 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import Joi from 'joi';
+import logger from './logger.js';
 
 dotenv.config();
 
@@ -26,7 +28,7 @@ export const generateAdminToken = (admin) => {
     email: admin.email, 
     role: 'admin',
     isAdmin: true 
-  }, JWT_ADMIN_SECRET, { expiresIn: '12h' });
+  }, JWT_ADMIN_SECRET, { expiresIn: '4h' }); // Reduced from 12h to 4h
 };
 
 export const adminAuthMiddleware = (req, res, next) => {
@@ -43,11 +45,22 @@ export const adminAuthMiddleware = (req, res, next) => {
     req.admin = decoded;
     next();
   } catch (error) {
+    logger.warn(`🛑 [SECURITY] Invalid admin token attempt: ${error.message}`);
     return res.status(401).json({ error: 'Invalid or expired admin token' });
   }
 };
 
 export const adminLogin = async (req, res) => {
+  const schema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required()
+  });
+
+  const { error } = schema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ success: false, message: 'Invalid request format' });
+  }
+
   const { email, password } = req.body;
   const admins = loadAdmins();
   
@@ -78,6 +91,7 @@ export const adminLogin = async (req, res) => {
   }
   
   if (isMatch) {
+    logger.info(`✅ [ADMIN] Login Success: ${admin.email}`);
     const token = generateAdminToken(admin);
     const { password: _, ...adminData } = admin;
     res.json({
@@ -85,6 +99,7 @@ export const adminLogin = async (req, res) => {
       data: { admin: adminData, token }
     });
   } else {
+    logger.warn(`🛑 [SECURITY] Failed Admin login attempt: ${email}`);
     res.status(401).json({ success: false, message: 'Invalid admin credentials' });
   }
 };
