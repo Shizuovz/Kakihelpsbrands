@@ -2,3 +2,5 @@ export const API_BASE_URL = typeof window !== 'undefined' &&
   (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
     ? 'http://localhost:3001'
     : 'https://kakihelpsbrands.onrender.com';
+export const GOOGLE_CLIENT_ID = "133961509179-k59avlnap1emd0bbekeuu550u59va56v.apps.googleusercontent.com";
+

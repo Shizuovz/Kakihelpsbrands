@@ -36,7 +36,9 @@ import {
   MoreVertical,
   ChevronDown,
   XCircle,
-  AlertCircle
+  AlertCircle,
+  Download,
+  FileSpreadsheet
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -211,6 +213,74 @@ export const UserDashboard = () => {
     if (inquiryFilter === 'all') return true;
     return inq.status?.toLowerCase() === inquiryFilter.toLowerCase();
   });
+
+  const exportToCSV = () => {
+    if (inquiries.length === 0) {
+      toast.error('No inquiries to export');
+      return;
+    }
+
+    // Define headers
+    const headers = [
+      'Customer Name',
+      'Email',
+      'Phone',
+      'Company',
+      'Hoarding Title',
+      'Status',
+      'Payment Status',
+      'Start Date',
+      'End Date',
+      'Duration (Days)',
+      'Rent',
+      'Printing Charges',
+      'Mounting Charges',
+      'Total Charges',
+      'Submitted At',
+      'Internal Notes',
+      'Message'
+    ];
+
+    // Map data to rows
+    const rows = inquiries.map(inq => [
+      inq.name || 'N/A',
+      inq.email || 'N/A',
+      inq.phone || 'N/A',
+      inq.company || inq.companyName || 'N/A',
+      inq.hoardingTitle || 'N/A',
+      inq.status || 'new',
+      inq.paymentStatus || 'unpaid',
+      inq.selectedDates?.startDate || 'N/A',
+      inq.selectedDates?.endDate || 'N/A',
+      inq.selectedDates ? Math.ceil((new Date(inq.selectedDates.endDate).getTime() - new Date(inq.selectedDates.startDate).getTime()) / (1000 * 60 * 60 * 24)) + 1 : 'N/A',
+      inq.hoardingPrice || 0,
+      inq.hoardingPrintingCharges || 0,
+      inq.hoardingMountingCharges || 0,
+      inq.hoardingTotalCharges || 0,
+      new Date(inq.createdAt || inq.submittedAt).toLocaleString(),
+      inq.internalNotes || '',
+      inq.message || ''
+    ]);
+
+    // Construct CSV content with proper escaping
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${(cell || '').toString().replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    // Create and trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `kaki-inquiries-${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    toast.success('Inquiries exported to CSV successfully');
+  };
 
   const loadHoardings = async () => {
     try {
@@ -639,6 +709,18 @@ export const UserDashboard = () => {
                     >
                       Confirmed
                     </Button>
+                    
+                    <div className="h-4 w-px bg-white/10 mx-1 hidden md:block"></div>
+                    
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={exportToCSV}
+                      className="text-xs border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-400 ml-auto flex items-center gap-2"
+                    >
+                      <FileSpreadsheet className="w-3.5 h-3.5" />
+                      Export CSV
+                    </Button>
                   </div>
                 </div>
 
@@ -660,9 +742,9 @@ export const UserDashboard = () => {
                                 <Badge variant="outline" className={`text-[10px] uppercase ${getPaymentStatusColor(inquiry.paymentStatus || 'unpaid')}`}>
                                   {inquiry.paymentStatus || 'Unpaid'}
                                 </Badge>
-                                {inquiry.company && (
+                                {(inquiry.company || inquiry.companyName) && (
                                   <Badge variant="outline" className="text-[10px] uppercase border-white/10 text-kaki-grey">
-                                    {inquiry.company}
+                                    {inquiry.company || inquiry.companyName}
                                   </Badge>
                                 )}
                               </div>

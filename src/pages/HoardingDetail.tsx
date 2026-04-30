@@ -199,6 +199,14 @@ export const HoardingDetail = () => {
                   </div>
                   <p className="text-kaki-grey">{hoarding.visibility || "High Traffic Area"}</p>
                 </div>
+
+                <div className="bg-white/5 rounded-xl p-4 border border-white/10">
+                  <div className="flex items-center mb-2">
+                    <Zap className="w-5 h-5 mr-2 text-yellow-400" />
+                    <span className="text-white font-medium">Lighting</span>
+                  </div>
+                  <p className="text-kaki-grey">{hoarding.lightingType || "Non-Lit"}</p>
+                </div>
               </div>
 
               {/* Pricing */}
@@ -278,6 +286,70 @@ export const HoardingDetail = () => {
                   />
                 )}
               </div>
+
+              {/* Map Section */}
+              {hoarding.mapHtml && (
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                  <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-purple-400" />
+                    Exact Location
+                  </h3>
+                  <div className="w-full h-80 rounded-2xl overflow-hidden border border-white/10 map-container group relative">
+                    <style>{`
+                      .map-container iframe {
+                        width: 100% !important;
+                        height: 100% !important;
+                        border: 0 !important;
+                      }
+                    `}</style>
+                    {hoarding.mapHtml.includes('<iframe') ? (
+                      <div className="w-full h-full" dangerouslySetInnerHTML={{ __html: hoarding.mapHtml }} />
+                    ) : (
+                      <div className="w-full h-full relative">
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          style={{ border: 0 }}
+                          src={(() => {
+                            const input = hoarding.mapHtml;
+                            if (!input) return "";
+                            
+                            // Try to extract place name from Google Maps URL (/place/Name)
+                            const placeMatch = input.match(/\/place\/([^\/\?#]+)/);
+                            if (placeMatch && placeMatch[1]) {
+                              return `https://maps.google.com/maps?q=${placeMatch[1]}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                            }
+                            
+                            // Try to extract coordinates from Google Maps URL (@lat,lng)
+                            const coordMatch = input.match(/@(-?\d+\.\d+),(-?\d+\.\d+)/);
+                            if (coordMatch && coordMatch[1] && coordMatch[2]) {
+                              return `https://maps.google.com/maps?q=${coordMatch[1]},${coordMatch[2]}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                            }
+                            
+                            // Fallback to searching for the raw input (works for addresses, names, etc.)
+                            return `https://maps.google.com/maps?q=${encodeURIComponent(input)}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+                          })()}
+                          allowFullScreen
+                          loading="lazy"
+                        ></iframe>
+                        <div className="absolute bottom-4 right-4">
+                          <Button 
+                            size="sm"
+                            onClick={() => {
+                              let url = hoarding.mapHtml;
+                              if (url && !url.startsWith('http')) url = 'https://' + url;
+                              window.open(url || '', '_blank');
+                            }}
+                            className="bg-black/60 hover:bg-black/80 text-white border border-white/10 text-[10px] h-7 backdrop-blur-sm px-3"
+                          >
+                            Open in Full Maps
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
 
               {/* Features */}
               <div>

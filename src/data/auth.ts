@@ -101,6 +101,22 @@ export const authAPI = {
     
     const result = await response.json();
     return result.data;
+  },
+
+  socialLogin: async (provider: 'google' | 'facebook', token: string): Promise<{ user: User; token: string }> => {
+    const response = await fetch(`${API_BASE_URL}/api/auth/social`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ provider, token })
+    });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || 'Social login failed');
+    }
+    
+    const result = await response.json();
+    return result.data;
   }
 };
 

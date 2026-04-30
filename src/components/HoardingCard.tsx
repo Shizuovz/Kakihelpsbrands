@@ -44,9 +44,18 @@ export const HoardingCard = ({ hoarding }: HoardingCardProps) => {
           
           {/* Badges */}
           <div className="absolute top-4 left-4 z-20 flex gap-2">
-            <span className="px-3 py-1 text-xs font-semibold bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-white">
+            <span className="px-3 py-1 text-xs font-semibold bg-black/60 backdrop-blur-md rounded-full border border-white/10 text-white shadow-lg">
               {hoarding.type}
             </span>
+            {hoarding.lightingType && (
+              <span className={`px-3 py-1 text-xs font-semibold backdrop-blur-md rounded-full border shadow-lg ${
+                hoarding.lightingType === 'Lit' 
+                  ? 'bg-yellow-500/20 border-yellow-500/30 text-yellow-400' 
+                  : 'bg-blue-500/20 border-blue-500/30 text-blue-400'
+              }`}>
+                {hoarding.lightingType}
+              </span>
+            )}
           </div>
           
           <div className="absolute top-4 right-4 z-20">

@@ -15,6 +15,8 @@ export interface Hoarding {
   printingCharges?: number;
   mountingCharges?: number;
   totalCharges?: number;
+  lightingType?: "Lit" | "Non-Lit";
+  mapHtml?: string;
   // Availability fields
   availableStartDate?: string;
   availableEndDate?: string;

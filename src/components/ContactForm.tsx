@@ -96,6 +96,7 @@ export const ContactForm = ({ hoarding, isOpen, onClose, selectedDates }: Contac
         },
         body: JSON.stringify({
           ...data,
+          companyName: data.company, // Dual-mapping for backend compatibility
           hoardingId: hoarding?.id,
           hoardingTitle: hoarding?.title,
           hoardingLocation: hoarding?.location,

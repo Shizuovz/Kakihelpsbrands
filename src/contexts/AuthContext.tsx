@@ -11,6 +11,7 @@ interface AuthContextType extends AuthState {
     phone: string;
     role: 'organizer' | 'provider';
   }) => Promise<void>;
+  socialLogin: (provider: 'google' | 'facebook', token: string) => Promise<void>;
   logout: () => void;
   updateUser: (user: User) => void;
 }
@@ -138,6 +139,24 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  const socialLogin = async (provider: 'google' | 'facebook', token: string) => {
+    try {
+      dispatch({ type: 'AUTH_START' });
+      const { user, token: authToken } = await authAPI.socialLogin(provider, token);
+      
+      authStorage.setToken(authToken);
+      authStorage.setUser(user);
+      
+      dispatch({
+        type: 'AUTH_SUCCESS',
+        payload: { user, token: authToken },
+      });
+    } catch (error) {
+      dispatch({ type: 'AUTH_FAILURE' });
+      throw error;
+    }
+  };
+
   const logout = () => {
     authAPI.logout();
     dispatch({ type: 'LOGOUT' });
@@ -154,6 +173,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     ...state,
     login,
     register,
+    socialLogin,
     logout,
     updateUser,
   };

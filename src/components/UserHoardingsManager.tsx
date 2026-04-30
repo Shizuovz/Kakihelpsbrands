@@ -50,7 +50,8 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
       region: 'Dimapur',
       price: 0,
       dimensions: '',
-      type: 'Digital',
+      type: 'Hoarding',
+      lightingType: 'Non-Lit',
       status: 'Available',
       impressions: '',
       imageUrl: '',
@@ -232,7 +233,18 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
                   />
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="text-white">Map Location (Link or Embed)</Label>
+                  <Input
+                    value={formData.mapHtml || ''}
+                    onChange={(e) => handleInputChange('mapHtml', e.target.value)}
+                    placeholder="Paste Google Maps link or iframe embed code"
+                    className="bg-black/40 border-white/10 text-white"
+                  />
+                  <p className="text-[10px] text-kaki-grey">Paste the 'Embed Map' iframe code or a Google Maps link.</p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   <div className="space-y-2">
                     <Label className="text-white">Region</Label>
                     <Select value={formData.region || 'Dimapur'} onValueChange={(v) => handleInputChange('region', v)}>
@@ -256,6 +268,18 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
                         <SelectItem value="Hoarding">Hoarding</SelectItem>
                         <SelectItem value="Unipole">Unipole</SelectItem>
                         <SelectItem value="Digital">Digital</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-white">Lighting</Label>
+                    <Select value={formData.lightingType || 'Non-Lit'} onValueChange={(v) => handleInputChange('lightingType', v)}>
+                      <SelectTrigger className="bg-black/40 border-white/10 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-kaki-dark-grey border-white/10">
+                        <SelectItem value="Lit">Lit</SelectItem>
+                        <SelectItem value="Non-Lit">Non-Lit</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -399,7 +423,16 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
                 <h3 className="text-lg font-bold text-white mb-2 line-clamp-1">{h.title}</h3>
                 <div className="space-y-2 text-sm text-kaki-grey mb-4">
                   <p className="flex items-center gap-2"><MapPin className="w-4 h-4" /> {h.location}</p>
-                  <p className="flex items-center gap-2 font-medium text-white">{formatINR(h.price)}/mo</p>
+                  <p className="flex items-center gap-2 font-medium text-white">
+                    {formatINR(h.price)}/mo
+                    {h.lightingType && (
+                      <span className={`text-[10px] px-1.5 py-0.5 rounded border ${
+                        h.lightingType === 'Lit' ? 'bg-yellow-500/10 border-yellow-500/30 text-yellow-500' : 'bg-blue-500/10 border-blue-500/30 text-blue-500'
+                      }`}>
+                        {h.lightingType}
+                      </span>
+                    )}
+                  </p>
                   
                   {confirmedInq && (
                     <div className="mt-3 p-2 bg-purple-500/10 rounded-lg border border-purple-500/20">

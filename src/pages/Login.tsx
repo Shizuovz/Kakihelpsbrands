@@ -8,6 +8,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building, Info, CheckCircle } from 'lucide-react';
+import { FaGoogle } from 'react-icons/fa';
+import { useGoogleLogin } from '@react-oauth/google';
 import {
   Dialog,
   DialogContent,
@@ -15,14 +17,51 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { API_BASE_URL } from "@/config";
+import { API_BASE_URL, GOOGLE_CLIENT_ID } from "@/config";
 
 export const Login = () => {
   const navigate = useNavigate();
-  const { login, register } = useAuth();
+  const { login, register, socialLogin } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      setIsLoading(true);
+      try {
+        await socialLogin('google', tokenResponse.access_token);
+        navigate('/dashboard');
+      } catch (err) {
+        setError('Google login failed');
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    onError: () => {
+      // Dev bypass for testing if client ID is placeholder
+      if (GOOGLE_CLIENT_ID.includes('YOUR_GOOGLE_CLIENT_ID_HERE')) {
+        handleDevSocialLogin('google');
+      } else {
+        setError('Google login failed');
+      }
+    },
+  });
+
+  const handleDevSocialLogin = async (provider: 'google' | 'facebook') => {
+    setIsLoading(true);
+    try {
+      // Use a dummy token that the backend will recognize in dev mode
+      await socialLogin(provider, 'dev-token-bypass');
+      navigate('/dashboard');
+    } catch (err) {
+      setError(`${provider} dev login failed`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
 
   // Forgot Password state
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
@@ -215,6 +254,24 @@ export const Login = () => {
                     {isLoading ? 'Signing in...' : 'Sign In'}
                   </Button>
                 </form>
+
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-white/10"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-kaki-dark-grey px-2 text-kaki-grey">Or continue with</span>
+                  </div>
+                </div>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => googleLogin()}
+                    className="w-full bg-white/5 border-white/10 text-white hover:bg-white/10 flex items-center justify-center gap-2"
+                  >
+                    <FaGoogle className="text-red-500" /> Sign in with Google {GOOGLE_CLIENT_ID.includes('YOUR_GOOGLE_CLIENT_ID_HERE') && '(Demo)'}
+                  </Button>
               </TabsContent>
 
               {/* Register Tab */}

@@ -4,10 +4,13 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import Joi from 'joi';
+import { OAuth2Client } from 'google-auth-library';
 import logger from './logger.js';
 
 // Load environment variables
 dotenv.config();
+
+const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const client = new MongoClient(process.env.MONGODB_URI || 'mongodb://localhost:27017/kaki_hoardings');
@@ -287,4 +290,75 @@ const resetPassword = async (req, res) => {
   }
 };
 
-export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword };
+const socialLogin = async (req, res) => {
+  try {
+    const { provider, token } = req.body;
+    let userData = null;
+
+    // Developer bypass for testing without real credentials
+    if (token === 'dev-token-bypass' && process.env.NODE_ENV !== 'production') {
+      userData = {
+        email: `dev-${provider}@kaki.com`,
+        name: `Dev ${provider} User`,
+        id: `dev-${provider}-id`
+      };
+    } else if (provider === 'google') {
+      try {
+        const ticket = await googleClient.verifyIdToken({
+          idToken: token,
+          audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        userData = {
+          email: payload.email,
+          name: payload.name,
+          id: `google-${payload.sub}`
+        };
+      } catch (err) {
+        // Fallback for some token types if idToken verification fails
+        const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${token}`);
+        const payload = await response.json();
+        if (!payload.email) throw new Error('Invalid Google token');
+        userData = {
+          email: payload.email,
+          name: payload.name || payload.email.split('@')[0],
+          id: `google-${payload.sub || payload.user_id}`
+        };
+      }
+
+
+    if (!userData) {
+      return res.status(400).json({ success: false, message: 'Invalid provider' });
+    }
+
+    const usersCollection = await initUsersCollection();
+    let user = await usersCollection.findOne({ email: userData.email.toLowerCase() });
+
+    if (!user) {
+      // Create new user if they don't exist
+      user = {
+        id: userData.id,
+        name: userData.name,
+        email: userData.email.toLowerCase(),
+        role: 'provider', // Default to provider for vendors
+        company: 'Social Login',
+        phone: '',
+        isActive: true,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        authProvider: provider
+      };
+      await usersCollection.insertOne(user);
+    }
+
+    const jwtToken = generateToken(user);
+    const { password: _, ...userWithoutPassword } = user;
+    res.json({ success: true, message: 'Social login successful', data: { user: userWithoutPassword, token: jwtToken } });
+
+  } catch (error) {
+    logger.error('💥 [AUTH] Social Login Error:', error.message);
+    res.status(500).json({ success: false, message: 'Social login failed' });
+  }
+};
+
+export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword, socialLogin };

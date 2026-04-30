@@ -23,7 +23,7 @@ dotenv.config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { v2 as cloudinary } from 'cloudinary';
-import { authMiddleware, register, login, getCurrentUser, resetPassword } from './auth.js';
+import { authMiddleware, register, login, getCurrentUser, resetPassword, socialLogin } from './auth.js';
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
 
 // Cloudinary connection
@@ -89,9 +89,20 @@ app.use(hpp());
 
 // NoSQL Injection Protection
 app.use((req, res, next) => {
-  req.body = sanitize(req.body);
-  req.query = sanitize(req.query);
-  req.params = sanitize(req.params);
+  if (req.body) req.body = sanitize(req.body);
+  
+  // For req.query and req.params which might be read-only getters in some Express versions
+  if (req.query) {
+    const sanitizedQuery = sanitize(req.query);
+    Object.keys(req.query).forEach(key => delete req.query[key]);
+    Object.assign(req.query, sanitizedQuery);
+  }
+  
+  if (req.params) {
+    const sanitizedParams = sanitize(req.params);
+    Object.keys(req.params).forEach(key => delete req.params[key]);
+    Object.assign(req.params, sanitizedParams);
+  }
   next();
 });
 
@@ -390,6 +401,7 @@ const upload = multer({
 // Authentication endpoints
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
+app.post('/api/auth/social', socialLogin);
 app.post('/api/auth/reset-password', resetPassword);
 app.get('/api/auth/me', authMiddleware, getCurrentUser);
 
@@ -1249,6 +1261,7 @@ app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
       mountingCharges: newHoarding.mountingCharges || 0,
       totalCharges: newHoarding.totalCharges || (newHoarding.price || 0) + (newHoarding.printingCharges || 0) + (newHoarding.mountingCharges || 0),
       availability: newHoarding.availability || 'available',
+      lightingType: newHoarding.lightingType || 'Non-Lit',
       featured: newHoarding.featured || false,
     };
     
@@ -1663,6 +1676,7 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
       totalSqft: parseInt(newHoardingData.totalSqft) || 1000,
       totalCharges: newHoardingData.totalCharges || (priceNum + printCost + mountCost),
       availability: newHoardingData.availability || 'available',
+      lightingType: newHoardingData.lightingType || 'Non-Lit',
       featured: false, // Only admin can feature
     };
     
