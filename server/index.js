@@ -275,16 +275,14 @@ const connectDB = async () => {
                   if (!q.$and.every(subQ => matchesQuery(item, subQ))) return false;
                   continue;
                 }
-                if (key === '$exists') continue; // Skip complex logic for mock
+                if (key === '$exists') continue;
 
-                // Special handling for price/ownerId/etc in mock
                 if (key === 'price' && q[key].$lte) {
                   if (item.price > q[key].$lte) return false;
                   continue;
                 }
 
                 if (q[key] !== undefined && item[key] !== q[key]) {
-                  // Handle { ownerId: { $exists: false } } or null
                   if (typeof q[key] === 'object' && q[key] !== null) {
                     if (q[key].$exists === false && item[key]) return false;
                     if (q[key].$exists === true && !item[key]) return false;
@@ -296,27 +294,41 @@ const connectDB = async () => {
               return true;
             };
 
-            const result = col.filter(item => matchesQuery(item, query));
+            // Safety: Handle if col is an object (like website_content)
+            const colArray = Array.isArray(col) ? col : 
+                            (typeof col === 'object' ? Object.keys(col).map(k => ({ page: k, data: col[k] })) : []);
+            
+            const result = colArray.filter(item => matchesQuery(item, query));
             return {
               sort: () => ({ toArray: () => Promise.resolve(result) }),
               toArray: () => Promise.resolve(result)
             };
           },
           findOne: async (query) => {
-            return col.find(item => {
+            const colArray = Array.isArray(col) ? col : 
+                            (typeof col === 'object' ? Object.keys(col).map(k => ({ page: k, data: col[k] })) : []);
+            
+            return colArray.find(item => {
               if (query.$or) {
                 return query.$or.some(q => {
                   for (const key in q) {
-                    if (item[key] !== q[key]) return false;
+                    if (item[key] === q[key]) return true;
+                    // Handle ID matching specifically
+                    if (key === '_id' || key === 'id') {
+                      if (item.id === q[key] || item._id === q[key] || item._id?.toString() === q[key]?.toString()) return true;
+                    }
                   }
-                  return true;
+                  return false;
                 });
               }
               for (const key in query) {
-                if (item[key] !== query[key]) return false;
+                if (item[key] !== query[key]) {
+                   if ((key === '_id' || key === 'id') && (item.id === query[key] || item._id === query[key] || item._id?.toString() === query[key]?.toString())) continue;
+                   return false;
+                }
               }
               return true;
-            }) || null;
+            });
           },
           insertOne: async (data) => {
             const insertedId = 'mock-' + Date.now();
