@@ -90,19 +90,28 @@ app.use(hpp());
 
 // NoSQL Injection Protection
 app.use((req, res, next) => {
-  if (req.body) req.body = sanitize(req.body);
-
-  // For req.query and req.params which might be read-only getters in some Express versions
-  if (req.query) {
-    const sanitizedQuery = sanitize(req.query);
-    Object.keys(req.query).forEach(key => delete req.query[key]);
-    Object.assign(req.query, sanitizedQuery);
-  }
-
-  if (req.params) {
-    const sanitizedParams = sanitize(req.params);
-    Object.keys(req.params).forEach(key => delete req.params[key]);
-    Object.assign(req.params, sanitizedParams);
+  try {
+    if (req.body) req.body = sanitize(req.body);
+    
+    // For req.query and req.params, we only sanitize if we can
+    // but we avoid overwriting the objects themselves to prevent crashes
+    if (req.query && typeof req.query === 'object') {
+      const sanitized = sanitize({ ...req.query });
+      if (Object.isExtensible(req.query)) {
+        Object.keys(req.query).forEach(key => delete req.query[key]);
+        Object.assign(req.query, sanitized);
+      }
+    }
+    
+    if (req.params && typeof req.params === 'object') {
+      const sanitized = sanitize({ ...req.params });
+      if (Object.isExtensible(req.params)) {
+        Object.keys(req.params).forEach(key => delete req.params[key]);
+        Object.assign(req.params, sanitized);
+      }
+    }
+  } catch (e) {
+    console.error('Sanitization warning:', e.message);
   }
   next();
 });
