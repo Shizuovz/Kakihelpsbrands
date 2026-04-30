@@ -56,7 +56,7 @@ app.use('/api/', limiter);
 
 // CORS configuration - Lockdown
 const allowedOrigins = [
-  'http://localhost:5173', 
+  'http://localhost:5173',
   'http://localhost:3000',
   'http://localhost:8080',
   'http://localhost:8081',
@@ -91,14 +91,14 @@ app.use(hpp());
 // NoSQL Injection Protection
 app.use((req, res, next) => {
   if (req.body) req.body = sanitize(req.body);
-  
+
   // For req.query and req.params which might be read-only getters in some Express versions
   if (req.query) {
     const sanitizedQuery = sanitize(req.query);
     Object.keys(req.query).forEach(key => delete req.query[key]);
     Object.assign(req.query, sanitizedQuery);
   }
-  
+
   if (req.params) {
     const sanitizedParams = sanitize(req.params);
     Object.keys(req.params).forEach(key => delete req.params[key]);
@@ -175,21 +175,21 @@ const connectDB = async () => {
     await client.connect();
     db = client.db('kaki_hoardings');
     console.log('Connected to MongoDB successfully');
-    
+
     // Initialize collections if they don't exist
     const hoardingsCollection = db.collection('hoardings');
     const count = await hoardingsCollection.countDocuments();
-    
+
     if (count === 0) {
       console.log('Database is empty - ready for real hoardings data');
     } else {
       console.log(`Database ready with ${count} hoardings`);
     }
-    
+
     // Seed a test user if none exists
     const usersCollection = db.collection('users');
     const userCount = await usersCollection.countDocuments();
-    
+
     if (userCount === 0) {
       const testUser = {
         id: 'test-user-001',
@@ -203,16 +203,16 @@ const connectDB = async () => {
         createdAt: new Date(),
         updatedAt: new Date()
       };
-      
+
       await usersCollection.insertOne(testUser);
       console.log('Created test user: test@example.com');
     }
-    
+
   } catch (error) {
     console.error('MongoDB connection error:', error);
     // Set up a functional PERSISTENT JSON fallback instead of just in-memory
     console.log('📝 Setting up PERSISTENT JSON fallback mode (saves to server/data/*.json)...');
-    
+
     const mockStore = {
       users: loadJsonData(USERS_FILE, [
         {
@@ -240,7 +240,7 @@ const connectDB = async () => {
         }
       })
     };
-    
+
     db = {
       isMock: true,
       collection: (name) => {
@@ -253,7 +253,7 @@ const connectDB = async () => {
           'availability': AVAILABILITY_FILE,
           'website_content': WEBSITE_CONTENT_FILE
         }[name];
-        
+
         return {
           find: (query = {}) => {
             const matchesQuery = (item, q) => {
@@ -267,11 +267,11 @@ const connectDB = async () => {
                   continue;
                 }
                 if (key === '$exists') continue; // Skip complex logic for mock
-                
+
                 // Special handling for price/ownerId/etc in mock
                 if (key === 'price' && q[key].$lte) {
-                   if (item.price > q[key].$lte) return false;
-                   continue;
+                  if (item.price > q[key].$lte) return false;
+                  continue;
                 }
 
                 if (q[key] !== undefined && item[key] !== q[key]) {
@@ -376,22 +376,22 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ 
+const upload = multer({
   storage: storage,
   limits: {
     fileSize: 500 * 1024 * 1024 // 500MB limit for videos
   },
   fileFilter: (req, file, cb) => {
     console.log(`[Upload] File received: ${file.originalname}, mimetype: ${file.mimetype}`);
-    
+
     const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'video/mp4', 'video/webm', 'video/ogg', 'video/quicktime'];
     const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
     const fileExt = path.extname(file.originalname).toLowerCase();
 
-    if (file.mimetype.startsWith('image/') || 
-        file.mimetype.startsWith('video/') || 
-        allowedMimeTypes.includes(file.mimetype) ||
-        allowedExtensions.includes(fileExt)) {
+    if (file.mimetype.startsWith('image/') ||
+      file.mimetype.startsWith('video/') ||
+      allowedMimeTypes.includes(file.mimetype) ||
+      allowedExtensions.includes(fileExt)) {
       cb(null, true);
     } else {
       cb(new Error(`File type not allowed: ${file.mimetype} (${file.originalname}). Only images and videos are allowed.`));
@@ -414,41 +414,41 @@ app.post('/api/admin/upload', adminAuthMiddleware, upload.array('files', 5), asy
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
-    
+
     console.log(`🚀 [Cloudinary] Uploading ${req.files.length} files...`);
-    
-    const uploadPromises = req.files.map(file => 
+
+    const uploadPromises = req.files.map(file =>
       cloudinary.uploader.upload(file.path, {
         resource_type: 'auto',
         folder: 'kaki_assets'
       })
     );
-    
+
     const results = await Promise.all(uploadPromises);
-    
+
     // Phase 3: File Signature Validation (Magic Numbers)
     for (const file of req.files) {
       const type = await fileTypeFromFile(file.path);
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
       const fileExt = path.extname(file.originalname).toLowerCase();
-      
+
       if (!type || !allowedExtensions.includes(`.${type.ext}`)) {
         logger.warn(`🛑 [SECURITY] Rejected file with spoofed extension: ${file.originalname} (Detected: ${type?.mime})`);
         // Cleanup all local files
-        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch(e) {} });
+        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch (e) { } });
         return res.status(400).json({ success: false, message: 'Invalid file signature detected.' });
       }
     }
 
     // Cleanup local files
     req.files.forEach(file => {
-      try { fs.unlinkSync(file.path); } catch(e) {}
+      try { fs.unlinkSync(file.path); } catch (e) { }
     });
 
     const uploadedFiles = results.map(result => ({
       url: result.secure_url
     }));
-    
+
     logger.info(`✅ [Cloudinary] Admin Upload successful: ${req.files.length} files`);
     res.json({ success: true, files: uploadedFiles });
   } catch (error) {
@@ -463,33 +463,33 @@ app.post('/api/upload', authMiddleware, upload.array('images', 5), async (req, r
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ success: false, message: 'No files uploaded' });
     }
-    
+
     console.log(`🚀 [Cloudinary] User upload: uploading ${req.files.length} files...`);
 
-    const uploadPromises = req.files.map(file => 
+    const uploadPromises = req.files.map(file =>
       cloudinary.uploader.upload(file.path, {
         resource_type: 'auto',
         folder: 'kaki_user_uploads'
       })
     );
-    
+
     const results = await Promise.all(uploadPromises);
-    
+
     // Phase 3: File Signature Validation (Magic Numbers)
     for (const file of req.files) {
       const type = await fileTypeFromFile(file.path);
       const allowedExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.mp4', '.m4v', '.webm', '.ogv', '.mov'];
-      
+
       if (!type || !allowedExtensions.includes(`.${type.ext}`)) {
         logger.warn(`🛑 [SECURITY] User upload rejected (spoofed): ${file.originalname}`);
-        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch(e) {} });
+        req.files.forEach(f => { try { fs.unlinkSync(f.path); } catch (e) { } });
         return res.status(400).json({ success: false, message: 'Invalid file signature.' });
       }
     }
 
     // Cleanup local files
     req.files.forEach(file => {
-      try { fs.unlinkSync(file.path); } catch(e) {}
+      try { fs.unlinkSync(file.path); } catch (e) { }
     });
 
     const uploadedFiles = results.map((result, index) => {
@@ -535,9 +535,9 @@ app.get('/api/db-status', adminAuthMiddleware, (req, res) => {
 // Helper function to generate realistic impressions based on location and size
 const generateImpressions = (location, totalSqft) => {
   const baseImpressions = Math.floor(totalSqft * 800); // Base calculation
-  const multiplier = location.includes('MARKET') ? 1.5 : 
-                    location.includes('JUNCTION') ? 1.3 : 
-                    location.includes('ROAD') ? 1.1 : 1;
+  const multiplier = location.includes('MARKET') ? 1.5 :
+    location.includes('JUNCTION') ? 1.3 :
+      location.includes('ROAD') ? 1.1 : 1;
   const weeklyImpressions = Math.floor(baseImpressions * multiplier);
   return `${(weeklyImpressions / 1000).toFixed(1)}K / week`;
 };
@@ -564,12 +564,12 @@ app.get('/api/hoardings', async (req, res) => {
     if (!db) {
       return res.json({ success: true, data: [] });
     }
-    
+
     const collection = db.collection('hoardings');
     console.log('🔍 DEBUG: Basic hoardings - Collection type:', typeof collection);
     console.log('🔍 DEBUG: Basic hoardings - Collection methods:', Object.keys(collection));
     const { region, type, maxPrice, searchQuery, sortBy } = req.query;
-    
+
     // Build query
     const query = {};
     if (region && region !== 'All') query.region = region;
@@ -578,7 +578,7 @@ app.get('/api/hoardings', async (req, res) => {
     if (searchQuery) {
       query.$text = { $search: searchQuery };
     }
-    
+
     // Build sort
     let sort = {};
     switch (sortBy) {
@@ -586,12 +586,12 @@ app.get('/api/hoardings', async (req, res) => {
       case 'price-desc': sort = { price: -1 }; break;
       default: sort = { featured: -1, createdAt: -1 };
     }
-    
+
     const hoardings = await collection.find(query).sort(sort).toArray();
     const mappedHoardings = hoardings.map(normalizeHoarding);
-    
+
     res.json({ success: true, data: mappedHoardings });
-    
+
   } catch (error) {
     console.error('Error fetching hoardings:', error);
     res.status(500).json({ success: false, message: error.message });
@@ -603,17 +603,17 @@ app.get('/api/hoardings/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const collection = db.collection('hoardings');
-    
+
     // Try both ObjectId and string ID
     let query = { _id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { _id: id }] };
       }
-    } catch (e) {}
-    
+    } catch (e) { }
+
     const hoarding = await collection.findOne(query);
-    
+
     if (hoarding) {
       res.json({
         success: true,
@@ -640,7 +640,7 @@ app.get('/api/regions', async (req, res) => {
     if (!db) {
       return res.json({ success: true, data: [] });
     }
-    
+
     const collection = db.collection('hoardings');
     const regions = await collection.distinct('region');
     res.json({ success: true, data: regions.sort() });
@@ -655,7 +655,7 @@ app.get('/api/types', async (req, res) => {
     if (!db) {
       return res.json({ success: true, data: [] });
     }
-    
+
     const collection = db.collection('hoardings');
     const types = await collection.distinct('type');
     res.json({ success: true, data: types.sort() });
@@ -712,12 +712,12 @@ app.post('/api/inquiries', async (req, res) => {
       status: 'new',
       createdAt: new Date().toISOString()
     };
-    
+
     // Store inquiry in MongoDB
     if (db) {
       await db.collection('inquiries').insertOne(inquiryData);
     }
-    
+
     console.log('✅ New inquiry received for ID:', inquiryData.id);
     console.log('📦 Questionnaire Payload:', JSON.stringify(req.body, null, 2));
 
@@ -726,13 +726,13 @@ app.post('/api/inquiries', async (req, res) => {
       console.log('📨 Attempting to send comprehensive project email via Resend...');
       try {
         const data = req.body;
-        
+
         // Find owner email if it's a hoarding inquiry
         let providerEmail = null;
         if (db && data.hoardingId) {
           try {
-            const hoarding = await db.collection('hoardings').findOne({ 
-              $or: [{ id: data.hoardingId }, { _id: data.hoardingId }] 
+            const hoarding = await db.collection('hoardings').findOne({
+              $or: [{ id: data.hoardingId }, { _id: data.hoardingId }]
             });
             if (hoarding && hoarding.ownerId) {
               const owner = await db.collection('users').findOne({ id: hoarding.ownerId });
@@ -743,7 +743,7 @@ app.post('/api/inquiries', async (req, res) => {
             console.error('Error fetching owner email:', dbError);
           }
         }
-        
+
         // Log the full payload for verification
         console.log('📦 Questionnaire Payload Received:', JSON.stringify(data, null, 2));
 
@@ -755,14 +755,14 @@ app.post('/api/inquiries', async (req, res) => {
           "📅 Budget & Timeline": ["budget", "timeline"],
           "📣 Final Details": ["referralSource", "referralOther", "additionalNotes"],
           "🏙️ Hoarding Details": [
-            "hoardingTitle", "hoardingLocation", "hoardingPrice", "hoardingDimensions", 
+            "hoardingTitle", "hoardingLocation", "hoardingPrice", "hoardingDimensions",
             "hoardingType", "hoardingPrintingCharges", "hoardingMountingCharges", "hoardingTotalCharges"
           ]
         };
 
         // Track which fields we've already handled
         const handledFields = new Set([
-          "id", "status", "createdAt", "subject", "type", "submittedAt", 
+          "id", "status", "createdAt", "subject", "type", "submittedAt",
           "message", "hoardingId", "_id"
         ]);
         Object.values(categories).flat().forEach(f => handledFields.add(f));
@@ -790,7 +790,7 @@ app.post('/api/inquiries', async (req, res) => {
 
         // Build sections
         let sectionsHtml = "";
-        
+
         // 1. Prominent Message Section first
         if (data.message) {
           sectionsHtml += `
@@ -888,13 +888,13 @@ app.post('/api/inquiries', async (req, res) => {
     } else {
       console.warn('⚠️ EMAIL NOT SENT: RESEND_API_KEY is missing or invalid in server/.env');
     }
-    
+
     res.json({
       success: true,
       message: 'Inquiry captured in database',
       inquiryId: inquiryData.id
     });
-    
+
   } catch (error) {
     console.error('Submission Error:', error);
     res.status(500).json({
@@ -910,17 +910,17 @@ app.get('/api/user/inquiries', authMiddleware, async (req, res) => {
     if (!db) {
       return res.json({ success: true, data: [] });
     }
-    
+
     // Find hoardings owned by user to get their IDs
     const hoardings = await db.collection('hoardings').find({ ownerId: req.user.id }).toArray();
     // Some hoardings might use string id, some _id
     const hoardingIds = hoardings.map(h => h.id || (h._id ? h._id.toString() : null)).filter(Boolean);
-    
+
     // Find inquiries for these hoardings
-    const inquiries = await db.collection('inquiries').find({ 
-      hoardingId: { $in: hoardingIds } 
+    const inquiries = await db.collection('inquiries').find({
+      hoardingId: { $in: hoardingIds }
     }).sort({ createdAt: -1 }).toArray();
-    
+
     res.json({
       success: true,
       data: inquiries
@@ -954,7 +954,7 @@ app.delete('/api/inquiries/:id', adminAuthMiddleware, async (req, res) => {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
     const token = req.headers.authorization?.split(' ')[1];
-    
+
     if (!token) return res.status(401).json({ success: false, message: 'Auth required' });
 
     let isAuthorized = false;
@@ -963,7 +963,7 @@ app.delete('/api/inquiries/:id', adminAuthMiddleware, async (req, res) => {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { id: id }] };
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // 1. Try to verify as Admin first (highest privilege)
     try {
@@ -981,18 +981,18 @@ app.delete('/api/inquiries/:id', adminAuthMiddleware, async (req, res) => {
             if (ObjectId.isValid(hoardingId)) {
               hQuery = { $or: [{ _id: new ObjectId(hoardingId) }, { id: hoardingId }] };
             }
-          } catch (e) {}
-          
+          } catch (e) { }
+
           const h = await db.collection('hoardings').findOne(hQuery);
           if (h && h.ownerId?.toString() === decodedUser.id?.toString()) isAuthorized = true;
         }
-      } catch (userErr) {}
+      } catch (userErr) { }
     }
 
     if (!isAuthorized) return res.status(403).json({ success: false, message: 'Unauthorized' });
 
     const result = await db.collection('inquiries').deleteOne(query);
-    
+
     if (result.deletedCount === 1) {
       res.json({ success: true, message: 'Inquiry deleted successfully' });
     } else {
@@ -1009,23 +1009,23 @@ app.put('/api/inquiries/:id', authMiddleware, async (req, res) => {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
     const updateData = req.body;
-    
+
     console.log(`[Inquiry Update] ID: ${id}, User: ${req.user.id}`);
-    
+
     // Ownership check: Find the inquiry first
     let query = { id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { id: id }] };
       }
-    } catch (e) {}
+    } catch (e) { }
 
     const inquiry = await db.collection('inquiries').findOne(query);
     if (!inquiry) {
       console.log(`[Inquiry Update] Inquiry not found: ${id}`);
       return res.status(404).json({ success: false, message: 'Inquiry not found' });
     }
-    
+
     // Find the hoarding to check owner
     const hoardingId = inquiry.hoardingId;
     let hQuery = { id: hoardingId };
@@ -1038,7 +1038,7 @@ app.put('/api/inquiries/:id', authMiddleware, async (req, res) => {
     }
 
     const hoarding = await db.collection('hoardings').findOne(hQuery);
-    
+
     if (!hoarding) {
       console.log(`[Inquiry Update] Associated hoarding not found: ${hoardingId}`);
       return res.status(403).json({ success: false, message: 'Access denied (Hoarding not found)' });
@@ -1061,13 +1061,13 @@ app.put('/api/inquiries/:id', authMiddleware, async (req, res) => {
       query,
       { $set: filteredUpdate }
     );
-    
+
     // If status is confirmed, we keep the hoarding available but the calendar will block the dates
     if (filteredUpdate.status === 'confirmed') {
       console.log(`[Inquiry Update] Inquiry ${id} confirmed. Dates will be blocked in calendar.`);
       // We don't mark as 'Booked' globally unless you want it to be completely unavailable
     }
-    
+
     console.log(`[Inquiry Update] Successfully updated inquiry: ${id}`);
     res.json({ success: true, message: 'Inquiry updated' });
   } catch (error) {
@@ -1082,7 +1082,7 @@ app.put('/api/inquiries/:id/status', adminAuthMiddleware, async (req, res) => {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;
     const { status } = req.body;
-    
+
     await db.collection('inquiries').updateOne(
       { $or: [{ id: id }, { _id: id }] },
       { $set: { status: status || 'read', updatedAt: new Date().toISOString() } }
@@ -1098,17 +1098,17 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
   try {
     const { id } = req.params;
     console.log(`[API] Fetching availability for ID: ${id}`);
-    
+
     let availability = [];
     if (db) {
       // 1. Get manual availability data
-      const doc = await db.collection('availability').findOne({ 
+      const doc = await db.collection('availability').findOne({
         $or: [
           { hoardingId: id },
           { id: id }
         ]
       });
-      
+
       if (doc) {
         availability = doc.data || [];
       }
@@ -1129,10 +1129,10 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
             // Use local date parts to avoid UTC shifting
             const [sYear, sMonth, sDay] = inq.selectedDates.startDate.split('-').map(Number);
             const [eYear, eMonth, eDay] = inq.selectedDates.endDate.split('-').map(Number);
-            
+
             const start = new Date(sYear, sMonth - 1, sDay);
             const end = new Date(eYear, eMonth - 1, eDay);
-            
+
             let count = 0;
             let current = new Date(start);
             while (current <= end && count < 366) {
@@ -1141,7 +1141,7 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
               const m = String(current.getMonth() + 1).padStart(2, '0');
               const d = String(current.getDate()).padStart(2, '0');
               const dateStr = `${y}-${m}-${d}`;
-              
+
               if (!availability.some(a => a.date === dateStr)) {
                 availability.push({ date: dateStr, status: 'booked' });
               }
@@ -1153,7 +1153,7 @@ app.get('/api/hoardings/:id/availability', async (req, res) => {
         }
       });
     }
-    
+
     res.json({
       success: true,
       data: availability
@@ -1197,7 +1197,7 @@ app.post('/api/hoardings/:id/availability', authMiddleware, async (req, res) => 
   try {
     const { id } = req.params;
     const { availability } = req.body;
-    
+
     if (db) {
       await db.collection('availability').updateOne(
         { hoardingId: id },
@@ -1205,15 +1205,15 @@ app.post('/api/hoardings/:id/availability', authMiddleware, async (req, res) => 
         { upsert: true }
       );
     }
-    
+
     console.log(`Updated availability for hoarding ${id}:`, availability.length, 'dates');
-    
+
     res.json({
       success: true,
       message: 'Availability updated successfully',
       data: availability
     });
-    
+
   } catch (error) {
     console.error('Error updating availability:', error);
     res.status(500).json({
@@ -1243,7 +1243,7 @@ app.get('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
 app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
   try {
     const newHoarding = req.body;
-    
+
     // Generate new hoarding with defaults
     const hoardingToInsert = {
       ...newHoarding,
@@ -1253,8 +1253,8 @@ app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
       dimensions: newHoarding.dimensions || 'Standard',
       impressions: newHoarding.impressions || '1K / week',
       // Use first uploaded image as primary, or fallback to generated image
-      imageUrl: (newHoarding.images && newHoarding.images.length > 0) 
-        ? newHoarding.images[0] 
+      imageUrl: (newHoarding.images && newHoarding.images.length > 0)
+        ? newHoarding.images[0]
         : (newHoarding.imageUrl || generateImageUrl(newHoarding.title || 'New Hoarding', 0)),
       images: newHoarding.images || [],
       totalSqft: newHoarding.totalSqft || 1000,
@@ -1265,19 +1265,19 @@ app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
       lightingType: newHoarding.lightingType || 'Non-Lit',
       featured: newHoarding.featured || false,
     };
-    
+
     // Insert into MongoDB
     const collection = db.collection('hoardings');
     const result = await collection.insertOne(hoardingToInsert);
-    
+
     console.log('Created new admin hoarding:', result.insertedId);
-    
+
     res.json({
       success: true,
       message: 'Hoarding created successfully',
       data: { ...hoardingToInsert, _id: result.insertedId, id: result.insertedId.toString() }
     });
-    
+
   } catch (error) {
     console.error('Error creating hoarding:', error);
     res.status(500).json({
@@ -1291,20 +1291,20 @@ app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const updatedHoardingData = req.body;
-    
+
     if (!db) {
       return res.status(500).json({ success: false, message: 'Database not available' });
     }
-    
+
     const collection = db.collection('hoardings');
-    
+
     // Try both ObjectId and string ID for maximum compatibility
     let query = { _id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { _id: id }] };
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Find the current data to see if it exists
     const currentHoarding = await collection.findOne(query);
@@ -1318,7 +1318,7 @@ app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
     // Combine current and updated data
     const finalUpdate = { ...updatedHoardingData, updatedAt: new Date() };
     // Remove ID fields from set to avoid immutability error in MongoDB
-    delete finalUpdate._id; 
+    delete finalUpdate._id;
     delete finalUpdate.id;
 
     const result = await collection.findOneAndUpdate(
@@ -1326,7 +1326,7 @@ app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
       { $set: finalUpdate },
       { returnDocument: 'after' }
     );
-    
+
     const finalHoarding = result.value || result;
 
     // Sync JSON fallback
@@ -1341,15 +1341,15 @@ app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
       }
       saveJsonData(HOARDINGS_FILE, hoardings);
     }
-    
+
     console.log('Updated hoarding (admin):', id);
-    
+
     res.json({
       success: true,
       message: 'Hoarding updated successfully',
       data: normalizeHoarding(finalHoarding)
     });
-    
+
   } catch (error) {
     console.error('Error updating hoarding:', error);
     res.status(500).json({
@@ -1362,33 +1362,33 @@ app.put('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
 app.delete('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
-    
+
     if (!db) {
       return res.status(500).json({ success: false, message: 'Database not available' });
     }
-    
+
     const collection = db.collection('hoardings');
-    
+
     // Try both ObjectId and string ID for maximum compatibility
     let query = { _id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { _id: id }] };
       }
-    } catch (e) {}
-    
+    } catch (e) { }
+
     const result = await collection.findOneAndDelete(query);
-    
+
     if (!result.value && !result) {
       return res.status(404).json({
         success: false,
         message: 'Hoarding not found'
       });
     }
-    
+
     // Also remove availability data
     await db.collection('availability').deleteOne({ hoardingId: id });
-    
+
     // If in Mock/JSON mode, the save logic is already handled by the mockStore proxy
     // if using the real DB, we also want to keep the JSON fallback in sync
     if (!db.isMock && fs.existsSync(HOARDINGS_FILE)) {
@@ -1396,15 +1396,15 @@ app.delete('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => 
       const filtered = hoardings.filter(h => (h.id || h._id?.toString()) !== id);
       saveJsonData(HOARDINGS_FILE, filtered);
     }
-    
+
     console.log('Deleted hoarding:', id);
-    
+
     res.json({
       success: true,
       message: 'Hoarding deleted successfully',
       data: result.value || result
     });
-    
+
   } catch (error) {
     console.error('Error deleting hoarding:', error);
     res.status(500).json({
@@ -1420,7 +1420,7 @@ app.get('/api/content/:page', async (req, res) => {
     const { page } = req.params;
     // Load from local file first as a baseline
     let contentData = loadJsonData(WEBSITE_CONTENT_FILE, {});
-    
+
     // If database is available, merge/override with live database content
     if (db) {
       try {
@@ -1438,7 +1438,7 @@ app.get('/api/content/:page', async (req, res) => {
               } else {
                 console.log(`⚠️ [Sync] Skipping DB overwrite for "${doc.page}" (array): DB(${dbCount}) < JSON(${localCount})`);
               }
-            } 
+            }
             // 2. Specialized handling for "works" (object with projects list)
             else if (doc.page === 'works' && doc.data.projects && Array.isArray(doc.data.projects)) {
               const localCount = (contentData.works?.projects || []).length;
@@ -1483,11 +1483,11 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
     const { page } = req.params;
     const contentData = req.body;
     console.log(`📝 [Admin] Received content update for page: ${page} by admin: ${req.admin?.email}`);
-    
+
     if (page === 'all') {
       console.log('💾 [Admin] Saving ALL website content');
       saveJsonData(WEBSITE_CONTENT_FILE, contentData);
-      
+
       if (db) {
         const collection = db.collection('website_content');
         const pages = Object.keys(contentData);
@@ -1508,9 +1508,9 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
           }
         }
         if (saveFailures.length > 0) {
-          return res.status(500).json({ 
-            success: false, 
-            message: `Cloud sync failed for: ${saveFailures.join(', ')}. Local save successful.` 
+          return res.status(500).json({
+            success: false,
+            message: `Cloud sync failed for: ${saveFailures.join(', ')}. Local save successful.`
           });
         }
       }
@@ -1530,13 +1530,13 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
     } else {
       console.log(`⚠️ [MongoDB] Database disconnected. Bypassing cloud save for: ${page}`);
     }
-    
+
     // 2. ALWAYS Persist to JSON Fallback for reliability
     const allContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
     allContent[page] = contentData;
     saveJsonData(WEBSITE_CONTENT_FILE, allContent);
     console.log(`💾 [JSON] Content safely backed up to ${WEBSITE_CONTENT_FILE}`);
-    
+
     res.json({ success: true, message: 'Content updated successfully', data: contentData });
   } catch (error) {
     console.error('❌ [Admin] Error updating website content:', error);
@@ -1549,13 +1549,13 @@ app.post('/api/admin/content/:page', adminAuthMiddleware, async (req, res) => {
 app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
   try {
     if (!db) {
-       return res.status(500).json({ success: false, message: 'Database not available' });
+      return res.status(500).json({ success: false, message: 'Database not available' });
     }
     const userId = req.user.id;
     const { region, type, maxPrice, searchQuery, sortBy } = req.query;
-    
+
     // Build query - only return hoardings owned by this user OR hoardings with no owner (legacy/unclaimed)
-    const ownershipFilter = { 
+    const ownershipFilter = {
       $or: [
         { ownerId: userId },
         { ownerId: { $exists: false } },
@@ -1565,7 +1565,7 @@ app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
     };
 
     let query = { ...ownershipFilter };
-    
+
     if (region && region !== 'All') query.region = region;
     if (type && type !== 'All') query.type = type;
     if (maxPrice) query.price = { $lte: parseInt(maxPrice) };
@@ -1582,7 +1582,7 @@ app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
         ]
       };
     }
-    
+
     // Build sort
     let sort = {};
     switch (sortBy) {
@@ -1590,16 +1590,16 @@ app.get('/api/user/hoardings', authMiddleware, async (req, res) => {
       case 'price-desc': sort = { price: -1 }; break;
       default: sort = { createdAt: -1 };
     }
-    
+
     // Get hoardings owned by this user
     const userHoardings = await db.collection('hoardings').find(query).sort(sort).toArray();
     const mappedUserHoardings = userHoardings.map(normalizeHoarding);
-    
+
     res.json({
       success: true,
       data: mappedUserHoardings
     });
-    
+
   } catch (error) {
     console.error('Error fetching user hoardings:', error);
     res.status(500).json({
@@ -1614,7 +1614,7 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
     console.log('POST /api/user/hoardings - Request received');
     console.log('User from auth middleware:', req.user);
     console.log('Request body:', req.body);
-    
+
     if (!db) {
       console.log('Database not connected - cannot create hoarding');
       return res.status(500).json({
@@ -1622,9 +1622,9 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
         message: 'Database not available'
       });
     }
-    
+
     const userId = req.user.id;
-    
+
     if (!db) {
       console.log('Database not connected - cannot fetch user hoardings');
       return res.status(500).json({
@@ -1632,28 +1632,28 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
         message: 'Database not available'
       });
     }
-    
+
     // Get user from MongoDB
     const usersCollection = db.collection('users');
     let user = await usersCollection.findOne({ id: userId });
-    
+
     // Fallback by email if ID is somehow mismatched
     if (!user && req.user.email) {
       user = await usersCollection.findOne({ email: req.user.email });
     }
-    
+
     console.log('Found user:', user);
-    
+
     const newHoardingData = req.body;
-    
+
     // Validate required fields
     const requiredFields = ['title', 'location', 'region', 'price', 'type', 'status'];
-    
+
     // Ensure all numeric fields are actual numbers so frontend filters/sorts work
     const priceNum = parseInt(newHoardingData.price) || 0;
     const printCost = parseInt(newHoardingData.printingCharges) || 0;
     const mountCost = parseInt(newHoardingData.mountingCharges) || 0;
-    
+
     const newHoarding = {
       ...newHoardingData,
       price: priceNum,
@@ -1670,8 +1670,8 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
       dimensions: newHoardingData.dimensions || 'Standard',
       impressions: newHoardingData.impressions || '1K / week',
       // Use first uploaded image as primary, or fallback to generated image
-      imageUrl: (newHoardingData.images && newHoardingData.images.length > 0) 
-        ? newHoardingData.images[0] 
+      imageUrl: (newHoardingData.images && newHoardingData.images.length > 0)
+        ? newHoardingData.images[0]
         : (newHoardingData.imageUrl || generateImageUrl(newHoardingData.title || 'New Hoarding', 0)),
       images: newHoardingData.images || [],
       totalSqft: parseInt(newHoardingData.totalSqft) || 1000,
@@ -1680,7 +1680,7 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
       lightingType: newHoardingData.lightingType || 'Non-Lit',
       featured: false, // Only admin can feature
     };
-    
+
     // Insert into MongoDB
     if (!db) {
       console.log('Database not connected - cannot create hoarding');
@@ -1689,27 +1689,27 @@ app.post('/api/user/hoardings', authMiddleware, async (req, res) => {
         message: 'Database not available'
       });
     }
-    
+
     const collection = db.collection('hoardings');
     const result = await collection.insertOne(newHoarding);
-    
+
     const savedHoarding = { ...newHoarding, id: result.insertedId.toString(), _id: result.insertedId };
-    
+
     // Sync JSON fallback
     if (!db.isMock && fs.existsSync(HOARDINGS_FILE)) {
       const hoardings = loadJsonData(HOARDINGS_FILE);
       hoardings.push(normalizeHoarding(savedHoarding));
       saveJsonData(HOARDINGS_FILE, hoardings);
     }
-    
+
     console.log('Created new user hoarding:', result.insertedId);
-    
+
     res.json({
       success: true,
       message: 'Hoarding created successfully',
       data: savedHoarding
     });
-    
+
   } catch (error) {
     console.error('Error creating hoarding:', error);
     res.status(500).json({
@@ -1723,25 +1723,25 @@ app.put('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const collection = db.collection('hoardings');
-    
+
     // Try both ObjectId and string ID
     let query = { _id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { _id: id }] };
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Find hoarding and ensure it belongs to the authenticated user
     const hoarding = await collection.findOne(query);
-    
+
     if (!hoarding) {
       return res.status(404).json({
         success: false,
         message: 'Hoarding not found'
       });
     }
-    
+
     // Allow update if either the user owns it OR if it has no owner yet (transition/claiming)
     const isOwner = hoarding.ownerId === req.user.id;
     const isUnowned = !hoarding.ownerId || hoarding.ownerId === "" || hoarding.ownerId === null;
@@ -1752,15 +1752,15 @@ app.put('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
         message: 'You can only update your own hoardings'
       });
     }
-    
+
     const updateData = { ...req.body, updatedAt: new Date() };
     delete updateData._id;
     delete updateData.id;
-    
+
     // Update hoarding
     await collection.updateOne(query, { $set: updateData });
     const finalHoarding = { ...hoarding, ...updateData };
-    
+
     // Sync JSON fallback
     if (!db.isMock && fs.existsSync(HOARDINGS_FILE)) {
       const hoardings = loadJsonData(HOARDINGS_FILE);
@@ -1773,15 +1773,15 @@ app.put('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
       }
       saveJsonData(HOARDINGS_FILE, hoardings);
     }
-    
+
     console.log('Updated hoarding (user):', id);
-    
+
     res.json({
       success: true,
       message: 'Hoarding updated successfully',
       data: normalizeHoarding(finalHoarding)
     });
-    
+
   } catch (error) {
     console.error('Error updating hoarding:', error);
     res.status(500).json({
@@ -1795,25 +1795,25 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
     const collection = db.collection('hoardings');
-    
+
     // Try both ObjectId and string ID
     let query = { _id: id };
     try {
       if (ObjectId.isValid(id)) {
         query = { $or: [{ _id: new ObjectId(id) }, { _id: id }] };
       }
-    } catch (e) {}
+    } catch (e) { }
 
     // Find hoarding and ensure it belongs to the authenticated user
     const hoarding = await collection.findOne(query);
-    
+
     if (!hoarding) {
       return res.status(404).json({
         success: false,
         message: 'Hoarding not found'
       });
     }
-    
+
     // Allow delete if either the user owns it OR if it has no owner yet (transition)
     const isOwner = hoarding.ownerId === req.user.id;
     const isUnowned = !hoarding.ownerId || hoarding.ownerId === "" || hoarding.ownerId === null;
@@ -1824,24 +1824,24 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
         message: 'You can only delete your own hoardings'
       });
     }
-    
+
     // Delete hoarding
     const result = await collection.deleteOne(query);
-    
+
     // Sync JSON fallback
     if (!db.isMock && fs.existsSync(HOARDINGS_FILE)) {
       const hoardings = loadJsonData(HOARDINGS_FILE);
       const filtered = hoardings.filter(h => (h.id || h._id?.toString()) !== id);
       saveJsonData(HOARDINGS_FILE, filtered);
     }
-    
+
     console.log('Deleted hoarding:', id);
-    
+
     res.json({
       success: true,
       message: 'Hoarding deleted successfully'
     });
-    
+
   } catch (error) {
     console.error('Error deleting hoarding:', error);
     res.status(500).json({
@@ -1855,10 +1855,10 @@ app.delete('/api/user/hoardings/:id', authMiddleware, async (req, res) => {
 app.put('/api/user/profile', authMiddleware, async (req, res) => {
   try {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
-    
+
     const userId = req.user.id;
     const { name, email, company, phone, role } = req.body;
-    
+
     const updateData = {
       name,
       company,
@@ -1866,7 +1866,7 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
       role,
       updatedAt: new Date().toISOString()
     };
-    
+
     // Email is usually preserved or requires special verification, 
     // but for now we'll allow updating it if provided and unique
     if (email && email !== req.user.email) {
@@ -1876,17 +1876,17 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
       }
       updateData.email = email.toLowerCase();
     }
-    
+
     const result = await db.collection('users').updateOne(
       { id: userId },
       { $set: updateData }
     );
-    
+
     if (result.matchedCount === 1) {
       // Get updated user data
       const updatedUser = await db.collection('users').findOne({ id: userId });
       const { password: _, ...userResponse } = updatedUser;
-      
+
       // Sync JSON fallback
       if (!db.isMock && fs.existsSync(USERS_FILE)) {
         const users = loadJsonData(USERS_FILE);
@@ -1896,7 +1896,7 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
           saveJsonData(USERS_FILE, users);
         }
       }
-      
+
       res.json({ success: true, message: 'Profile updated successfully', data: userResponse });
     } else {
       res.status(404).json({ success: false, message: 'User not found' });
@@ -1910,7 +1910,7 @@ app.put('/api/user/profile', authMiddleware, async (req, res) => {
 // Global error handler for Multer and other errors
 app.use((err, req, res, next) => {
   logger.error(`💥 [Global Error]: ${err.message}`, { stack: err.stack, path: req.path, method: req.method });
-  
+
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({
@@ -1926,7 +1926,7 @@ app.use((err, req, res, next) => {
 
   const statusCode = err.status || 500;
   const isProduction = process.env.NODE_ENV === 'production';
-  
+
   res.status(statusCode).json({
     success: false,
     message: isProduction ? 'An internal server error occurred.' : err.message,
@@ -1983,16 +1983,16 @@ const server = app.listen(port, '0.0.0.0', async () => {
       const websiteContent = loadJsonData(WEBSITE_CONTENT_FILE, {});
       const collection = db.collection('website_content');
       const pages = Object.keys(websiteContent);
-      
+
       console.log('🔄 [Sync] Checking for missing database configurations...');
-      
+
       for (const page of pages) {
         // Check if page exists in DB
         const exists = await collection.findOne({ page: page });
-        
+
         // Check if the current data is valid or needs restoration
-        const needsRestoration = !exists || 
-          (Object.keys(exists.data || {}).length === 0) || 
+        const needsRestoration = !exists ||
+          (Object.keys(exists.data || {}).length === 0) ||
           (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey));
 
         if (needsRestoration && websiteContent[page]) {
