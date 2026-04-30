@@ -332,6 +332,9 @@ const socialLogin = async (req, res) => {
     }
 
     const usersCollection = await initUsersCollection();
+    if (!usersCollection) {
+      throw new Error('Database connection failed during social login');
+    }
     let user = await usersCollection.findOne({ email: userData.email.toLowerCase() });
 
     if (!user) {

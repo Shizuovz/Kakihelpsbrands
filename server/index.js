@@ -39,8 +39,9 @@ const port = process.env.PORT || 3001;
 // 1. SECURITY MIDDLEWARE (MUST BE FIRST)
 // Use Helmet to set various security-related HTTP headers
 app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images from other origins if needed
-  contentSecurityPolicy: false, // Disable CSP if it interferes with development, or configure properly
+  crossOriginResourcePolicy: { policy: "cross-origin" },
+  crossOriginOpenerPolicy: { policy: "same-origin-allow-popups" },
+  contentSecurityPolicy: false,
 }));
 
 // Rate limiting to prevent brute force and DoS
