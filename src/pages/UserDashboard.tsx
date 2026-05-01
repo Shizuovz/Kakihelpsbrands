@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -38,7 +38,9 @@ import {
   XCircle,
   AlertCircle,
   Download,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Search,
+  ArrowDownAZ
 } from 'lucide-react';
 import { toast } from 'sonner';
 import {
@@ -69,6 +71,8 @@ export const UserDashboard = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [inquiries, setInquiries] = useState<any[]>([]);
   const [inquiryFilter, setInquiryFilter] = useState<'all' | 'new' | 'contacted' | 'confirmed' | 'cancelled'>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState<'newest' | 'oldest' | 'price-high' | 'price-low'>('newest');
   const [editingInquiry, setEditingInquiry] = useState<any | null>(null);
   const [internalNotes, setInternalNotes] = useState('');
   const [dbStatus, setDbStatus] = useState<{ isMock: boolean, warning: string | null }>({ isMock: false, warning: null });
@@ -209,10 +213,40 @@ export const UserDashboard = () => {
     }
   };
 
-  const filteredInquiries = inquiries.filter(inq => {
-    if (inquiryFilter === 'all') return true;
-    return inq.status?.toLowerCase() === inquiryFilter.toLowerCase();
-  });
+  const filteredInquiries = useMemo(() => {
+    let result = [...inquiries];
+    
+    // Status Filter
+    if (inquiryFilter !== 'all') {
+      result = result.filter(inq => inq.status?.toLowerCase() === inquiryFilter.toLowerCase());
+    }
+    
+    // Search Filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(inq => 
+        (inq.name || '').toLowerCase().includes(query) ||
+        (inq.email || '').toLowerCase().includes(query) ||
+        (inq.phone || '').toLowerCase().includes(query) ||
+        (inq.hoardingTitle || '').toLowerCase().includes(query) ||
+        (inq.message || '').toLowerCase().includes(query)
+      );
+    }
+    
+    // Sorting
+    result.sort((a, b) => {
+      const dateA = new Date(a.createdAt || a.submittedAt || 0).getTime();
+      const dateB = new Date(b.createdAt || b.submittedAt || 0).getTime();
+      
+      if (sortBy === 'newest') return dateB - dateA;
+      if (sortBy === 'oldest') return dateA - dateB;
+      if (sortBy === 'price-high') return (b.hoardingTotalCharges || 0) - (a.hoardingTotalCharges || 0);
+      if (sortBy === 'price-low') return (a.hoardingTotalCharges || 0) - (b.hoardingTotalCharges || 0);
+      return 0;
+    });
+    
+    return result;
+  }, [inquiries, inquiryFilter, searchQuery, sortBy]);
 
   const exportToCSV = () => {
     if (inquiries.length === 0) {
@@ -670,59 +704,103 @@ export const UserDashboard = () => {
 
               {/* Inquiries */}
               <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-                  <h3 className="text-lg font-semibold text-white flex items-center gap-2">
-                    <Mail className="w-5 h-5 text-blue-400" />
-                    Booking Inquiries
-                  </h3>
+                  <div className="flex flex-col gap-4 mb-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                        <Mail className="w-5 h-5 text-blue-400" />
+                        Booking Inquiries
+                      </h3>
 
-                  <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setInquiryFilter('all')}
-                      className={`text-xs ${inquiryFilter === 'all' ? 'bg-white/10 text-white' : 'text-kaki-grey'}`}
-                    >
-                      All
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setInquiryFilter('new')}
-                      className={`text-xs ${inquiryFilter === 'new' ? 'bg-blue-500/10 text-blue-400' : 'text-kaki-grey'}`}
-                    >
-                      New
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setInquiryFilter('contacted')}
-                      className={`text-xs ${inquiryFilter === 'contacted' ? 'bg-purple-500/10 text-purple-400' : 'text-kaki-grey'}`}
-                    >
-                      Contacted
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setInquiryFilter('confirmed')}
-                      className={`text-xs ${inquiryFilter === 'confirmed' ? 'bg-green-500/10 text-green-400' : 'text-kaki-grey'}`}
-                    >
-                      Confirmed
-                    </Button>
-                    
-                    <div className="h-4 w-px bg-white/10 mx-1 hidden md:block"></div>
-                    
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={exportToCSV}
-                      className="text-xs border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-400 ml-auto flex items-center gap-2"
-                    >
-                      <FileSpreadsheet className="w-3.5 h-3.5" />
-                      Export CSV
-                    </Button>
+                      <div className="flex flex-wrap items-center gap-2 overflow-x-auto no-scrollbar pb-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setInquiryFilter('all')}
+                          className={`text-xs ${inquiryFilter === 'all' ? 'bg-white/10 text-white' : 'text-kaki-grey'}`}
+                        >
+                          All
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setInquiryFilter('new')}
+                          className={`text-xs ${inquiryFilter === 'new' ? 'bg-blue-500/10 text-blue-400' : 'text-kaki-grey'}`}
+                        >
+                          New
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setInquiryFilter('contacted')}
+                          className={`text-xs ${inquiryFilter === 'contacted' ? 'bg-purple-500/10 text-purple-400' : 'text-kaki-grey'}`}
+                        >
+                          Contacted
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setInquiryFilter('confirmed')}
+                          className={`text-xs ${inquiryFilter === 'confirmed' ? 'bg-green-500/10 text-green-400' : 'text-kaki-grey'}`}
+                        >
+                          Confirmed
+                        </Button>
+                        
+                        <div className="h-4 w-px bg-white/10 mx-1 hidden md:block"></div>
+                        
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={exportToCSV}
+                          className="text-xs border-green-500/20 bg-green-500/5 hover:bg-green-500/10 text-green-400 ml-auto flex items-center gap-2"
+                        >
+                          <FileSpreadsheet className="w-3.5 h-3.5" />
+                          Export CSV
+                        </Button>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="relative group">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kaki-grey group-focus-within:text-blue-400 transition-colors" />
+                        <Input 
+                          placeholder="Search customer, email or hoarding..." 
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="bg-white/5 border-white/10 pl-10 h-10 focus:border-blue-500/50"
+                        />
+                      </div>
+                      
+                      <div className="flex gap-2">
+                        <Select value={sortBy} onValueChange={(val: any) => setSortBy(val)}>
+                          <SelectTrigger className="bg-white/5 border-white/10 h-10 flex-1">
+                            <div className="flex items-center gap-2">
+                              <ArrowDownAZ className="w-4 h-4 text-blue-400" />
+                              <SelectValue placeholder="Sort By" />
+                            </div>
+                          </SelectTrigger>
+                          <SelectContent className="bg-kaki-black border-white/10">
+                            <SelectItem value="newest">Newest First</SelectItem>
+                            <SelectItem value="oldest">Oldest First</SelectItem>
+                            <SelectItem value="price-high">Highest Value</SelectItem>
+                            <SelectItem value="price-low">Lowest Value</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        
+                        <Button 
+                          variant="ghost" 
+                          size="icon"
+                          onClick={() => {
+                            setSearchQuery('');
+                            setSortBy('newest');
+                            setInquiryFilter('all');
+                          }}
+                          className="text-kaki-grey hover:text-white border border-white/10 h-10 w-10"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
                 {filteredInquiries.length > 0 ? (
                   <div className="space-y-4">

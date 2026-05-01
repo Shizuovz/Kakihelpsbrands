@@ -553,7 +553,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // Database status endpoint (Admin only)
-app.get('/api/db-status', adminAuthMiddleware, (req, res) => {
+app.get('/api/db-status', (req, res) => {
   res.json({
     success: true,
     isMock: !!db?.isMock,

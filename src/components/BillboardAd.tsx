@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { X, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -5,14 +6,22 @@ import { Link, useLocation } from "react-router-dom";
 
 const BillboardAd = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isVisible, setIsVisible] = useState(false);
   const [isRendered, setIsRendered] = useState(false);
   const [countdown, setCountdown] = useState(5);
 
 
   useEffect(() => {
+    // Check if user has already seen the ad in this session
+    const hasSeenAd = sessionStorage.getItem('hasSeenBillboardAd');
+    if (hasSeenAd) return;
+
     // skip if on dashboard or admin pages
     if (location.pathname.startsWith('/admin') || location.pathname === '/dashboard') return;
+    
+    // Mark as seen immediately so it doesn't trigger again on fast navigation/reload
+    sessionStorage.setItem('hasSeenBillboardAd', 'true');
     
     let interval: NodeJS.Timeout;
 
@@ -112,8 +121,8 @@ const BillboardAd = () => {
               Get premium billboard placements in prime locations. Maximize your brand's offline visibility today.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 md:gap-4 mt-auto md:mt-0">
-              <Button asChild onClick={(e) => { e.preventDefault(); handleClose(); setTimeout(() => window.location.href = '/contact', 500); }} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-900/20 w-full sm:w-auto px-6 py-5 md:px-8 md:py-6 text-base md:text-lg">
-                <Link to="/contact" className="flex items-center justify-center w-full">
+              <Button asChild onClick={(e) => { e.preventDefault(); handleClose(); setTimeout(() => navigate('/hoardings'), 500); }} className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 shadow-lg shadow-purple-900/20 w-full sm:w-auto px-6 py-5 md:px-8 md:py-6 text-base md:text-lg">
+                <Link to="/hoardings" className="flex items-center justify-center w-full">
                   Book Now <ExternalLink className="w-4 h-4 md:w-5 md:h-5 ml-2" />
                 </Link>
               </Button>

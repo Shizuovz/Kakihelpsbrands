@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { API_BASE_URL } from '@/config';
 import { useNavigate } from 'react-router-dom';
 import { resolveApiUrl } from '@/utils/resolveApiUrl';
@@ -10,7 +10,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useAuth } from '@/contexts/AuthContext';
 import { toast } from 'sonner';
 import { 
-  Save, 
+  Search,
+  Filter,
+  ArrowDownAZ,  Save, 
   Layout, 
   Image as ImageIcon, 
   Users, 
@@ -42,6 +44,14 @@ import {
   List
 } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { 
+  Select, 
+  SelectContent, 
+  SelectItem, 
+  SelectTrigger, 
+  SelectValue 
+} from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 
 export const AdminContent = () => {
   const navigate = useNavigate();
@@ -62,6 +72,9 @@ export const AdminContent = () => {
   });
 
   const [inquiries, setInquiries] = useState<any[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
+  const [sortBy, setSortBy] = useState('newest');
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -371,6 +384,38 @@ export const AdminContent = () => {
     });
     return newParts.filter(p => p !== '');
   };
+
+  const filteredInquiries = useMemo(() => {
+    let result = [...inquiries];
+    
+    // Filter by status
+    if (statusFilter !== 'all') {
+      result = result.filter(inq => (inq.status || 'new') === statusFilter);
+    }
+    
+    // Filter by search query
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(inq => 
+        (inq.name || '').toLowerCase().includes(query) ||
+        (inq.email || '').toLowerCase().includes(query) ||
+        (inq.hoardingTitle || '').toLowerCase().includes(query) ||
+        (inq.companyName || '').toLowerCase().includes(query) ||
+        (inq.message || '').toLowerCase().includes(query)
+      );
+    }
+    
+    // Sort
+    result.sort((a, b) => {
+      const dateA = new Date(a.createdAt || 0).getTime();
+      const dateB = new Date(b.createdAt || 0).getTime();
+      if (sortBy === 'newest') return dateB - dateA;
+      if (sortBy === 'oldest') return dateA - dateB;
+      return 0;
+    });
+    
+    return result;
+  }, [inquiries, searchQuery, statusFilter, sortBy]);
 
   const handleDeleteInquiry = async (id: string) => {
     if (!confirm('Are you sure you want to delete this inquiry?')) return;
@@ -1824,25 +1869,95 @@ export const AdminContent = () => {
           <TabsContent value="leads">
             <Card className="bg-white/5 border-white/10 text-white">
               <CardHeader>
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div>
-                    <CardTitle>Inquiries & Leads</CardTitle>
-                    <CardDescription className="text-kaki-grey">Manage messages from potential clients</CardDescription>
+                    <CardTitle className="text-2xl flex items-center gap-3">
+                      <Mail className="w-6 h-6 text-purple-500" />
+                      Inquiries & Leads
+                    </CardTitle>
+                    <CardDescription className="text-kaki-grey">Manage messages and campaign requests from potential clients</CardDescription>
                   </div>
-                  <div className="px-4 py-2 bg-purple-500/20 rounded-xl border border-purple-500/30">
-                    <span className="text-purple-400 font-bold">{inquiries.length}</span> <span className="text-sm text-kaki-grey ml-2">Total Messages</span>
+                  <div className="flex items-center gap-3">
+                    <Badge variant="outline" className="px-4 py-2 bg-purple-500/10 border-purple-500/20 text-purple-400 font-bold">
+                      {filteredInquiries.length} <span className="ml-2 font-normal opacity-60">Result{filteredInquiries.length !== 1 ? 's' : ''}</span>
+                    </Badge>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 mt-8 pt-6 border-t border-white/5">
+                  <div className="md:col-span-5 relative group">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-kaki-grey group-focus-within:text-purple-500 transition-colors" />
+                    <Input 
+                      placeholder="Search name, email, hoarding or message..." 
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="bg-white/5 border-white/10 pl-10 h-11 focus:border-purple-500/50"
+                    />
+                  </div>
+                  
+                  <div className="md:col-span-3">
+                    <Select value={statusFilter} onValueChange={setStatusFilter}>
+                      <SelectTrigger className="bg-white/5 border-white/10 h-11">
+                        <div className="flex items-center gap-2">
+                          <Filter className="w-4 h-4 text-purple-500" />
+                          <SelectValue placeholder="Filter Status" />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-kaki-black border-white/10">
+                        <SelectItem value="all">All Statuses</SelectItem>
+                        <SelectItem value="new">New / Unread</SelectItem>
+                        <SelectItem value="read">Read / Processed</SelectItem>
+                        <SelectItem value="contacted">Contacted</SelectItem>
+                        <SelectItem value="confirmed">Confirmed</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <Select value={sortBy} onValueChange={setSortBy}>
+                      <SelectTrigger className="bg-white/5 border-white/10 h-11">
+                        <div className="flex items-center gap-2">
+                          <ArrowDownAZ className="w-4 h-4 text-purple-500" />
+                          <SelectValue placeholder="Sort Order" />
+                        </div>
+                      </SelectTrigger>
+                      <SelectContent className="bg-kaki-black border-white/10">
+                        <SelectItem value="newest">Newest First</SelectItem>
+                        <SelectItem value="oldest">Oldest First</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="md:col-span-1">
+                    <Button 
+                      variant="ghost" 
+                      onClick={() => {
+                        setSearchQuery('');
+                        setStatusFilter('all');
+                        setSortBy('newest');
+                      }}
+                      className="w-full h-11 hover:bg-white/10 text-kaki-grey"
+                      title="Clear Filters"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
                   </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {inquiries.length === 0 ? (
+                  {filteredInquiries.length === 0 ? (
                     <div className="text-center py-20 border border-dashed border-white/10 rounded-3xl">
                       <Mail className="w-12 h-12 text-white/20 mx-auto mb-4" />
-                      <p className="text-kaki-grey">No inquiries yet. Keep building!</p>
+                      <p className="text-kaki-grey">No matching inquiries found.</p>
+                      { (searchQuery || statusFilter !== 'all') && (
+                        <Button variant="link" onClick={() => { setSearchQuery(''); setStatusFilter('all'); }} className="text-purple-400 mt-2">
+                          Clear all filters
+                        </Button>
+                      )}
                     </div>
                   ) : (
-                    inquiries.map((inquiry: any) => {
+                    filteredInquiries.map((inquiry: any) => {
                       const inquiryId = inquiry.id || inquiry._id;
                       const isUnread = inquiry.status === 'new' || inquiry.status === 'unread';
                       
