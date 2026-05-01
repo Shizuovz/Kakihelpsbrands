@@ -29,16 +29,30 @@ const loadJsonData = (file, defaultValue = []) => {
 
 const initUsersCollection = async () => {
   try {
-    // ONLY connect if we aren't already connected!
     if (!db) {
-      console.log('🔗 AUTH: Establishing fresh connection to MongoDB...');
+      console.log('🔗 AUTH: Establishing connection to MongoDB...');
       await client.connect();
       db = client.db('kaki_hoardings');
+      console.log('✅ AUTH: Connected to MongoDB');
     }
     return db.collection('users');
   } catch (error) {
     console.error('❌ MongoDB connection failed in auth.js:', error.message);
-    return null; 
+    
+    // Fallback to mock collection that uses the JSON file
+    return {
+      findOne: async (query) => {
+        const users = loadJsonData(USERS_FILE, []);
+        const email = query.email?.toLowerCase();
+        return users.find(u => u.email?.toLowerCase() === email) || null;
+      },
+      insertOne: async (user) => {
+        const users = loadJsonData(USERS_FILE, []);
+        users.push(user);
+        fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+        return { insertedId: user.id };
+      }
+    };
   }
 };
 
