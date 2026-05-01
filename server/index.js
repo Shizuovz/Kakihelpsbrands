@@ -1451,7 +1451,16 @@ app.get('/api/content/:page', async (req, res) => {
     // Load from local file first as a baseline
     let contentData = {};
     try {
-      contentData = loadJsonData(WEBSITE_CONTENT_FILE, {});
+      const defaultContent = {
+        index: {
+          hero: { title: "We Build Brands", subtitle: "KAKI delivers full-service digital marketing", videoUrl: "/video/kaki.mp4" },
+          departments: [],
+          stats: [],
+          recentWorks: [],
+          socialLinks: []
+        }
+      };
+      contentData = loadJsonData(WEBSITE_CONTENT_FILE, defaultContent);
     } catch (loadErr) {
       logger.warn(`⚠️ [Content API] Failed to load local JSON for ${page}:`, loadErr.message);
     }
