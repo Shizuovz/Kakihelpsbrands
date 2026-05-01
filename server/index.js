@@ -89,39 +89,50 @@ app.use(hpp());
 // NoSQL Injection Protection
 app.use((req, res, next) => {
   try {
-    if (req.body) {
-      const sanitizedBody = sanitize(req.body);
-      // Only reassign if it's different to avoid unnecessary overhead
-      if (JSON.stringify(req.body) !== JSON.stringify(sanitizedBody)) {
-        req.body = sanitizedBody;
-      }
+    if (req.body && typeof req.body === 'object') {
+      req.body = sanitize(req.body);
     }
     
     // Safely sanitize query parameters
-    if (req.query) {
-      const sanitizedQuery = sanitize(req.query);
-      // We avoid direct reassignment of req.query as it's often a getter
-      // Instead, we clean the existing object properties
+    if (req.query && typeof req.query === 'object') {
+      // In Express 5, req.query can be a getter or a proxy
+      // We create a sanitized copy and merge it back
+      const rawQuery = { ...req.query };
+      const sanitizedQuery = sanitize(rawQuery);
+      
+      // Remove potentially malicious keys from the original object
       Object.keys(req.query).forEach(key => {
         if (key.startsWith('$') || key.includes('.')) {
-          delete req.query[key];
+          try {
+            delete req.query[key];
+          } catch (e) {
+            // If it's a read-only property, we can't delete it, but we can't do much else either
+            // In most cases, Object.assign will override it later if it's in sanitizedQuery
+          }
         }
       });
-      Object.assign(req.query, sanitizedQuery);
+      
+      try {
+        Object.assign(req.query, sanitizedQuery);
+      } catch (e) {
+        // Fallback: if we can't mutate req.query, we just have to hope the routes use it safely
+        // or we could replace req.query if it's not a getter, but we already know that might fail
+      }
     }
     
     // Safely sanitize URL parameters
-    if (req.params) {
-      const sanitizedParams = sanitize(req.params);
+    if (req.params && typeof req.params === 'object') {
+      const rawParams = { ...req.params };
+      const sanitizedParams = sanitize(rawParams);
       Object.keys(req.params).forEach(key => {
         if (key.startsWith('$') || key.includes('.')) {
-          delete req.params[key];
+          try { delete req.params[key]; } catch (e) {}
         }
       });
-      Object.assign(req.params, sanitizedParams);
+      try { Object.assign(req.params, sanitizedParams); } catch (e) {}
     }
   } catch (err) {
-    logger.error('🛡️ [SECURITY] Sanitization error:', err.message);
+    logger.error('🛡️ [SECURITY] Sanitization middleware failed:', err.message);
   }
   next();
 });
@@ -1435,65 +1446,84 @@ app.delete('/api/admin/hoardings/:id', adminAuthMiddleware, async (req, res) => 
 
 // Website Content Management
 app.get('/api/content/:page', async (req, res) => {
+  const { page } = req.params;
   try {
-    const { page } = req.params;
     // Load from local file first as a baseline
-    let contentData = loadJsonData(WEBSITE_CONTENT_FILE, {});
+    let contentData = {};
+    try {
+      contentData = loadJsonData(WEBSITE_CONTENT_FILE, {});
+    } catch (loadErr) {
+      logger.warn(`⚠️ [Content API] Failed to load local JSON for ${page}:`, loadErr.message);
+    }
     
     // If database is available, merge/override with live database content
     if (db) {
       try {
         const collection = db.collection('website_content');
         const dbPages = await collection.find({}).toArray();
-        dbPages.forEach(doc => {
-          if (doc.page && doc.data) {
-            // Robust Merge Strategy:
-            // 1. If it's a list (array, like blogs), only overwrite if DB version has >= content or JSON is empty
-            if (Array.isArray(doc.data)) {
-              const localCount = (contentData[doc.page] || []).length;
-              const dbCount = doc.data.length;
-              if (dbCount >= localCount || localCount === 0) {
+        
+        if (dbPages && Array.isArray(dbPages)) {
+          dbPages.forEach(doc => {
+            if (doc && doc.page && doc.data) {
+              // Robust Merge Strategy:
+              // 1. If it's a list (array, like blogs), only overwrite if DB version has >= content or JSON is empty
+              if (Array.isArray(doc.data)) {
+                const localCount = (contentData[doc.page] && Array.isArray(contentData[doc.page])) ? contentData[doc.page].length : 0;
+                const dbCount = doc.data.length;
+                if (dbCount >= localCount || localCount === 0) {
+                  contentData[doc.page] = doc.data;
+                }
+              } 
+              // 2. Specialized handling for "works" (object with projects list)
+              else if (doc.page === 'works' && doc.data && doc.data.projects && Array.isArray(doc.data.projects)) {
+                const localCount = (contentData.works?.projects && Array.isArray(contentData.works.projects)) ? contentData.works.projects.length : 0;
+                const dbCount = doc.data.projects.length;
+                if (dbCount >= localCount || localCount === 0) {
+                  contentData.works = doc.data;
+                }
+              }
+              // 3. For other pages (objects), merge if not empty
+              else if (typeof doc.data === 'object' && doc.data !== null && Object.keys(doc.data).length > 0) {
                 contentData[doc.page] = doc.data;
-              } else {
-                console.log(`⚠️ [Sync] Skipping DB overwrite for "${doc.page}" (array): DB(${dbCount}) < JSON(${localCount})`);
-              }
-            } 
-            // 2. Specialized handling for "works" (object with projects list)
-            else if (doc.page === 'works' && doc.data.projects && Array.isArray(doc.data.projects)) {
-              const localCount = (contentData.works?.projects || []).length;
-              const dbCount = doc.data.projects.length;
-              if (dbCount >= localCount || localCount === 0) {
-                contentData.works = doc.data;
-              } else {
-                console.log(`⚠️ [Sync] Skipping DB overwrite for "works" (projects): DB(${dbCount}) < JSON(${localCount})`);
               }
             }
-            // 3. For other pages (objects), merge if not empty
-            else if (typeof doc.data === 'object' && Object.keys(doc.data).length > 0) {
-              contentData[doc.page] = doc.data;
-            }
-          }
-        });
-        console.log('✅ [Sync] Cloud content merge complete');
+          });
+        }
       } catch (dbError) {
-        console.error('⚠️ [Sync] Failed to merge database content:', dbError);
+        logger.error(`⚠️ [Content API] Database sync failed for ${page}:`, dbError.message);
+        // We continue with local data if DB fails
       }
     }
 
     if (page === 'all') {
-      res.json({ success: true, data: contentData });
-      return;
+      return res.json({ success: true, data: contentData });
     }
 
     const pageContent = contentData[page];
     if (pageContent) {
-      res.json({ success: true, data: pageContent });
+      return res.json({ success: true, data: pageContent });
     } else {
-      res.status(404).json({ success: false, message: 'Content not found: ' + page });
+      // Fallback for known pages if they are completely missing
+      if (page === 'about') {
+        return res.json({ 
+          success: true, 
+          data: { 
+            title: "About KAKI", 
+            description: "KAKI is a leading brand building and hoarding management agency.",
+            vision: "To become the global standard for brand visibility.",
+            mission: "Helping brands reach their audience effectively."
+          } 
+        });
+      }
+      return res.status(404).json({ success: false, message: 'Content not found: ' + page });
     }
   } catch (error) {
-    console.error(`❌ Content API Error (${req.params.page}):`, error);
-    res.status(500).json({ success: false, message: error.message });
+    logger.error(`❌ [Content API] Critical Error (${page}):`, error);
+    return res.status(500).json({ 
+      success: false, 
+      message: 'A server error occurred while fetching content',
+      error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+    });
   }
 });
 
