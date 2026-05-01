@@ -4,13 +4,10 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import Joi from 'joi';
-import { OAuth2Client } from 'google-auth-library';
 import logger from './logger.js';
 
 // Load environment variables
 dotenv.config();
-
-const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const client = new MongoClient(process.env.MONGODB_URI || 'mongodb://localhost:27017/kaki_hoardings');
@@ -51,13 +48,22 @@ const initUsersCollection = async () => {
         users.push(user);
         fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
         return { insertedId: user.id };
+      },
+      updateOne: async (query, update) => {
+        const users = loadJsonData(USERS_FILE, []);
+        const index = users.findIndex(u => u.id === query.id);
+        if (index > -1) {
+          if (update.$set) Object.assign(users[index], update.$set);
+          fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2));
+        }
+        return { modifiedCount: index > -1 ? 1 : 0 };
       }
     };
   }
 };
 
 const generateToken = (user) => {
-  return jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '4h' }); // Reduced from 24h to 4h for security
+  return jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '4h' });
 };
 
 const verifyToken = (token) => {
@@ -87,7 +93,6 @@ const authMiddleware = async (req, res, next) => {
 
 const register = async (req, res) => {
   try {
-    // Phase 2: Schema Validation
     const schema = Joi.object({
       name: Joi.string().required().min(2).max(100),
       email: Joi.string().email().required(),
@@ -105,45 +110,20 @@ const register = async (req, res) => {
     const { name, email, password, company, phone, role = 'provider' } = req.body;
     const normalizedEmail = email?.toLowerCase().trim();
     
-    console.log(`📝 REGISTER ATTEMPT: Email [${normalizedEmail}]`);
-    
     const usersCollection = await initUsersCollection();
     
-    if (!usersCollection) {
-      console.log('⚠️ AUTH: Register using In-Memory Fallback');
-      // In-memory fallback - create test user
-      const testUser = {
-        id: 'test-user-' + Date.now(),
-        name, email: normalizedEmail, password, company, phone, role,
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-      const token = generateToken(testUser);
-      const { password: _, ...userWithoutPassword } = testUser;
-      return res.status(201).json({ 
-        success: true, 
-        message: 'Registration successful (in-memory mode)', 
-        data: { user: userWithoutPassword, token } 
-      });
-    }
-    
     const existingUser = await usersCollection.findOne({ 
-      $or: [
-        { email: normalizedEmail },
-        { email: email }
-      ]
+      $or: [{ email: normalizedEmail }, { email: email }]
     });
     
     if (existingUser) {
-      console.log(`❌ REGISTER: User already exists [${normalizedEmail}]`);
       return res.status(400).json({ success: false, message: 'User with this email already exists' });
     }
     
     const hashedPassword = await bcrypt.hash(password, 10);
     
     const newUser = {
-      id: 'provider-' + Date.now(),
+      id: 'user-' + Date.now(),
       name,
       email: normalizedEmail,
       password: hashedPassword,
@@ -156,8 +136,6 @@ const register = async (req, res) => {
     };
     
     await usersCollection.insertOne(newUser);
-    logger.info(`✅ [AUTH] User Registered: ${normalizedEmail}`);
-    
     const token = generateToken(newUser);
     const { password: _, ...userWithoutPassword } = newUser;
     res.status(201).json({ success: true, message: 'Registration successful', data: { user: userWithoutPassword, token } });
@@ -172,42 +150,30 @@ const login = async (req, res) => {
     const { email, password } = req.body;
     const normalizedEmail = email?.toLowerCase().trim();
     
-    console.log(`\n🔑 [DEBUG] LOGIN ATTEMPT: [${normalizedEmail}]`);
-    
     const usersCollection = await initUsersCollection();
-    
-    // Safety check for user in DB
     const user = await usersCollection.findOne({ 
       $or: [{ email: normalizedEmail }, { email: email }]
     });
 
     if (!user) {
-      console.log(`❌ AUTH: No user found for email [${normalizedEmail}]`);
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
     
-    console.log(`🔍 AUTH: User found [${user.email}]. Checking password...`);
-
-    // Check if it's a hashed password or plain text (migration fallback)
     let isMatch = false;
     if (user.password && (user.password.startsWith('$2a$') || user.password.startsWith('$2b$'))) {
       isMatch = await bcrypt.compare(password, user.password);
     } else {
-      // Fallback for plain text passwords in DB - allow once and update to hash
       isMatch = user.password === password;
       if (isMatch) {
-        console.log(`⚠️ AUTH: Plain text password detected for [${user.email}]. Updating to hash...`);
         const newHash = await bcrypt.hash(password, 10);
         await usersCollection.updateOne({ id: user.id }, { $set: { password: newHash } });
       }
     }
 
     if (!isMatch) {
-      logger.warn(`🛑 [SECURITY] Failed login attempt for: ${user.email}`);
       return res.status(401).json({ success: false, message: 'Invalid email or password' });
     }
 
-    logger.info(`✅ [AUTH] Login Success: ${user.email}`);
     const token = generateToken(user);
     const { password: _, ...userWithoutPassword } = user;
     res.json({ success: true, message: 'Login successful', data: { user: userWithoutPassword, token } });
@@ -220,32 +186,6 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   try {
     const usersCollection = await initUsersCollection();
-    
-    if (!usersCollection) {
-      // In-memory fallback - return test user
-      if (req.user.id === 'test-user-001') {
-        const testUser = {
-          id: 'test-user-001',
-          name: 'Test User',
-          email: 'test@example.com',
-          company: 'Test Company',
-          phone: '+91 12345 67890',
-          role: 'provider',
-          isActive: true,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        const { password: _, ...userResponse } = testUser;
-        return res.json({ 
-          success: true, 
-          message: 'User retrieved (in-memory mode)', 
-          data: userResponse 
-        });
-      } else {
-        return res.status(404).json({ error: 'User not found (in-memory mode)' });
-      }
-    }
-    
     const foundUser = await usersCollection.findOne({ id: req.user.id });
     if (!foundUser) {
       return res.status(404).json({ error: 'User not found' });
@@ -263,27 +203,17 @@ const resetPassword = async (req, res) => {
     const normalizedEmail = email?.toLowerCase().trim();
     const usersCollection = await initUsersCollection();
     
-    if (!usersCollection) {
-      return res.status(503).json({ 
-        success: false, 
-        message: 'Password reset is currently unavailable. Please try again later.' 
-      });
-    }
-    
     const user = await usersCollection.findOne({ 
       $or: [{ email: normalizedEmail }, { email: email }]
     });
     
     if (!user) {
-      // Security best practice: don't reveal if user exists
       return res.json({ 
         success: true, 
         message: 'If an account exists with this email, you will receive password reset instructions.' 
       });
     }
     
-    // In a real app, we'd send an email with a reset link.
-    // For now, we'll generate a random temporary password and hash it.
     const tempPassword = Math.random().toString(36).slice(-8);
     const hashedPassword = await bcrypt.hash(tempPassword, 10);
     
@@ -292,8 +222,6 @@ const resetPassword = async (req, res) => {
       { $set: { password: hashedPassword, updatedAt: new Date().toISOString() } }
     );
     
-    // In production, this would be emailed.
-    logger.info(`🔑 [AUTH] Password recovery initiated for: ${normalizedEmail}`);
     res.json({ 
       success: true, 
       message: `Security Check Passed! Your temporary password is: ${tempPassword}. Please change it after logging in.` 
@@ -304,75 +232,4 @@ const resetPassword = async (req, res) => {
   }
 };
 
-const socialLogin = async (req, res) => {
-  try {
-    const { provider, token } = req.body;
-    let userData = null;
-
-    // Developer bypass for testing without real credentials
-    if (token === 'dev-token-bypass' && process.env.NODE_ENV !== 'production') {
-      userData = {
-        email: `dev-${provider}@kaki.com`,
-        name: `Dev ${provider} User`,
-        id: `dev-${provider}-id`
-      };
-    } else if (provider === 'google') {
-      try {
-        const ticket = await googleClient.verifyIdToken({
-          idToken: token,
-          audience: process.env.GOOGLE_CLIENT_ID,
-        });
-        const payload = ticket.getPayload();
-        userData = {
-          email: payload.email,
-          name: payload.name,
-          id: `google-${payload.sub}`
-        };
-      } catch (err) {
-        // Fallback for some token types if idToken verification fails
-        const response = await fetch(`https://oauth2.googleapis.com/tokeninfo?access_token=${token}`);
-        const payload = await response.json();
-        if (!payload.email) throw new Error('Invalid Google token');
-        userData = {
-          email: payload.email,
-          name: payload.name || payload.email.split('@')[0],
-          id: `google-${payload.sub || payload.user_id}`
-        };
-      }
-    }
-
-    if (!userData) {
-      return res.status(400).json({ success: false, message: 'Invalid provider' });
-    }
-
-    const usersCollection = await initUsersCollection();
-    let user = await usersCollection.findOne({ email: userData.email.toLowerCase() });
-
-    if (!user) {
-      // Create new user if they don't exist
-      user = {
-        id: userData.id,
-        name: userData.name,
-        email: userData.email.toLowerCase(),
-        role: 'provider', // Default to provider for vendors
-        company: 'Social Login',
-        phone: '',
-        isActive: true,
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-        authProvider: provider
-      };
-      await usersCollection.insertOne(user);
-    }
-
-    const jwtToken = generateToken(user);
-    const { password: _, ...userWithoutPassword } = user;
-    res.json({ success: true, message: 'Social login successful', data: { user: userWithoutPassword, token: jwtToken } });
-
-  } catch (error) {
-    logger.error('💥 [AUTH] Social Login Error:', error.message);
-    res.status(500).json({ success: false, message: 'Social login failed' });
-  }
-};
-
-export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword, socialLogin };
+export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword };

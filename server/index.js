@@ -22,7 +22,7 @@ dotenv.config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { v2 as cloudinary } from 'cloudinary';
-import { authMiddleware, register, login, getCurrentUser, resetPassword, socialLogin } from './auth.js';
+import { authMiddleware, register, login, getCurrentUser, resetPassword } from './auth.js';
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
 
 // Cloudinary connection
@@ -432,7 +432,6 @@ const upload = multer({
 // Authentication endpoints
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
-app.post('/api/auth/social', socialLogin);
 app.post('/api/auth/reset-password', resetPassword);
 app.get('/api/auth/me', authMiddleware, getCurrentUser);
 
