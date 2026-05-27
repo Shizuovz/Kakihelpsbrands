@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import logo from '../assets/logos/logo-no-bg.png';
+import logo from '../assets/logos/logo-kaki.png';
 import { useAuth } from '@/contexts/AuthContext';
 
 const Preloader = () => {
@@ -38,20 +38,20 @@ const Preloader = () => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-kaki-black">
       <div className="text-center">
         <div className="mb-8 animate-logo-float">
-          <img 
-            src={logo} 
-            alt="KAKI Logo" 
+          <img
+            src={logo}
+            alt="KAKI Logo"
             className="h-28 w-auto mx-auto"
           />
         </div>
-        
+
         <div className="w-64 h-1 bg-kaki-grey/20 rounded-full overflow-hidden">
-          <div 
+          <div
             className="h-full bg-kaki-white transition-all duration-300 ease-out"
             style={{ width: `${progress}%` }}
           />
         </div>
-        
+
         <p className="mt-4 text-kaki-grey text-sm font-light tracking-wider">
           LOADING EXCELLENCE
         </p>

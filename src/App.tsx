@@ -7,6 +7,12 @@ import { useEffect } from "react";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import SeoServices from "./pages/SeoServices";
+import SocialMediaServices from "./pages/SocialMediaServices";
+import PaidAdvertising from "./pages/PaidAdvertising";
+import VideoMarketing from "./pages/VideoMarketing";
+import WebDevelopment from "./pages/WebDevelopment";
+import GraphicDesign from "./pages/GraphicDesign";
 import Departments from "./pages/Departments";
 import Studio from "./pages/departments/Studio";
 import Marketing from "./pages/departments/Marketing";
@@ -20,6 +26,7 @@ import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 import Preloader from "./components/Preloader";
 import ScrollToTop from "./components/ScrollToTop";
+import Footer from "./components/Footer";
 import CaseStudyDetail from "./pages/CaseStudyDetail";
 import BlogList from "./pages/BlogList";
 import BlogDetail from "./pages/BlogDetail";
@@ -39,6 +46,12 @@ const NavigationWrapper = () => {
   const location = useLocation();
   const isAdminPath = location.pathname.startsWith('/admin');
   return !isAdminPath ? <Navigation /> : null;
+};
+
+const FooterWrapper = () => {
+  const location = useLocation();
+  const isAdminPath = location.pathname.startsWith('/admin');
+  return !isAdminPath ? <Footer /> : null;
 };
 
 const App = () => {
@@ -62,6 +75,12 @@ const App = () => {
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/services/seo" element={<SeoServices />} />
+                <Route path="/services/social-media" element={<SocialMediaServices />} />
+                <Route path="/services/paid-advertising" element={<PaidAdvertising />} />
+                <Route path="/services/video-marketing" element={<VideoMarketing />} />
+                <Route path="/services/web-development" element={<WebDevelopment />} />
+                <Route path="/services/graphic-design" element={<GraphicDesign />} />
                 <Route path="/departments" element={<Departments />} />
                 <Route path="/departments/studio" element={<Studio />} />
                 <Route path="/departments/marketing" element={<Marketing />} />
@@ -86,6 +105,7 @@ const App = () => {
                 
                 <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
+              <FooterWrapper />
             </div>
           </BrowserRouter>
         </AuthProvider>

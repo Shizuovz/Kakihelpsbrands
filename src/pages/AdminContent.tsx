@@ -41,8 +41,11 @@ import {
   Heading,
   Underline,
   Strikethrough,
-  List
+  List,
+  Layers,
+  FileSpreadsheet
 } from 'lucide-react';
+import { UserHoardingsManager } from '@/components/UserHoardingsManager';
 import { Separator } from '@/components/ui/separator';
 import { 
   Select, 
@@ -75,6 +78,7 @@ export const AdminContent = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
+  const [hoardings, setHoardings] = useState<any[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -110,10 +114,24 @@ export const AdminContent = () => {
 
     const fetchInquiries = async () => {
       try {
-        const response = await fetch(`${API_BASE_URL}/api/inquiries`);
-        if (response.ok) {
-          const result = await response.json();
+        const inquiriesResponse = await fetch(`${API_BASE_URL}/api/inquiries`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        });
+        if (inquiriesResponse.ok) {
+          const result = await inquiriesResponse.json();
           setInquiries(result.data || []);
+        }
+
+        const hoardingsResponse = await fetch(`${API_BASE_URL}/api/admin/hoardings`, {
+            headers: {
+                'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
+            }
+        });
+        if (hoardingsResponse.ok) {
+            const result = await hoardingsResponse.json();
+            setHoardings(result.data || []);
         }
       } catch (error) {
         console.error('Failed to load inquiries:', error);
@@ -458,6 +476,59 @@ export const AdminContent = () => {
     }
   };
 
+  const exportToCSV = () => {
+    if (filteredInquiries.length === 0) {
+      toast.error('No data to export');
+      return;
+    }
+
+    const headers = [
+      'Customer Name',
+      'Email',
+      'Phone',
+      'Company',
+      'Hoarding Title',
+      'HSN Code',
+      'SAC Code',
+      'Status',
+      'Submitted At',
+      'Message'
+    ];
+
+    const rows = filteredInquiries.map(inq => {
+      // Find associated hoarding to get HSN/SAC
+      const hoarding = hoardings.find(h => (h.id || h._id?.toString()) === inq.hoardingId);
+      
+      return [
+        `"${inq.name || ''}"`,
+        `"${inq.email || ''}"`,
+        `"${inq.phone || ''}"`,
+        `"${inq.companyName || ''}"`,
+        `"${inq.hoardingTitle || ''}"`,
+        `"${hoarding?.hsnCode || ''}"`,
+        `"${hoarding?.sacCode || ''}"`,
+        `"${inq.status || 'new'}"`,
+        `"${new Date(inq.createdAt || inq.submittedAt || '').toLocaleString()}"`,
+        `"${(inq.message || '').replace(/"/g, '""')}"`
+      ];
+    });
+
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `inquiries_export_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    toast.success('CSV exported successfully');
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-kaki-black flex items-center justify-center">
@@ -505,7 +576,7 @@ export const AdminContent = () => {
         </div>
 
         <Tabs defaultValue="hero" className="w-full">
-          <TabsList className="bg-white/5 border border-white/10 p-1 mb-8">
+          <TabsList className="bg-white/5 border border-white/10 p-1 mb-8 w-full overflow-x-auto flex-wrap md:flex-nowrap justify-start h-auto">
             <TabsTrigger value="hero" className="data-[state=active]:bg-purple-600">
               <Layout className="w-4 h-4 mr-2" /> Hero Section
             </TabsTrigger>
@@ -535,6 +606,9 @@ export const AdminContent = () => {
             </TabsTrigger>
             <TabsTrigger value="leads" className="data-[state=active]:bg-purple-600">
               <Mail className="w-4 h-4 mr-2" /> Messages
+            </TabsTrigger>
+            <TabsTrigger value="hoardings" className="data-[state=active]:bg-purple-600">
+              <Layers className="w-4 h-4 mr-2" /> Inventory
             </TabsTrigger>
           </TabsList>
 
@@ -1460,36 +1534,77 @@ export const AdminContent = () => {
 
           <Card className="bg-white/5 border-white/10 text-white">
             <CardHeader>
-              <CardTitle>Mission & Purpose</CardTitle>
+              <CardTitle>Vision, Mission & Purpose</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <label className="text-xs text-kaki-grey">Mission Title</label>
-                <Input 
-                  value={content.about?.mission?.title || ''} 
-                  onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...content.about.mission, title: e.target.value } } })}
-                  className="bg-kaki-black border-white/10"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs text-kaki-grey">Mission Description</label>
-                <Textarea 
-                  value={content.about?.mission?.description || ''} 
-                  onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...content.about.mission, description: e.target.value } } })}
-                  className="bg-kaki-black border-white/10 min-h-[120px]"
-                />
-              </div>
-              <div className="space-y-2">
-                <label className="text-xs text-kaki-grey uppercase tracking-wider text-purple-400">Mission Image</label>
-                <div className="flex gap-2">
+            <CardContent className="space-y-6">
+              {/* Vision Fields */}
+              <div className="space-y-4 p-4 bg-kaki-black/35 rounded-xl border border-white/5">
+                <h3 className="text-sm font-bold text-purple-400">Our Vision Section</h3>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Vision Title</label>
                   <Input 
-                    value={content.about?.mission?.image || ''} 
-                    onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...content.about.mission, image: e.target.value } } })}
+                    value={content.about?.vision?.title || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, vision: { ...(content.about?.vision || {}), title: e.target.value } } })}
                     className="bg-kaki-black border-white/10"
                   />
-                  <Button size="icon" variant="secondary" onClick={() => handleFileUpload((url) => setContent({ ...content, about: { ...content.about, mission: { ...content.about.mission, image: url } } }))}>
-                    <UploadCloud className="w-4 h-4" />
-                  </Button>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Vision Description</label>
+                  <Textarea 
+                    value={content.about?.vision?.description || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, vision: { ...(content.about?.vision || {}), description: e.target.value } } })}
+                    className="bg-kaki-black border-white/10 min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Vision Sub-description</label>
+                  <Textarea 
+                    value={content.about?.vision?.subDescription || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, vision: { ...(content.about?.vision || {}), subDescription: e.target.value } } })}
+                    className="bg-kaki-black border-white/10 min-h-[80px]"
+                  />
+                </div>
+              </div>
+
+              {/* Mission Fields */}
+              <div className="space-y-4 p-4 bg-kaki-black/35 rounded-xl border border-white/5">
+                <h3 className="text-sm font-bold text-purple-400">Our Mission Section</h3>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Mission Title</label>
+                  <Input 
+                    value={content.about?.mission?.title || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...(content.about?.mission || {}), title: e.target.value } } })}
+                    className="bg-kaki-black border-white/10"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Mission Description</label>
+                  <Textarea 
+                    value={content.about?.mission?.description || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...(content.about?.mission || {}), description: e.target.value } } })}
+                    className="bg-kaki-black border-white/10 min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey">Mission Sub-description</label>
+                  <Textarea 
+                    value={content.about?.mission?.subDescription || ''} 
+                    onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...(content.about?.mission || {}), subDescription: e.target.value } } })}
+                    className="bg-kaki-black border-white/10 min-h-[80px]"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs text-kaki-grey uppercase tracking-wider text-purple-400">Mission & Vision Image</label>
+                  <div className="flex gap-2">
+                    <Input 
+                      value={content.about?.mission?.image || ''} 
+                      onChange={(e) => setContent({ ...content, about: { ...content.about, mission: { ...(content.about?.mission || {}), image: e.target.value } } })}
+                      className="bg-kaki-black border-white/10"
+                    />
+                    <Button size="icon" variant="secondary" onClick={() => handleFileUpload((url) => setContent({ ...content, about: { ...content.about, mission: { ...(content.about?.mission || {}), image: url } } }))}>
+                      <UploadCloud className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </CardContent>
@@ -1878,6 +1993,15 @@ export const AdminContent = () => {
                     <CardDescription className="text-kaki-grey">Manage messages and campaign requests from potential clients</CardDescription>
                   </div>
                   <div className="flex items-center gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={exportToCSV}
+                      className="border-green-500/30 text-green-400 hover:bg-green-500/10 flex items-center gap-2"
+                    >
+                      <FileSpreadsheet className="w-4 h-4" />
+                      Export CSV
+                    </Button>
                     <Badge variant="outline" className="px-4 py-2 bg-purple-500/10 border-purple-500/20 text-purple-400 font-bold">
                       {filteredInquiries.length} <span className="ml-2 font-normal opacity-60">Result{filteredInquiries.length !== 1 ? 's' : ''}</span>
                     </Badge>
@@ -2078,6 +2202,16 @@ export const AdminContent = () => {
                   </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="hoardings">
+            <UserHoardingsManager 
+                hoardings={hoardings}
+                inquiries={inquiries}
+                onHoardingsUpdate={setHoardings}
+                isLoading={isLoading}
+                isAdmin={true}
+            />
           </TabsContent>
         </Tabs>
     </div>

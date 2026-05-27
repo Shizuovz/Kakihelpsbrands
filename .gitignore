@@ -27,3 +27,6 @@ Thumbs.db
 *.ai
 *.exe
 *.apk
+
+# Scratch folders
+scratch/

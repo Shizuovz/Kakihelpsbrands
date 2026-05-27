@@ -30,7 +30,7 @@ const About = () => {
 
   useEffect(() => {
     if (isLoading || !content) return;
-    
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -58,23 +58,23 @@ const About = () => {
     const normalizedName = iconName?.toLowerCase().trim();
 
     switch (normalizedName) {
-      case 'trophy': 
+      case 'trophy':
       case 'excellence':
       case '✨':
         return <Gem {...iconProps} />;
-      case 'innovation': 
+      case 'innovation':
       case '🚀':
         return <Cpu {...iconProps} />;
-      case 'partnership': 
+      case 'partnership':
       case 'collaboration':
       case '🤝':
         return <Handshake {...iconProps} />;
-      case 'culture': 
+      case 'culture':
       case '🎨':
       case 'identity':
       case 'global':
         return <Globe {...iconProps} />;
-      default: 
+      default:
         return <Sparkles {...iconProps} />;
     }
   };
@@ -88,77 +88,77 @@ const About = () => {
   }
 
   return (
-    <div className="min-h-screen pt-24">
-      {/* Hero Section */}
-      <section className="section-padding bg-gradient-to-br from-kaki-black via-purple-900/30 to-kaki-black">
-        <div className="container-custom">
-          <div className="text-center mb-16 fade-in-on-scroll">
-            <h1 className="text-5xl lg:text-7xl font-bold mb-8 bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-              {content.hero?.title}
-            </h1>
-            <p className="text-xl lg:text-2xl text-kaki-grey max-w-4xl mx-auto leading-relaxed">
-              {content.hero?.subtitle}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* About Us Section */}
-      <section className="section-padding">
+    <div className="min-h-screen">
+      {/* Hero / Who We Are Section */}
+      <section className="pt-36 pb-24 bg-gradient-to-br from-kaki-black via-purple-950/20 to-kaki-black">
         <div className="container-custom">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="fade-in-on-scroll">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-white">{content.intro?.title}</h2>
+            {/* Left Column: Image */}
+            <div className="fade-in-on-scroll animation-delay-200 order-2 lg:order-1">
+              <div className="relative">
+                <img
+                  src={resolveApiUrl(content.intro?.image)}
+                  alt="Who We Are - KAKI"
+                  className="w-full h-auto rounded-3xl shadow-2xl border border-white/5"
+                />
+                <div className="absolute -inset-4 bg-purple-500/5 rounded-[2.5rem] blur-2xl -z-10" />
+              </div>
+            </div>
+            {/* Right Column: Content */}
+            <div className="fade-in-on-scroll order-1 lg:order-2">
+              <div className="text-purple-400 font-semibold tracking-widest text-sm mb-4 uppercase flex items-center gap-2">
+                <span className="w-8 h-[2px] bg-purple-500"></span>
+                About Us
+              </div>
+              <h1 className="text-5xl lg:text-6xl font-bold mb-8 text-white leading-tight">
+                {content.intro?.title}
+              </h1>
               <p className="text-kaki-grey text-xl mb-6 leading-relaxed">
                 {content.intro?.description}
               </p>
               <p className="text-kaki-grey text-xl mb-8 leading-relaxed">
                 {content.intro?.subDescription}
               </p>
-              <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
+              <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 px-8 py-6 rounded-xl text-lg font-bold">
                 <Link to="/contact">Work With Us</Link>
               </Button>
-            </div>
-            <div className="fade-in-on-scroll animation-delay-200">
-              <div className="relative">
-                <img
-                  src={resolveApiUrl(content.intro?.image)}
-                  alt="KAKI Team Collaboration"
-                  className="w-full h-auto rounded-3xl shadow-2xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent rounded-3xl" />
-              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Mission Section */}
-      <section>
+      {/* Mission & Vision Section */}
+      <section className="pb-24">
         <div className="container-custom">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            <div className="fade-in-on-scroll order-1 lg:order-2">
-              <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-white">{content.mission?.title}</h2>
-              <p className="text-kaki-grey text-xl mb-6 leading-relaxed">
-                {content.mission?.description}
-              </p>
-              <p className="text-kaki-grey text-xl mb-8 leading-relaxed">
-                {content.mission?.subDescription}
-              </p>
-              <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
-                <Link to="/contact">Work With Us</Link>
-              </Button>
-            </div>
-            <div className="fade-in-on-scroll animation-delay-200 order-2 lg:order-1">
-              <div className="relative">
-                <img
-                  src={resolveApiUrl(content.mission?.image)}
-                  alt="KAKI Mission"
-                  className="w-full h-auto rounded-3xl shadow-2xl"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/50 to-transparent rounded-3xl" />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16">
+            {content.vision && (
+              <div className="fade-in-on-scroll bg-gradient-to-br from-kaki-dark-grey to-kaki-black p-8 md:p-12 rounded-3xl border border-purple-500/10 hover:border-purple-500/25 transition-all duration-300">
+                <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">{content.vision.title}</h2>
+                <p className="text-kaki-grey text-xl mb-4 leading-relaxed">
+                  {content.vision.description}
+                </p>
+                <p className="text-kaki-grey text-xl leading-relaxed">
+                  {content.vision.subDescription}
+                </p>
               </div>
-            </div>
+            )}
+            {content.mission && (
+              <div className="fade-in-on-scroll bg-gradient-to-br from-kaki-dark-grey to-kaki-black p-8 md:p-12 rounded-3xl border border-pink-500/10 hover:border-pink-500/25 transition-all duration-300">
+                <h2 className="text-4xl font-bold mb-6 bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">{content.mission.title}</h2>
+                <p className="text-kaki-grey text-xl mb-4 leading-relaxed">
+                  {content.mission.description}
+                </p>
+                <p className="text-kaki-grey text-xl leading-relaxed">
+                  {content.mission.subDescription}
+                </p>
+              </div>
+            )}
+          </div>
+
+          <div className="text-center mt-16 fade-in-on-scroll">
+            <Button asChild className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700">
+              <Link to="/contact">Work With Us</Link>
+            </Button>
           </div>
         </div>
       </section>
@@ -229,52 +229,6 @@ const About = () => {
         </div>
       </section>
 
-      {/* Values Section */}
-      <section className="section-padding bg-gradient-to-br from-kaki-dark-grey to-kaki-black">
-        <div className="container-custom">
-          <div className="text-center mb-20 fade-in-on-scroll">
-            <h2 className="text-4xl lg:text-5xl font-bold mb-8 text-white">{content.valuesTitle || 'Our Values'}</h2>
-            <p className="text-xl text-kaki-grey max-w-3xl mx-auto">
-              {content.valuesSubtitle}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {content.values?.map((value: any, index: number) => (
-              <div 
-                key={value.title} 
-                className={`group relative p-1 leading-relaxed rounded-[3rem] fade-in-on-scroll animation-delay-${index * 200}`}
-              >
-                {/* Background Glow on Hover */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-0 group-hover:opacity-20 blur-3xl transition-opacity duration-700`} />
-                
-                <div className="relative h-full bg-kaki-dark-grey/40 backdrop-blur-3xl border border-white/10 rounded-[2.8rem] p-10 flex flex-col items-center text-center hover-lift transition-all duration-500 hover:border-white/20">
-                  {/* Icon Container */}
-                  <div className="relative mb-10">
-                    <div className={`absolute inset-0 bg-gradient-to-br ${value.color} opacity-20 blur-2xl group-hover:opacity-40 transition-opacity duration-500`} />
-                    <div className={`relative w-20 h-20 rounded-2xl bg-gradient-to-br ${value.color} p-[1px]`}>
-                      <div className="w-full h-full bg-kaki-black rounded-2xl flex items-center justify-center">
-                        {getIcon(value.icon)}
-                      </div>
-                    </div>
-                  </div>
-
-                  <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-white/60 transition-all duration-300">
-                    {value.title}
-                  </h3>
-                  
-                  <p className="text-kaki-grey text-lg leading-relaxed group-hover:text-white/80 transition-colors duration-300">
-                    {value.description}
-                  </p>
-
-                  {/* Decorative element */}
-                  <div className={`mt-8 w-12 h-1 rounded-full bg-gradient-to-r ${value.color} opacity-40 group-hover:w-24 group-hover:opacity-100 transition-all duration-500`} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="section-padding bg-gradient-to-r from-purple-900 via-pink-900 to-purple-900">

@@ -33,9 +33,10 @@ interface UserHoardingsManagerProps {
   inquiries: any[];
   onHoardingsUpdate: (hoardings: Hoarding[]) => void;
   isLoading: boolean;
+  isAdmin?: boolean;
 }
 
-export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, isLoading }: UserHoardingsManagerProps) => {
+export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, isLoading, isAdmin = false }: UserHoardingsManagerProps) => {
   const { user } = useAuth();
   const [editingHoarding, setEditingHoarding] = useState<Hoarding | null>(null);
   const [isCreatingNew, setIsCreatingNew] = useState(false);
@@ -110,17 +111,19 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
         ownerId: user?.id
       };
 
+      const baseUrl = isAdmin ? `${API_BASE_URL}/api/admin/hoardings` : `${API_BASE_URL}/api/user/hoardings`;
       const url = isCreatingNew
-        ? `${API_BASE_URL}/api/user/hoardings`
-        : `${API_BASE_URL}/api/user/hoardings/${updatedHoarding.id}`;
+        ? baseUrl
+        : `${baseUrl}/${updatedHoarding.id}`;
 
       const method = isCreatingNew ? 'POST' : 'PUT';
 
+      const tokenKey = isAdmin ? 'adminToken' : 'authToken';
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem(tokenKey)}`
         },
         body: JSON.stringify(updatedHoarding),
       });
@@ -163,10 +166,12 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
     if (!confirm('Are you sure you want to delete this hoarding?')) return;
 
     try {
-      const response = await fetch(`${API_BASE_URL}/api/user/hoardings/${hoardingId}`, {
+      const baseUrl = isAdmin ? `${API_BASE_URL}/api/admin/hoardings` : `${API_BASE_URL}/api/user/hoardings`;
+      const tokenKey = isAdmin ? 'adminToken' : 'authToken';
+      const response = await fetch(`${baseUrl}/${hoardingId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+          'Authorization': `Bearer ${localStorage.getItem(tokenKey)}`
         }
       });
 
@@ -358,6 +363,35 @@ export const UserHoardingsManager = ({ hoardings, inquiries, onHoardingsUpdate, 
                     <span className="text-purple-400 font-bold">{formatINR((formData.price || 0) + (formData.printingCharges || 0) + (formData.mountingCharges || 0))}</span>
                   </div>
                 </div>
+
+                {isAdmin && (
+                  <div className="space-y-4 pt-4 border-t border-white/5">
+                    <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                      <Settings className="w-5 h-5 text-orange-400" />
+                      Taxation (HSN/SAC)
+                    </h3>
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <Label className="text-white">HSN Code</Label>
+                        <Input 
+                          value={formData.hsnCode || ''} 
+                          onChange={(e) => handleInputChange('hsnCode', e.target.value)} 
+                          placeholder="e.g. 9983"
+                          className="bg-black/40 border-white/10 text-white" 
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label className="text-white">SAC Code</Label>
+                        <Input 
+                          value={formData.sacCode || ''} 
+                          onChange={(e) => handleInputChange('sacCode', e.target.value)} 
+                          placeholder="e.g. 998361"
+                          className="bg-black/40 border-white/10 text-white" 
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-4 pt-4 border-t border-white/5">

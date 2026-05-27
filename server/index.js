@@ -78,8 +78,8 @@ app.use(cors({
 }));
 
 // Body parser with sensible limits
-app.use(express.json({ limit: '10kb' })); // Small limit for typical JSON
-app.use(express.urlencoded({ extended: true, limit: '10kb' }));
+app.use(express.json({ limit: '50mb' })); // Support larger payloads for website content CMS
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Data sanitization - xss-clean removed due to compatibility issues with Express 5
 
@@ -1293,6 +1293,8 @@ app.post('/api/admin/hoardings', adminAuthMiddleware, async (req, res) => {
       availability: newHoarding.availability || 'available',
       lightingType: newHoarding.lightingType || 'Non-Lit',
       featured: newHoarding.featured || false,
+      hsnCode: newHoarding.hsnCode || '',
+      sacCode: newHoarding.sacCode || '',
     };
     
     // Insert into MongoDB
@@ -2048,9 +2050,27 @@ const server = app.listen(port, '0.0.0.0', async () => {
         const exists = await collection.findOne({ page: page });
         
         // Check if the current data is valid or needs restoration
-        const needsRestoration = !exists || 
+        let needsRestoration = !exists || 
           (Object.keys(exists.data || {}).length === 0) || 
           (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey));
+
+        // For stats and index, force update if data in DB is mismatched with local file
+        if (exists && exists.data) {
+          if (page === 'stats') {
+            const hasMismatch = JSON.stringify(exists.data) !== JSON.stringify(websiteContent.stats);
+            if (hasMismatch) {
+              console.log(`🔄 [Sync] Syncing stats updates to cloud...`);
+              needsRestoration = true;
+            }
+          } else if (page === 'index') {
+            const localStatsStr = JSON.stringify(websiteContent.index?.stats || []);
+            const dbStatsStr = JSON.stringify(exists.data?.stats || []);
+            if (localStatsStr !== dbStatsStr) {
+              console.log(`🔄 [Sync] Syncing index page stats updates to cloud...`);
+              needsRestoration = true;
+            }
+          }
+        }
 
         if (needsRestoration && websiteContent[page]) {
           console.log(`🚀 [Sync] Restoring missing, empty, or critical config for: ${page}`);

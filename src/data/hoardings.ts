@@ -28,6 +28,8 @@ export interface Hoarding {
   ownerEmail?: string;
   createdAt?: string;
   updatedAt?: string;
+  hsnCode?: string;
+  sacCode?: string;
 }
 
 import { API_BASE_URL } from '@/config';
