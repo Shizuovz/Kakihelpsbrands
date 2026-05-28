@@ -191,16 +191,16 @@ const Index = () => {
           </video>
         </div>
 
-        <div className="relative z-10 text-center container-custom pt-20 pb-20">
+        <div className="relative z-10 text-center container-custom pt-32 pb-20">
           <div className="animate-fade-in-up">
             <img
               src={logo}
               alt="KAKI Logo"
-              className="h-32 lg:h-48 w-auto mx-auto mb-8 animate-logo-float drop-shadow-2xl"
+              className="h-24 lg:h-48 w-auto mx-auto mb-8 animate-logo-float drop-shadow-2xl"
             />
           </div>
 
-          <h1 className="text-5xl lg:text-6xl font-bold mb-6 animate-fade-in-up animation-delay-200">
+          <h1 className="text-4xl lg:text-6xl font-bold mb-6 animate-fade-in-up animation-delay-200">
             <span className="text-gradient bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
               {hero.title}
             </span>
