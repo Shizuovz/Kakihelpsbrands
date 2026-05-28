@@ -35,7 +35,41 @@ cloudinary.config({
 const app = express();
 const port = process.env.PORT || 3001;
 
-// 1. SECURITY MIDDLEWARE (MUST BE FIRST)
+// Trust proxy for rate limiting behind reverse proxies (like Render)
+app.set('trust proxy', 1);
+
+// CORS configuration - Lockdown (Must be applied before helmet/limiter)
+const allowedOrigins = [
+  'http://localhost:5173', 
+  'http://localhost:3000',
+  'http://localhost:8080',
+  'http://localhost:8081',
+  'https://kakihelpsbrands.com', // Production domain
+  'https://www.kakihelpsbrands.com'
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    // allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Check if origin is allowed (including vercel.app & onrender.com preview deployments)
+    const isAllowed = allowedOrigins.includes(origin) || 
+                      origin.endsWith('.vercel.app') || 
+                      origin.endsWith('.onrender.com');
+                      
+    if (isAllowed) {
+      return callback(null, true);
+    } else {
+      // Clean CORS denial without throwing 500 error in Express
+      return callback(null, false);
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true
+}));
+
 // Use Helmet to set various security-related HTTP headers
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }, // Allow images from other origins if needed
@@ -51,31 +85,6 @@ const limiter = rateLimit({
   legacyHeaders: false,
 });
 app.use('/api/', limiter);
-
-// CORS configuration - Lockdown
-const allowedOrigins = [
-  'http://localhost:5173', 
-  'http://localhost:3000',
-  'http://localhost:8080',
-  'http://localhost:8081',
-  'https://kakihelpsbrands.com', // Production domain
-  'https://www.kakihelpsbrands.com'
-];
-
-app.use(cors({
-  origin: function (origin, callback) {
-    // allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = 'The CORS policy for this site does not allow access from the specified Origin.';
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-  credentials: true
-}));
 
 // Body parser with sensible limits
 app.use(express.json({ limit: '50mb' })); // Support larger payloads for website content CMS
