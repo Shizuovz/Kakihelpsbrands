@@ -22,6 +22,9 @@ import Works from "./pages/Works";
 import Contact from "./pages/Contact";
 import Team from "./pages/Team";
 import LifeAtKaki from "./pages/LifeAtKaki";
+import TermsConditions from "./pages/TermsConditions";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import Disclaimer from "./pages/Disclaimer";
 import NotFound from "./pages/NotFound";
 import Navigation from "./components/Navigation";
 import Preloader from "./components/Preloader";
@@ -97,6 +100,9 @@ const App = () => {
                 <Route path="/hoardings/:id" element={<HoardingDetail />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/dashboard" element={<UserDashboard />} />
+                <Route path="/terms-conditions" element={<TermsConditions />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/disclaimer" element={<Disclaimer />} />
                 
                 {/* Completely separate Admin CMS Routes */}
                 <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
