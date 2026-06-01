@@ -19,8 +19,8 @@ const Index = () => {
 
   const services = [
     {
-      title: "SEO Services",
-      description: "Improve your visibility on Google and attract customers actively searching for your business.",
+      title: "SEO & GEO Services",
+      description: "Improve your visibility across Google, Maps, and AI-powered search platforms to help more customers discover your business.",
       icon: <Search className="w-8 h-8" />
     },
     {
@@ -51,24 +51,24 @@ const Index = () => {
   ];
 
   const getServicePath = (title: string) => {
-  switch (title) {
-    case 'SEO Services':
-      return '/services/seo';
-    case 'Social Media Marketing':
-      return '/services/social-media';
-    case 'PPC Advertising':
-      return '/services/paid-advertising';
-    case 'Video Marketing':
-      return '/services/video-marketing';
-    case 'Web Development':
-      return '/services/web-development';
-    case 'Graphic Design':
-      return '/services/graphic-design';
-    default:
-      return '/';
-  }
-};
-const reasons = [
+    switch (title) {
+      case 'SEO & GEO Services':
+        return '/services/seo-geo';
+      case 'Social Media Marketing':
+        return '/services/social-media-marketing';
+      case 'PPC Advertising':
+        return '/services/paid-advertising';
+      case 'Video Marketing':
+        return '/services/video-marketing';
+      case 'Web Development':
+        return '/services/web-development';
+      case 'Graphic Design':
+        return '/services/graphic-design';
+      default:
+        return '/';
+    }
+  };
+  const reasons = [
     {
       num: "01",
       title: "Local Understanding",
@@ -286,34 +286,34 @@ const reasons = [
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {services.map((service, index) => {
-  const path = getServicePath(service.title);
-  return (
-    <Link
-      key={service.title}
-      to={path}
-      className="group relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-all duration-500 hover:scale-[1.03] hover:border-purple-500/30 flex flex-col justify-between fade-in-on-scroll"
-      style={{ animationDelay: `${index * 100}ms` }}
-    >
-      <div>
-        <div className="mb-6 p-4 inline-block bg-purple-500/10 text-purple-400 rounded-2xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
-          {service.icon}
-        </div>
-        <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-purple-300 transition-colors">
-          {service.title}
-        </h3>
-        <p className="text-kaki-grey leading-relaxed group-hover:text-white/90 transition-colors">
-          {service.description}
-        </p>
-      </div>
-      <div className="mt-8 flex items-center text-sm font-semibold text-purple-400 group-hover:text-purple-300">
-        <span>Learn More</span>
-        <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-        </svg>
-      </div>
-    </Link>
-  );
-})}
+              const path = getServicePath(service.title);
+              return (
+                <Link
+                  key={service.title}
+                  to={path}
+                  className="group relative overflow-hidden rounded-3xl bg-white/5 border border-white/10 p-8 hover:bg-white/10 transition-all duration-500 hover:scale-[1.03] hover:border-purple-500/30 flex flex-col justify-between fade-in-on-scroll"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <div>
+                    <div className="mb-6 p-4 inline-block bg-purple-500/10 text-purple-400 rounded-2xl group-hover:bg-purple-600 group-hover:text-white transition-all duration-300">
+                      {service.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-4 text-white group-hover:text-purple-300 transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-kaki-grey leading-relaxed group-hover:text-white/90 transition-colors">
+                      {service.description}
+                    </p>
+                  </div>
+                  <div className="mt-8 flex items-center text-sm font-semibold text-purple-400 group-hover:text-purple-300">
+                    <span>Learn More</span>
+                    <svg className="w-4 h-4 ml-1 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>

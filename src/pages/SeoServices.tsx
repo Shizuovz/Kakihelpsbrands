@@ -131,11 +131,11 @@ const SeoServices = () => {
             </span>
             <h1 className="text-5xl lg:text-7xl font-bold mb-8 leading-tight">
               <span className="text-gradient bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                SEO Services in Nagaland
+                SEO & GEO Services in Nagaland
               </span>
             </h1>
             <p className="text-xl lg:text-2xl text-kaki-grey max-w-3xl mx-auto mb-10 leading-relaxed">
-              We help your businesses across Kohima, Dimapur, and beyond with Search Engine Optimization to improve rankings, increase traffic, and attract the right audience.
+              We help businesses across Kohima, Dimapur, and beyond improve visibility through Search Engine Optimization (SEO) and Generative Engine Optimization (GEO) — helping you get discovered on Google, AI-powered search platforms, and emerging search experiences.
             </p>
             <div className="flex flex-col sm:flex-row gap-6 justify-center">
               <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:from-purple-700 hover:to-pink-700 px-8 py-6 rounded-xl text-lg font-bold shadow-lg shadow-purple-500/20 hover:scale-105 transition-all duration-300">

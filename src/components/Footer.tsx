@@ -70,12 +70,12 @@ export const Footer = () => {
             <h4 className="text-sm font-semibold uppercase tracking-wider text-white">Services</h4>
             <ul className="space-y-2.5">
               <li>
-                <Link to="/services/seo" className="text-kaki-grey hover:text-purple-400 text-sm transition-colors">
+                <Link to="/services/seo-geo" className="text-kaki-grey hover:text-purple-400 text-sm transition-colors">
                   SEO Services
                 </Link>
               </li>
               <li>
-                <Link to="/services/social-media" className="text-kaki-grey hover:text-purple-400 text-sm transition-colors">
+                <Link to="/services/social-media-marketing" className="text-kaki-grey hover:text-purple-400 text-sm transition-colors">
                   Social Media Marketing
                 </Link>
               </li>

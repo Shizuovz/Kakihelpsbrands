@@ -157,7 +157,7 @@ const Navigation = () => {
                 </div>
 
                 <Link
-                  to="/services/seo"
+                  to="/services/seo-geo"
                   className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-purple-500/10 text-white hover:text-purple-300 transition-all duration-200 group/item"
                 >
                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-purple-400 group-hover/item:bg-purple-500/20 group-hover/item:text-white group-hover/item:scale-105 transition-all duration-300">
@@ -170,7 +170,7 @@ const Navigation = () => {
                   <span className="text-sm font-semibold tracking-wide">SEO Services</span>
                 </Link>
                 <Link
-                  to="/services/social-media"
+                  to="/services/social-media-marketing"
                   className="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-purple-500/10 text-white hover:text-purple-300 transition-all duration-200 group/item"
                 >
                   <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-purple-400 group-hover/item:bg-purple-500/20 group-hover/item:text-white group-hover/item:scale-105 transition-all duration-300">
@@ -358,8 +358,8 @@ const Navigation = () => {
             <div className="py-2 border-t border-white/5">
               <span className="text-xs font-bold text-kaki-grey uppercase tracking-wider">Solutions</span>
               <div className="pl-4 mt-2 space-y-3">
-                <Link to="/services/seo" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>SEO Services</Link>
-                <Link to="/services/social-media" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Social Media Marketing</Link>
+                <Link to="/services/seo-geo" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>SEO Services</Link>
+                <Link to="/services/social-media-marketing" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Social Media Marketing</Link>
                 <Link to="/services/paid-advertising" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Paid Advertising</Link>
                 <Link to="/services/video-marketing" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Video Marketing</Link>
                 <Link to="/services/web-development" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Web Development</Link>
