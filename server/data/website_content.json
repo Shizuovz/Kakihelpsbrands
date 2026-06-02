@@ -732,28 +732,7 @@
       }
     ]
   },
-  "blogs": [
-    {
-      "id": 1775460000000,
-      "title": "The Art of Digital-First Branding",
-      "author": "KAKI Creative",
-      "category": "Design Strategy",
-      "date": "April 6, 2026",
-      "image": "https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=1200",
-      "excerpt": "How we helped Ohan Ki transition from a local favorite to a national food brand through strategic design and digital storytelling.",
-      "content": "**Identity is Experience**\n\nIn *today's market*, a brand is no longer just a logo; it's the sum of every digital touchpoint a customer has with you. When we started working with Ohan Ki, our goal was clear: preserve the Naga soul while building a shell that could compete on a national level.\n\n\n### Strategic Storytelling\n\nWe **focused **on three core pillars: Authenticity, Accessibility, and Aesthetic Excellence. By combining traditional Naga motifs with modern, minimal design, we created a visual language that feels both historical and forward-looking.\n\n> \"Design is not just what it looks like and feels like. Design is how it works.\" — Steve Jobs\n\n<u>Our tech team</u> then translated this identity into a custom e-commerce solution that prioritized the user journey above all else."
-    },
-    {
-      "id": 1775470263733,
-      "title": "New Perspective on Brand Strategy (TEST BLOG)",
-      "author": "KAKI ",
-      "category": "Brand Strategy",
-      "date": "April 6, 2026",
-      "image": "/uploads/files-1775470321835-321595410.jpg",
-      "excerpt": "This blog is for testing purpose only",
-      "content": "\n> What is Lorem Ipsum?\nLorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.\n\n> Why do we use it?\nIt is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).\n\n\n![Inline Image](/uploads/files-1775471462478-339869885.jpg)\n\n\nWhere does it come from?\nContrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de Finibus Bonorum et Malorum\" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, \"Lorem ipsum dolor sit amet..\", comes from a line in section 1.10.32."
-    }
-  ],
+  "blogs": [],
   "lifeAtKaki": {
     "youtube": {
       "apiKey": "AIzaSyCBPA_VvusazHVm5tKUaBYv00PcdfQirmg",

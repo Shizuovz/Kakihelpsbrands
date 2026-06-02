@@ -2043,7 +2043,7 @@ const server = app.listen(port, '0.0.0.0', async () => {
         
         // Check if the current data is valid or needs restoration
         let needsRestoration = !exists || 
-          (Object.keys(exists.data || {}).length === 0) || 
+          exists.data === null || exists.data === undefined ||
           (page === 'lifeAtKaki' && (!exists.data?.youtube?.apiKey));
 
         // For stats and index, force update if data in DB is mismatched with local file

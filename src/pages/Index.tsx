@@ -477,7 +477,7 @@ const Index = () => {
       <section className="section-padding bg-gradient-to-r from-red-900 via-red-700 to-orange-800">
         <div className="container-custom">
           <div className="text-center mb-16 fade-in-on-scroll">
-            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-white">Our Platform</h2>
+            <h2 className="text-3xl lg:text-5xl font-bold mb-6 text-white">Our Flagship Platform</h2>
             <p className="text-xl text-red-100 max-w-2xl mx-auto">
               Introducing Ahibi - Our revolutionary online ticket booking platform
             </p>
