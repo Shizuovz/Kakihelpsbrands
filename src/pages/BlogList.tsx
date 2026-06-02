@@ -60,24 +60,24 @@ const BlogList = () => {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-kaki-black flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-600"></div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-kaki-black pt-32 pb-20">
+    <div className="min-h-screen bg-white pt-32 pb-20">
       {/* Hero Section */}
       <section className="px-6 mb-20 text-center">
         <div className="container mx-auto">
-          <Badge className="bg-purple-500/10 text-purple-400 border-purple-500/20 mb-6 px-4 py-1">
+          <Badge className="bg-purple-100 text-purple-600 border-purple-200 mb-6 px-4 py-1">
             THE KAKI JOURNAL
           </Badge>
-          <h1 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">
-            Stories of <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-600">Creativity</span> & Insight
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-8 tracking-tight">
+            Stories of <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">Creativity</span> & Insight
           </h1>
-          <p className="text-xl text-kaki-grey max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
             Explorations into brand strategy, digital storytelling, and the future of creative technology.
           </p>
         </div>
@@ -87,16 +87,16 @@ const BlogList = () => {
       <section className="px-6">
         <div className="container mx-auto max-w-7xl">
           {blogs.length === 0 ? (
-            <div className="text-center py-20 bg-white/5 rounded-3xl border border-dashed border-white/10">
-              <PenTool className="w-16 h-16 text-white/10 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-white">No articles found</h3>
-              <p className="text-kaki-grey">Check back later for fresh insights.</p>
+            <div className="text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+              <PenTool className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-xl font-bold text-gray-900">No articles found</h3>
+              <p className="text-gray-600">Check back later for fresh insights.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogs.map((blog) => (
                 <Link key={blog.id} to={`/blogs/${blog.id}`} className="group">
-                  <Card className="bg-white/5 border-white/10 overflow-hidden h-full transition-all duration-500 hover:border-purple-500/30 hover:translate-y-[-8px] rounded-[2rem]">
+                  <Card className="bg-white border-gray-200 overflow-hidden h-full transition-all duration-500 hover:border-purple-300 hover:shadow-xl hover:translate-y-[-8px] rounded-[2rem]">
                     <div className="aspect-video relative overflow-hidden">
                       <img 
                         src={resolveApiUrl(blog.image)} 
@@ -111,7 +111,7 @@ const BlogList = () => {
                       </div>
                     </div>
                     <CardContent className="p-8 space-y-4">
-                      <div className="flex items-center gap-4 text-xs text-kaki-grey">
+                      <div className="flex items-center gap-4 text-xs text-gray-500">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           {blog.date}
@@ -121,13 +121,13 @@ const BlogList = () => {
                           {blog.author}
                         </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-white group-hover:text-purple-400 transition-colors leading-tight">
+                      <h3 className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors leading-tight">
                         {blog.title}
                       </h3>
-                      <p className="text-kaki-grey line-clamp-3 leading-relaxed">
+                      <p className="text-gray-600 line-clamp-3 leading-relaxed">
                         {blog.excerpt}
                       </p>
-                      <div className="pt-4 flex items-center text-purple-400 font-bold group-hover:translate-x-2 transition-transform">
+                      <div className="pt-4 flex items-center text-purple-600 font-bold group-hover:translate-x-2 transition-transform">
                         Read Story <ArrowRight className="w-4 h-4 ml-2" />
                       </div>
                     </CardContent>
@@ -141,12 +141,12 @@ const BlogList = () => {
 
       {/* CTA Section */}
       <section className="mt-32 px-6">
-        <div className="container mx-auto max-w-5xl bg-gradient-to-br from-purple-900/40 to-blue-900/40 rounded-[3rem] p-12 text-center border border-purple-500/20 backdrop-blur-3xl relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 blur-[100px] pointer-events-none" />
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 blur-[100px] pointer-events-none" />
+        <div className="container mx-auto max-w-5xl bg-gradient-to-br from-purple-50 to-blue-50 rounded-[3rem] p-12 text-center border border-purple-100 shadow-xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-200 blur-[100px] pointer-events-none opacity-50" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-200 blur-[100px] pointer-events-none opacity-50" />
           
-          <h2 className="text-4xl font-bold text-white mb-6">Want Weekly Creativty Boost?</h2>
-          <p className="text-xl text-kaki-grey mb-10 max-w-2xl mx-auto">
+          <h2 className="text-4xl font-bold text-gray-900 mb-6">Want Weekly Creativity Boost?</h2>
+          <p className="text-xl text-gray-600 mb-10 max-w-2xl mx-auto">
             Subscribe to the KAKI Newsletter and get the latest insights delivered straight to your inbox.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -155,13 +155,13 @@ const BlogList = () => {
               placeholder="your@email.com" 
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-black/40 border border-white/10 rounded-full px-8 py-4 w-full max-w-sm text-white focus:outline-none focus:border-purple-500"
+              className="bg-white border border-gray-200 rounded-full px-8 py-4 w-full max-w-sm text-gray-900 focus:outline-none focus:border-purple-500 shadow-sm"
             />
             <Button 
               size="lg" 
               onClick={handleSubscribe}
               disabled={isSubscribing}
-              className="bg-white text-black hover:bg-gray-200 rounded-full px-10 font-bold"
+              className="bg-purple-600 text-white hover:bg-purple-700 rounded-full px-10 font-bold shadow-md"
             >
               {isSubscribing ? 'Subscribing...' : 'Subscribe Now'}
             </Button>

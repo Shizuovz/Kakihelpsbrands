@@ -1484,27 +1484,10 @@ app.get('/api/content/:page', async (req, res) => {
         if (dbPages && Array.isArray(dbPages)) {
           dbPages.forEach(doc => {
             if (doc && doc.page && doc.data) {
-              // Robust Merge Strategy:
-              // 1. If it's a list (array, like blogs), only overwrite if DB version has >= content or JSON is empty
-              if (Array.isArray(doc.data)) {
-                const localCount = (contentData[doc.page] && Array.isArray(contentData[doc.page])) ? contentData[doc.page].length : 0;
-                const dbCount = doc.data.length;
-                if (dbCount >= localCount || localCount === 0) {
-                  contentData[doc.page] = doc.data;
-                }
-              } 
-              // 2. Specialized handling for "works" (object with projects list)
-              else if (doc.page === 'works' && doc.data && doc.data.projects && Array.isArray(doc.data.projects)) {
-                const localCount = (contentData.works?.projects && Array.isArray(contentData.works.projects)) ? contentData.works.projects.length : 0;
-                const dbCount = doc.data.projects.length;
-                if (dbCount >= localCount || localCount === 0) {
-                  contentData.works = doc.data;
-                }
-              }
-              // 3. For other pages (objects), merge if not empty
-              else if (typeof doc.data === 'object' && doc.data !== null && Object.keys(doc.data).length > 0) {
-                contentData[doc.page] = doc.data;
-              }
+              // Trust the database as the single source of truth when it is available.
+              // This fixes the issue where deleted items (like blogs) would resurrect
+              // from the JSON file because the database count became lower.
+              contentData[doc.page] = doc.data;
             }
           });
         }

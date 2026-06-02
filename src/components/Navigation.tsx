@@ -19,7 +19,8 @@ import {
   Users,
   Sparkles,
   BookOpen,
-  Briefcase
+  Briefcase,
+  MapPin
 } from "lucide-react";
 import logo from '../assets/logos/logo-no-bg.png';
 import { useAuth } from '@/contexts/AuthContext';
@@ -43,6 +44,13 @@ const Navigation = () => {
     logout();
     navigate('/');
   };
+
+  const isBlogPage = location.pathname.startsWith('/blogs');
+  const textColorClass = isBlogPage ? 'text-gray-900' : 'text-white';
+  const navBgClass = isBlogPage 
+    ? (isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-gray-200 py-4' : 'bg-transparent py-6')
+    : (isScrolled ? 'glass-effect py-4' : 'bg-transparent py-6');
+  const mobileMenuBgClass = isBlogPage ? 'bg-kaki-dark-grey border border-white/10 shadow-2xl' : 'glass-effect';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -118,16 +126,15 @@ const Navigation = () => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${isScrolled ? 'glass-effect py-4' : 'bg-transparent py-6'
-      }`}>
+    <nav className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${navBgClass}`}>
       <div className="container-custom">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-3 hover:opacity-80 transition-opacity">
+          <Link to="/" className={`flex items-center space-x-3 hover:opacity-80 transition-opacity ${textColorClass}`}>
             <img
               src={logo}
               alt="KAKI"
-              className="h-8 w-auto"
+              className={`h-8 w-auto ${isBlogPage ? 'invert' : ''}`}
             />
             <span className="text-xl font-bold tracking-wider">KAKI</span>
           </Link>
@@ -136,7 +143,7 @@ const Navigation = () => {
           <div className="hidden md:flex items-center space-x-8">
             <Link
               to="/"
-              className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-purple-400 ${isActive('/') ? 'text-purple-400' : 'text-white'
+              className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-purple-400 ${isActive('/') ? 'text-purple-400' : textColorClass
                 }`}
             >
               Home
@@ -144,7 +151,7 @@ const Navigation = () => {
 
             {/* Solutions Hover Dropdown */}
             <div className="relative group py-2">
-              <button className="flex items-center space-x-1 text-sm font-bold uppercase tracking-wider text-white hover:text-purple-400 focus:outline-none transition-colors">
+              <button className={`flex items-center space-x-1 text-sm font-bold uppercase tracking-wider ${textColorClass} hover:text-purple-400 focus:outline-none transition-colors`}>
                 <span>Solutions</span>
                 <ChevronDown className="w-4 h-4 opacity-70 transition-transform duration-300 group-hover:rotate-180" />
               </button>
@@ -233,18 +240,10 @@ const Navigation = () => {
               </div>
             </div>
 
-            {/* Hoardings Link */}
-            <Link
-              to="/hoardings"
-              className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-purple-400 ${isActive('/hoardings') ? 'text-purple-400' : 'text-white'
-                }`}
-            >
-              Hoardings
-            </Link>
 
             {/* KAKI Hover Dropdown */}
             <div className="relative group py-2">
-              <button className="flex items-center space-x-1 text-sm font-bold uppercase tracking-wider text-white hover:text-purple-400 focus:outline-none transition-colors">
+              <button className={`flex items-center space-x-1 text-sm font-bold uppercase tracking-wider ${textColorClass} hover:text-purple-400 focus:outline-none transition-colors`}>
                 <span>Kaki</span>
                 <ChevronDown className="w-4 h-4 opacity-70 transition-transform duration-300 group-hover:rotate-180" />
               </button>
@@ -279,6 +278,15 @@ const Navigation = () => {
                   <span className="text-xs font-bold uppercase tracking-wider">Life at KAKI</span>
                 </Link>
                 <Link
+                  to="/hoardings"
+                  className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-purple-500/10 text-white hover:text-purple-300 transition-all duration-200"
+                >
+                  <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <span className="text-xs font-bold uppercase tracking-wider">Hoardings</span>
+                </Link>
+                <Link
                   to="/blogs"
                   className="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-purple-500/10 text-white hover:text-purple-300 transition-all duration-200"
                 >
@@ -302,7 +310,7 @@ const Navigation = () => {
             {/* Contact Link */}
             <Link
               to="/contact"
-              className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-purple-400 ${isActive('/contact') ? 'text-purple-400' : 'text-white'
+              className={`text-sm font-bold uppercase tracking-wider transition-all duration-300 hover:text-purple-400 ${isActive('/contact') ? 'text-purple-400' : textColorClass
                 }`}
             >
               Contact
@@ -332,11 +340,11 @@ const Navigation = () => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             <div className="flex flex-col space-y-1">
-              <div className={`w-6 h-0.5 bg-kaki-white transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
+              <div className={`w-6 h-0.5 transition-all duration-300 ${isBlogPage ? 'bg-gray-900' : 'bg-kaki-white'} ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''
                 }`} />
-              <div className={`w-6 h-0.5 bg-kaki-white transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''
+              <div className={`w-6 h-0.5 transition-all duration-300 ${isBlogPage ? 'bg-gray-900' : 'bg-kaki-white'} ${isMobileMenuOpen ? 'opacity-0' : ''
                 }`} />
-              <div className={`w-6 h-0.5 bg-kaki-white transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
+              <div className={`w-6 h-0.5 transition-all duration-300 ${isBlogPage ? 'bg-gray-900' : 'bg-kaki-white'} ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''
                 }`} />
             </div>
           </Button>
@@ -344,7 +352,7 @@ const Navigation = () => {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-6 glass-effect rounded-lg p-6 animate-fade-in max-h-[80vh] overflow-y-auto">
+          <div className={`md:hidden mt-6 ${mobileMenuBgClass} rounded-lg p-6 animate-fade-in max-h-[80vh] overflow-y-auto`}>
             <Link
               to="/"
               className={`block py-3 text-base font-semibold uppercase tracking-wider ${isActive('/') ? 'text-purple-400' : 'text-white hover:text-purple-400'
@@ -367,16 +375,6 @@ const Navigation = () => {
               </div>
             </div>
 
-            {/* Hoardings for Mobile */}
-            <Link
-              to="/hoardings"
-              className={`block py-3 text-base font-semibold uppercase tracking-wider border-t border-white/5 ${isActive('/hoardings') ? 'text-purple-400' : 'text-white hover:text-purple-400'
-                }`}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              Hoardings
-            </Link>
-
             {/* Kaki for Mobile */}
             <div className="py-2 border-t border-white/5">
               <span className="text-xs font-bold text-kaki-grey uppercase tracking-wider">Kaki</span>
@@ -384,6 +382,7 @@ const Navigation = () => {
                 <Link to="/about" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>About Us</Link>
                 <Link to="/team" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Team</Link>
                 <Link to="/life-at-kaki" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Life at KAKI</Link>
+                <Link to="/hoardings" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Hoardings</Link>
                 <Link to="/blogs" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Blog</Link>
                 <Link to="/works" className="block text-sm font-medium text-white hover:text-purple-400" onClick={() => setIsMobileMenuOpen(false)}>Works</Link>
               </div>

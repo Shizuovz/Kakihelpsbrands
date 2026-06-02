@@ -33,7 +33,6 @@ import Footer from "./components/Footer";
 import CaseStudyDetail from "./pages/CaseStudyDetail";
 import BlogList from "./pages/BlogList";
 import BlogDetail from "./pages/BlogDetail";
-import BillboardAd from "./components/BillboardAd";
 import Hoardings from "./pages/Hoardings";
 import HoardingDetail from "./pages/HoardingDetail";
 import Login from "./pages/Login";
@@ -73,7 +72,6 @@ const App = () => {
             <ScrollToTop />
             <div className="min-h-screen bg-kaki-black text-kaki-white">
               <Preloader />
-              <BillboardAd />
               <NavigationWrapper />
               <Routes>
                 <Route path="/" element={<Index />} />
