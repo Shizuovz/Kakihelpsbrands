@@ -59,7 +59,12 @@ export const authAPI = {
     });
     
     if (!response.ok) {
-      throw new Error('Registration failed');
+      let errorMessage = 'Registration failed';
+      try {
+        const errData = await response.json();
+        if (errData.message) errorMessage = errData.message;
+      } catch (e) {}
+      throw new Error(errorMessage);
     }
     
     const result = await response.json();
