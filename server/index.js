@@ -1012,7 +1012,9 @@ app.delete('/api/inquiries/:id', async (req, res) => {
       // 2. Try to verify as User/Provider
       try {
         const decodedUser = jwt.verify(token, process.env.JWT_SECRET || 'your-secret-key');
+        console.log('[DELETE INQUIRY] decodedUser ID:', decodedUser.id);
         const inq = await db.collection('inquiries').findOne(query);
+        console.log('[DELETE INQUIRY] Found inquiry:', inq ? inq.id || inq._id : 'null');
         if (inq) {
           const hoardingId = inq.hoardingId;
           let hQuery = { id: hoardingId };
@@ -1023,14 +1025,38 @@ app.delete('/api/inquiries/:id', async (req, res) => {
           } catch (e) {}
           
           const h = await db.collection('hoardings').findOne(hQuery);
-          if (h && h.ownerId?.toString() === decodedUser.id?.toString()) isAuthorized = true;
+          console.log('[DELETE INQUIRY] Found hoarding:', h ? h.id || h._id : 'null');
+          if (h) {
+             console.log('[DELETE INQUIRY] Hoarding ownerId:', h.ownerId, ' | User ID:', decodedUser.id);
+             if (h.ownerId?.toString() === decodedUser.id?.toString()) {
+                isAuthorized = true;
+                console.log('[DELETE INQUIRY] User IS authorized as owner.');
+             } else {
+                console.log('[DELETE INQUIRY] User IS NOT authorized. Owner mismatch.');
+             }
+          } else {
+             console.log('[DELETE INQUIRY] User IS NOT authorized. Hoarding not found.');
+          }
+        } else {
+           console.log('[DELETE INQUIRY] User IS NOT authorized. Inquiry not found in DB.');
         }
-      } catch (userErr) {}
+      } catch (userErr) {
+        console.log('[DELETE INQUIRY] Token verification failed:', userErr.message);
+      }
     }
 
-    if (!isAuthorized) return res.status(403).json({ success: false, message: 'Unauthorized' });
+    if (!isAuthorized) {
+       console.log('[DELETE INQUIRY] Final verdict: 403 Forbidden');
+       return res.status(403).json({ success: false, message: 'Unauthorized' });
+    }
 
-    const result = await db.collection('inquiries').deleteOne(query);
+    // Fix mock db compatibility for deleteOne
+    let actualQuery = query;
+    if (db.isMock && query.$or) {
+       // Mock DB deleteOne doesn't handle $or properly, it needs _id or id
+       actualQuery = { id: id };
+    }
+    const result = await db.collection('inquiries').deleteOne(actualQuery);
     
     if (result.deletedCount === 1) {
       res.json({ success: true, message: 'Inquiry deleted successfully' });
