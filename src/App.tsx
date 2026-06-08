@@ -36,6 +36,7 @@ import BlogDetail from "./pages/BlogDetail";
 import Hoardings from "./pages/Hoardings";
 import HoardingDetail from "./pages/HoardingDetail";
 import Login from "./pages/Login";
+import ResetPassword from "./pages/ResetPassword";
 import UserDashboard from "./pages/UserDashboard";
 
 import AdminContent from "./pages/AdminContent";
@@ -97,6 +98,7 @@ const App = () => {
                 <Route path="/hoardings" element={<Hoardings />} />
                 <Route path="/hoardings/:id" element={<HoardingDetail />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/dashboard" element={<UserDashboard />} />
                 <Route path="/terms-conditions" element={<TermsConditions />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

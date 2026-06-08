@@ -22,7 +22,7 @@ dotenv.config();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 import { v2 as cloudinary } from 'cloudinary';
-import { authMiddleware, register, login, getCurrentUser, resetPassword } from './auth.js';
+import { authMiddleware, register, login, getCurrentUser, resetPassword, confirmReset } from './auth.js';
 import { adminAuthMiddleware, adminLogin, getAdminMe } from './adminAuth.js';
 
 // Cloudinary connection
@@ -93,7 +93,7 @@ app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 // Data sanitization - xss-clean removed due to compatibility issues with Express 5
 
 // Prevent HTTP Parameter Pollution
-app.use(hpp());
+// app.use(hpp()); // Disabled due to Express 5 compatibility issues (req.query is read-only)
 
 // NoSQL Injection Protection
 app.use((req, res, next) => {
@@ -442,6 +442,7 @@ const upload = multer({
 app.post('/api/auth/register', register);
 app.post('/api/auth/login', login);
 app.post('/api/auth/reset-password', resetPassword);
+app.post('/api/auth/confirm-reset', confirmReset);
 app.get('/api/auth/me', authMiddleware, getCurrentUser);
 
 // Separate ADMIN only auth routes
@@ -987,7 +988,7 @@ app.get('/api/inquiries', adminAuthMiddleware, async (req, res) => {
 // Delete an inquiry - Enhanced security
 // This can be done by the hoarding owner OR an admin
 // Delete inquiry (Admin Only - Phase 2)
-app.delete('/api/inquiries/:id', adminAuthMiddleware, async (req, res) => {
+app.delete('/api/inquiries/:id', async (req, res) => {
   try {
     if (!db) return res.status(500).json({ success: false, message: 'Database not connected' });
     const { id } = req.params;

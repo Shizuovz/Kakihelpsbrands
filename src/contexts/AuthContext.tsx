@@ -79,19 +79,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check for existing auth on mount
   useEffect(() => {
-    const token = authStorage.getToken();
-    const user = authStorage.getUser();
+    const verifyAuth = async () => {
+      const token = authStorage.getToken();
+      const user = authStorage.getUser();
 
-    if (token && user) {
-      dispatch({
-        type: 'AUTH_SUCCESS',
-        payload: { user, token },
-      });
-    } else {
-      // Clear any corrupted data and stop loading
-      authStorage.clear();
-      dispatch({ type: 'AUTH_FAILURE' });
-    }
+      if (token && user) {
+        try {
+          // Verify token is still valid by fetching current user
+          const validUser = await authAPI.getCurrentUser(token);
+          
+          // Update stored user just in case
+          authStorage.setUser(validUser);
+          
+          dispatch({
+            type: 'AUTH_SUCCESS',
+            payload: { user: validUser, token },
+          });
+        } catch (error) {
+          // Token is likely expired or invalid
+          console.warn('Auth token invalid/expired, logging out');
+          authStorage.clear();
+          dispatch({ type: 'AUTH_FAILURE' });
+        }
+      } else {
+        // Clear any corrupted data and stop loading
+        authStorage.clear();
+        dispatch({ type: 'AUTH_FAILURE' });
+      }
+    };
+    
+    verifyAuth();
   }, []);
 
   const login = async (email: string, password: string) => {

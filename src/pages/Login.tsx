@@ -434,7 +434,7 @@ export const Login = () => {
               Reset Password
             </DialogTitle>
             <DialogDescription className="text-kaki-grey">
-              For security, entering your email will verify your account and provide a temporary access password.
+              Enter your email address and we'll send you a link to reset your password.
             </DialogDescription>
           </DialogHeader>
 
@@ -450,13 +450,14 @@ export const Login = () => {
 
               <div className="bg-white/5 p-4 rounded-lg flex items-center justify-between gap-4">
                 <p className="text-xs text-kaki-grey leading-relaxed">
-                  Please check the message above for your temporary credentials. Use them to sign in and change your password immediately.
+                  Please check your email inbox (and spam folder) for the password reset link. 
+                  The link will expire in 1 hour.
                 </p>
                 <Button
                   onClick={() => setIsForgotPasswordOpen(false)}
                   className="bg-purple-600 hover:bg-purple-700 shrink-0"
                 >
-                  Sign In Now
+                  Back to Login
                 </Button>
               </div>
             </div>

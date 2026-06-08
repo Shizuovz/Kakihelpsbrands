@@ -5,11 +5,14 @@ import fs from 'fs';
 import bcrypt from 'bcryptjs';
 import Joi from 'joi';
 import logger from './logger.js';
+import crypto from 'crypto';
+import { Resend } from 'resend';
 
 // Load environment variables
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
+const resend = new Resend(process.env.RESEND_API_KEY);
 const client = new MongoClient(process.env.MONGODB_URI || 'mongodb://localhost:27017/kaki_hoardings');
 let db;
 
@@ -214,17 +217,58 @@ const resetPassword = async (req, res) => {
       });
     }
     
-    const tempPassword = Math.random().toString(36).slice(-8);
-    const hashedPassword = await bcrypt.hash(tempPassword, 10);
+    // Generate secure token
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const resetTokenExpiry = new Date(Date.now() + 3600000).toISOString(); // 1 hour expiry
     
     await usersCollection.updateOne(
       { id: user.id },
-      { $set: { password: hashedPassword, updatedAt: new Date().toISOString() } }
+      { $set: { resetToken, resetTokenExpiry, updatedAt: new Date().toISOString() } }
     );
     
+    // Determine frontend URL
+    const origin = req.headers.origin || 'http://localhost:5173';
+    const resetLink = `${origin}/reset-password?token=${resetToken}`;
+    
+    // Send Email
+    if (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== 're_your_api_key_here') {
+      try {
+        const emailResponse = await resend.emails.send({
+          from: 'Hoardings <noreply@kakihelpsbrands.com>',
+          to: user.email,
+          subject: 'Password Reset Request',
+          html: `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #333;">
+              <h2 style="color: #6d28d9;">Password Reset Request</h2>
+              <p>Hi ${user.name || 'there'},</p>
+              <p>You recently requested to reset your password for your Hoardings account. Click the button below to reset it. <strong>This link is only valid for 1 hour.</strong></p>
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${resetLink}" style="background-color: #6d28d9; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">Reset Password</a>
+              </div>
+              <p>If you did not request a password reset, please ignore this email or reply to let us know. This password reset is only valid for the next 1 hour.</p>
+              <p>Thanks,<br>The Hoardings Team</p>
+              <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+              <p style="font-size: 12px; color: #999;">If you're having trouble clicking the button, copy and paste the URL below into your web browser:</p>
+              <p style="font-size: 12px; color: #6d28d9; word-break: break-all;">${resetLink}</p>
+            </div>
+          `
+        });
+        
+        if (emailResponse.error) {
+          throw new Error(emailResponse.error.message || 'Resend API Error');
+        }
+      } catch (emailError) {
+        logger.error('💥 [AUTH] Email send failed:', emailError);
+        // Log the link so the user can test locally even if Resend is failing
+        logger.info(`📧 [FALLBACK] Reset link generated for ${user.email}: ${resetLink}`);
+      }
+    } else {
+      logger.info(`📧 [MOCK EMAIL] Reset link generated for ${user.email}: ${resetLink}`);
+    }
+
     res.json({ 
       success: true, 
-      message: `Security Check Passed! Your temporary password is: ${tempPassword}. Please change it after logging in.` 
+      message: 'If an account exists with this email, you will receive password reset instructions.' 
     });
   } catch (error) {
     logger.error('💥 [AUTH] Recovery Error:', error.message);
@@ -232,4 +276,46 @@ const resetPassword = async (req, res) => {
   }
 };
 
-export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword };
+const confirmReset = async (req, res) => {
+  try {
+    const { token, newPassword } = req.body;
+
+    if (!token || !newPassword) {
+      return res.status(400).json({ success: false, message: 'Token and new password are required' });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({ success: false, message: 'Password must be at least 6 characters' });
+    }
+
+    const usersCollection = await initUsersCollection();
+    
+    const user = await usersCollection.findOne({ 
+      resetToken: token
+    });
+    
+    if (!user || !user.resetTokenExpiry || new Date(user.resetTokenExpiry) < new Date()) {
+      return res.status(400).json({ success: false, message: 'Password reset token is invalid or has expired' });
+    }
+    
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    await usersCollection.updateOne(
+      { id: user.id },
+      { 
+        $set: { password: hashedPassword, updatedAt: new Date().toISOString() },
+        $unset: { resetToken: "", resetTokenExpiry: "" }
+      }
+    );
+    
+    res.json({ 
+      success: true, 
+      message: 'Your password has been successfully reset. You can now log in.' 
+    });
+  } catch (error) {
+    logger.error('💥 [AUTH] Confirm Reset Error:', error.message);
+    res.status(500).json({ success: false, message: 'Password reset failed' });
+  }
+};
+
+export { authMiddleware, register, login, getCurrentUser, verifyToken, generateToken, initUsersCollection, resetPassword, confirmReset };
