@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, User, Phone, Building, Info, CheckCircle } from 'lucide-react';
 import { FaGoogle } from 'react-icons/fa';
@@ -83,7 +83,7 @@ export const Login = () => {
     name: '',
     company: '',
     phone: '',
-    role: 'organizer' as 'organizer' | 'provider',
+    role: 'provider' as 'organizer' | 'provider',
   });
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -326,27 +326,7 @@ export const Login = () => {
                       </div>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="role" className="text-white">Account Type</Label>
-                      <Select
-                        value={registerData.role}
-                        onValueChange={(value: 'organizer' | 'provider') =>
-                          setRegisterData({ ...registerData, role: value })
-                        }
-                      >
-                        <SelectTrigger className="bg-black/40 border-white/10 text-white">
-                          <SelectValue placeholder="Select account type" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-kaki-dark-grey border-white/10">
-                          <SelectItem value="organizer" className="text-white hover:bg-purple-600">
-                            Event Organizer
-                          </SelectItem>
-                          <SelectItem value="provider" className="text-white hover:bg-purple-600">
-                            Service Provider
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+
 
                     <div className="space-y-2">
                       <Label htmlFor="reg-email" className="text-white">Email</Label>

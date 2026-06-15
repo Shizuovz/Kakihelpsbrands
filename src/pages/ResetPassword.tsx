@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
@@ -21,7 +22,7 @@ export const ResetPassword = () => {
 
   const handleResetPassword = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!token) {
       setStatus('error');
       setMessage('Invalid or missing reset token.');
