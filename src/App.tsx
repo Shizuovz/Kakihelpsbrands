@@ -109,7 +109,7 @@ const App = () => {
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/content" element={<AdminContent />} />
                 
-                <Route path="*" element={<Navigate to="/" replace />} />
+                <Route path="*" element={<NotFound />} />
               </Routes>
               <FooterWrapper />
             </div>
