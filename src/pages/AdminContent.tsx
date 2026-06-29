@@ -23,6 +23,8 @@ import {
   Globe,
   Settings,
   ArrowLeft,
+  ArrowUp,
+  ArrowDown,
   UploadCloud,
   Briefcase,
   Upload,
@@ -55,6 +57,128 @@ import {
   SelectValue 
 } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
+
+const TableEditor = ({ block, content, onChange, updateSetting }: { block: any, content: string, onChange: (val: string) => void, updateSetting: (key: string, val: string) => void }) => {
+  let tableData: string[][] = [['', ''], ['', '']];
+  try {
+    tableData = JSON.parse(content || '[["Header 1","Header 2"],["Row 1 Cell 1","Row 1 Cell 2"]]');
+    if (!Array.isArray(tableData)) throw new Error("Not an array");
+  } catch (e) {
+    tableData = [['', ''], ['', '']];
+  }
+
+  const updateTableData = (newData: string[][]) => {
+    onChange(JSON.stringify(newData));
+  };
+
+  const addRow = () => {
+    const cols = tableData[0]?.length || 1;
+    updateTableData([...tableData, Array(cols).fill('')]);
+  };
+  
+  const addCol = () => {
+    updateTableData(tableData.map(row => [...row, '']));
+  };
+  
+  const updateCell = (rIdx: number, cIdx: number, val: string) => {
+    const newData = tableData.map(row => [...row]);
+    newData[rIdx][cIdx] = val;
+    updateTableData(newData);
+  };
+  
+  const removeRow = (rIdx: number) => {
+    if (tableData.length <= 1) return;
+    updateTableData(tableData.filter((_, i) => i !== rIdx));
+  };
+  
+  const removeCol = (cIdx: number) => {
+    if (tableData[0]?.length <= 1) return;
+    updateTableData(tableData.map(row => row.filter((_, i) => i !== cIdx)));
+  };
+
+  return (
+    <div className="bg-[#111] border border-white/10 rounded-xl p-4 space-y-4">
+      <div className="flex gap-4 items-center flex-wrap">
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" className="h-7 text-xs bg-transparent border-white/20 text-white/70 hover:bg-white/5" onClick={addRow}><Plus className="w-3 h-3 mr-1" /> Add Row</Button>
+          <Button size="sm" variant="outline" className="h-7 text-xs bg-transparent border-white/20 text-white/70 hover:bg-white/5" onClick={addCol}><Plus className="w-3 h-3 mr-1" /> Add Column</Button>
+        </div>
+        
+        <div className="h-4 w-px bg-white/20 mx-2"></div>
+        
+        <div className="flex items-center gap-2 border border-white/10 rounded px-2 py-1 bg-[#1a1a1a]">
+          <label className="text-[10px] uppercase text-white/50 font-bold">Header:</label>
+          <input 
+            type="color" 
+            value={block?.tableHeaderBg || '#f9fafb'} 
+            onChange={(e) => updateSetting('tableHeaderBg', e.target.value)}
+            className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 border border-white/10 rounded px-2 py-1 bg-[#1a1a1a]">
+          <label className="text-[10px] uppercase text-white/50 font-bold">Header Text:</label>
+          <input 
+            type="color" 
+            value={block?.tableHeaderColor || '#111827'} 
+            onChange={(e) => updateSetting('tableHeaderColor', e.target.value)}
+            className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 border border-white/10 rounded px-2 py-1 bg-[#1a1a1a]">
+          <label className="text-[10px] uppercase text-white/50 font-bold">Border:</label>
+          <input 
+            type="color" 
+            value={block?.tableBorderColor || '#e5e7eb'} 
+            onChange={(e) => updateSetting('tableBorderColor', e.target.value)}
+            className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 border border-white/10 rounded px-2 py-1 bg-[#1a1a1a]">
+          <label className="text-[10px] uppercase text-white/50 font-bold">Size (px):</label>
+          <input 
+            type="number" 
+            min="0"
+            max="20"
+            value={block?.tableBorderSize !== undefined ? block.tableBorderSize : 1} 
+            onChange={(e) => updateSetting('tableBorderSize', e.target.value)}
+            className="w-10 h-5 text-[10px] bg-transparent border-0 text-white text-center p-0 focus:outline-none"
+          />
+        </div>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <tbody>
+            {tableData.map((row, rIdx) => (
+              <tr key={rIdx}>
+                {row.map((cell, cIdx) => (
+                  <td key={cIdx} className="p-1 border border-white/10 relative group bg-kaki-black/50">
+                    <Input 
+                      value={cell} 
+                      onChange={(e) => updateCell(rIdx, cIdx, e.target.value)}
+                      className={`h-auto py-2 px-3 bg-transparent border-none focus:ring-1 focus:ring-purple-500 rounded-none ${rIdx === 0 ? 'font-bold text-purple-300' : 'text-white/80'}`}
+                      placeholder={rIdx === 0 ? `Header ${cIdx + 1}` : `Cell`}
+                    />
+                    {rIdx === 0 && tableData[0].length > 1 && (
+                      <button onClick={() => removeCol(cIdx)} className="absolute -top-3 right-2 bg-red-500/20 text-red-400 p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity z-10 hover:bg-red-500/40"><Trash2 className="w-3 h-3" /></button>
+                    )}
+                  </td>
+                ))}
+                <td className="w-8 px-2 text-center align-middle">
+                  {tableData.length > 1 && (
+                    <button onClick={() => removeRow(rIdx)} className="text-red-400/50 hover:text-red-400 p-1"><Trash2 className="w-4 h-4" /></button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
 export const AdminContent = () => {
   const navigate = useNavigate();
@@ -305,32 +429,120 @@ export const AdminContent = () => {
     setContent(updateStateDeep(content, sectionPath, newArray));
   };
 
-  const handleFormat = (index: number, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough') => {
-    const textarea = document.getElementById(`blog-content-${index}`) as HTMLTextAreaElement;
+  const addBlock = (blogIndex: number, type: string) => {
+    const currentBlocks = content.blogs[blogIndex].blocks || [];
+    const newBlock = { id: Date.now(), type, content: '' };
+    updateItemDeep('blogs', blogIndex, 'blocks', [...currentBlocks, newBlock]);
+  };
+
+  const updateBlock = (blogIndex: number, blockIndex: number, field: string, value: string) => {
+    const newBlocks = [...(content.blogs[blogIndex].blocks || [])];
+    newBlocks[blockIndex] = { ...newBlocks[blockIndex], [field]: value };
+    updateItemDeep('blogs', blogIndex, 'blocks', newBlocks);
+  };
+
+  const removeBlock = (blogIndex: number, blockIndex: number) => {
+    const newBlocks = [...(content.blogs[blogIndex].blocks || [])];
+    newBlocks.splice(blockIndex, 1);
+    updateItemDeep('blogs', blogIndex, 'blocks', newBlocks);
+  };
+
+  const moveBlock = (blogIndex: number, blockIndex: number, direction: 'up' | 'down') => {
+    const newBlocks = [...(content.blogs[blogIndex].blocks || [])];
+    if (direction === 'up' && blockIndex > 0) {
+      const temp = newBlocks[blockIndex - 1];
+      newBlocks[blockIndex - 1] = newBlocks[blockIndex];
+      newBlocks[blockIndex] = temp;
+    } else if (direction === 'down' && blockIndex < newBlocks.length - 1) {
+      const temp = newBlocks[blockIndex + 1];
+      newBlocks[blockIndex + 1] = newBlocks[blockIndex];
+      newBlocks[blockIndex] = temp;
+    }
+    updateItemDeep('blogs', blogIndex, 'blocks', newBlocks);
+  };
+
+  const handleDragStart = (e: React.DragEvent<HTMLDivElement>, blogIndex: number, blockIndex: number) => {
+    e.dataTransfer.setData('text/plain', JSON.stringify({ blogIndex, blockIndex }));
+    e.currentTarget.classList.add('opacity-50');
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.classList.remove('opacity-50');
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.currentTarget.classList.add('border-purple-500');
+  };
+
+  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+    e.currentTarget.classList.remove('border-purple-500');
+  };
+
+  const handleNewBlockDragStart = (e: React.DragEvent<HTMLButtonElement>, blockType: string) => {
+    e.dataTransfer.setData('application/x-new-block', blockType);
+  };
+
+  const handleDrop = (e: React.DragEvent<HTMLDivElement>, targetBlogIndex: number, targetBlockIndex: number) => {
+    e.preventDefault();
+    e.currentTarget.classList.remove('border-purple-500');
+    try {
+      const newBlockType = e.dataTransfer.getData('application/x-new-block');
+      if (newBlockType) {
+        const newBlocks = [...(content.blogs[targetBlogIndex].blocks || [])];
+        const newBlock = { id: Date.now(), type: newBlockType, content: '' };
+        newBlocks.splice(targetBlockIndex, 0, newBlock); // Insert before the target
+        updateItemDeep('blogs', targetBlogIndex, 'blocks', newBlocks);
+        return;
+      }
+
+      const dataStr = e.dataTransfer.getData('text/plain');
+      if (!dataStr) return;
+      const data = JSON.parse(dataStr);
+      const { blogIndex: sourceBlogIndex, blockIndex: sourceBlockIndex } = data;
+
+      if (sourceBlogIndex === targetBlogIndex && sourceBlockIndex !== targetBlockIndex) {
+        const newBlocks = [...(content.blogs[sourceBlogIndex].blocks || [])];
+        const [draggedBlock] = newBlocks.splice(sourceBlockIndex, 1);
+        newBlocks.splice(targetBlockIndex, 0, draggedBlock);
+        updateItemDeep('blogs', sourceBlogIndex, 'blocks', newBlocks);
+      }
+    } catch (error) {
+      console.error("Drag and drop failed", error);
+    }
+  };
+
+  const handleFormat = (elementId: string, currentText: string, onUpdate: (text: string) => void, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough') => {
+    const textarea = document.getElementById(elementId) as HTMLTextAreaElement;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const currentText = (content.blogs[index].content || '');
     const selection = currentText.substring(start, end);
     
     let replacement = '';
+    let offsetStart = 0;
+    let offsetEnd = 0;
+    
     switch (type) {
-      case 'bold': replacement = `**${selection || 'bold text'}**`; break;
-      case 'italic': replacement = `*${selection || 'italic text'}*`; break;
-      case 'header': replacement = `\n## ${selection || 'HEADER'}`; break;
-      case 'quote': replacement = `\n> ${selection || 'QUOTE'}`; break;
-      case 'underline': replacement = `<u>${selection || 'underlined text'}</u>`; break;
-      case 'strikethrough': replacement = `~~${selection || 'strikethrough text'}~~`; break;
+      case 'bold': replacement = `**${selection || 'bold text'}**`; offsetStart = 2; offsetEnd = 2; break;
+      case 'italic': replacement = `*${selection || 'italic text'}*`; offsetStart = 1; offsetEnd = 1; break;
+      case 'header': replacement = `\n## ${selection || 'HEADER'}`; offsetStart = 4; offsetEnd = 0; break;
+      case 'quote': replacement = `\n> ${selection || 'QUOTE'}`; offsetStart = 3; offsetEnd = 0; break;
+      case 'underline': replacement = `<u>${selection || 'underlined text'}</u>`; offsetStart = 3; offsetEnd = 4; break;
+      case 'strikethrough': replacement = `~~${selection || 'strikethrough text'}~~`; offsetStart = 2; offsetEnd = 2; break;
     }
 
     const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
-    updateItem('blogs', index, 'content', newText);
+    onUpdate(newText);
     
-    // Set focus back and maintain selection
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + 2, end + 2);
+      if (selection) {
+        textarea.setSelectionRange(start + offsetStart, end + offsetStart);
+      } else {
+        textarea.setSelectionRange(start + offsetStart, start + offsetStart + replacement.length - offsetStart - offsetEnd);
+      }
     }, 0);
   };
 
@@ -1197,7 +1409,7 @@ export const AdminContent = () => {
         </TabsContent>
 
         <TabsContent value="blogs" className="space-y-6">
-          <Card className="bg-white/5 border-white/10 text-white shadow-2xl overflow-hidden rounded-[2.5rem]">
+          <Card className="bg-white/5 border-white/10 text-white shadow-2xl rounded-[2.5rem]">
             <CardHeader className="flex flex-col md:flex-row md:items-center justify-between pb-8 border-b border-white/5 gap-6">
               <div className="space-y-2">
                 <div className="flex items-center gap-3">
@@ -1217,7 +1429,8 @@ export const AdminContent = () => {
                   date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
                   image: '',
                   excerpt: 'Briefly describe your article here...',
-                  content: '## Start writing your article here...'
+                  content: '## Start writing your article here...',
+                  blocks: []
                 })}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-10 h-14 rounded-full shadow-2xl shadow-purple-500/30 transition-all hover:scale-105 active:scale-95 text-lg font-bold"
               >
@@ -1236,7 +1449,25 @@ export const AdminContent = () => {
                   </div>
                 ) : (
                   content.blogs.map((blog: any, index: number) => (
-                    <div key={blog.id || index} className="p-8 md:p-12 border border-white/10 rounded-[3.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] shadow-2xl space-y-10 relative group transition-all hover:border-purple-500/40">
+                    <div key={blog.id || index} className="space-y-6">
+                      <div className="sticky top-4 z-[60] bg-[#1a1a1a]/95 backdrop-blur-xl border border-white/10 p-3 rounded-2xl shadow-2xl flex items-center justify-center gap-2 flex-wrap max-w-5xl mx-auto">
+                        <span className="text-xs font-bold uppercase text-white/40 mr-2">Add New:</span>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'kicker')} onClick={() => addBlock(index, 'kicker')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Type className="w-4 h-4 mr-2" /> Kicker</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'title')} onClick={() => addBlock(index, 'title')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Heading className="w-4 h-4 mr-2" /> Title</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'subtitle')} onClick={() => addBlock(index, 'subtitle')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Heading className="w-4 h-4 mr-2 opacity-70" /> Subtitle</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'excerpt')} onClick={() => addBlock(index, 'excerpt')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Quote className="w-4 h-4 mr-2" /> Excerpt</Button>
+                        <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block"></div>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'heading')} onClick={() => addBlock(index, 'heading')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Heading className="w-4 h-4 mr-2" /> Heading</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'paragraph')} onClick={() => addBlock(index, 'paragraph')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Type className="w-4 h-4 mr-2" /> Paragraph</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'callout')} onClick={() => addBlock(index, 'callout')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Layout className="w-4 h-4 mr-2" /> Highlight</Button>
+                        <div className="w-px h-6 bg-white/10 mx-1 hidden sm:block"></div>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'table')} onClick={() => addBlock(index, 'table')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Layout className="w-4 h-4 mr-2" /> Table</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'image')} onClick={() => addBlock(index, 'image')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><ImageIcon className="w-4 h-4 mr-2" /> Image</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'quote')} onClick={() => addBlock(index, 'quote')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Quote className="w-4 h-4 mr-2" /> Quote</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'video')} onClick={() => addBlock(index, 'video')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Video className="w-4 h-4 mr-2" /> Video</Button>
+                        <Button variant="secondary" size="sm" draggable onDragStart={(e) => handleNewBlockDragStart(e, 'divider')} onClick={() => addBlock(index, 'divider')} className="bg-white/5 hover:bg-white/10 cursor-grab active:cursor-grabbing"><Separator className="w-4 h-px mr-2" /> Divider</Button>
+                      </div>
+                      <div className="p-8 md:p-12 border border-white/10 rounded-[3.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] shadow-2xl space-y-10 relative group transition-all hover:border-purple-500/40">
                       <div className="absolute -top-4 right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
                         <Button 
                           variant="destructive" 
@@ -1256,6 +1487,14 @@ export const AdminContent = () => {
                               <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Publishing Details</label>
                               <div className="space-y-4 p-6 bg-kaki-black/60 rounded-[2rem] border border-white/5 backdrop-blur-xl shadow-inner">
                                 <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Title</label>
+                                  <Input value={blog.title || ''} onChange={(e) => updateItem('blogs', index, 'title', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm font-bold text-white" placeholder="Blog Title" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Brief Description</label>
+                                  <Textarea value={blog.excerpt || ''} onChange={(e) => updateItem('blogs', index, 'excerpt', e.target.value)} className="bg-kaki-black/50 border-white/10 rounded-xl text-sm min-h-[80px] text-white/80" placeholder="Briefly describe your article here..." />
+                                </div>
+                                <div className="space-y-2">
                                   <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Author</label>
                                   <Input value={blog.author} onChange={(e) => updateItem('blogs', index, 'author', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm" />
                                 </div>
@@ -1266,6 +1505,18 @@ export const AdminContent = () => {
                                 <div className="space-y-2">
                                   <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Publish Date</label>
                                   <Input value={blog.date} onChange={(e) => updateItem('blogs', index, 'date', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Font Family</label>
+                                  <select 
+                                    value={blog.fontFamily || 'sans'} 
+                                    onChange={(e) => updateItem('blogs', index, 'fontFamily', e.target.value)}
+                                    className="w-full bg-[#1a1a1a] border border-white/10 text-white/70 text-sm rounded-xl px-3 h-11 outline-none focus:border-purple-500"
+                                  >
+                                    <option value="sans">Sans-serif</option>
+                                    <option value="serif">Serif</option>
+                                    <option value="mono">Monospace</option>
+                                  </select>
                                 </div>
                               </div>
                             </div>
@@ -1291,112 +1542,540 @@ export const AdminContent = () => {
 
                         {/* Editor Main */}
                         <div className="lg:col-span-8 space-y-8">
-                          <div className="space-y-4">
-                            <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Headline</label>
-                            <Input 
-                              value={blog.title} 
-                              onChange={(e) => updateItem('blogs', index, 'title', e.target.value)}
-                              className="bg-transparent border-b-2 border-t-0 border-x-0 border-white/10 rounded-none text-4xl font-extrabold h-auto py-4 focus:border-purple-500 transition-colors"
-                              placeholder="Captivating Title..."
-                            />
-                          </div>
-
-                          <div className="space-y-4 pt-4">
-                            <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">The Lead (Summary)</label>
-                            <Textarea 
-                              value={blog.excerpt} 
-                              onChange={(e) => updateItem('blogs', index, 'excerpt', e.target.value)}
-                              className="bg-kaki-black/40 border-white/10 min-h-[100px] rounded-3xl px-8 py-6 focus:border-purple-500/50 leading-relaxed text-lg italic text-white/80"
-                              placeholder="A powerful opening statement..."
-                            />
-                          </div>
-
                           <div className="space-y-4 pt-4">
                             <div className="flex items-center justify-between pl-2">
                               <div className="flex items-center gap-4">
-                                <label className="text-xs text-purple-400 font-bold uppercase tracking-widest">Article Body</label>
-                                <div className="flex items-center gap-1 bg-white/5 p-1 rounded-lg border border-white/10">
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'bold')} title="Add Bold">
-                                    <Bold className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'italic')} title="Add Italic">
-                                    <Italic className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'header')} title="Add Header">
-                                    <Heading className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'quote')} title="Add Blockquote">
-                                    <Quote className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'underline')} title="Add Underline">
-                                    <Underline className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFormat(index, 'strikethrough')} title="Add Strikethrough">
-                                    <Strikethrough className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => handleFileUpload((url) => {
-                                    const textarea = document.getElementById(`blog-content-${index}`) as HTMLTextAreaElement;
-                                    const start = textarea.selectionStart;
-                                    const end = textarea.selectionEnd;
-                                    const currentText = content.blogs[index].content;
-                                    const replacement = `\n![Inline Image](${url})\n`;
-                                    const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
-                                    updateItem('blogs', index, 'content', newText);
-                                  }, 'image')} title="Insert Image">
-                                    <ImageIcon className="w-4 h-4" />
-                                  </Button>
-                                  <Separator orientation="vertical" className="h-4 bg-white/10 mx-1" />
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => {
-                                    updateItem('blogs', index, 'content', blog.content.toUpperCase());
-                                  }} title="Convert ALL to Uppercase">
-                                    <CaseUpper className="w-4 h-4" />
-                                  </Button>
-                                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:bg-purple-600/20" onClick={() => {
-                                    updateItem('blogs', index, 'content', blog.content.toLowerCase());
-                                  }} title="Convert ALL to Lowercase">
-                                    <CaseLower className="w-4 h-4" />
-                                  </Button>
-                                </div>
+                                <label className="text-xs text-purple-400 font-bold uppercase tracking-widest">Article Builder</label>
                               </div>
-                              <Tabs defaultValue="edit" className="w-[180px]">
+                              <Tabs defaultValue="blocks" className="w-[200px]">
                                 <TabsList className="bg-white/5 h-8 p-0.5">
-                                  <TabsTrigger value="edit" className="h-7 text-[10px] uppercase font-bold px-3">Editor</TabsTrigger>
+                                  <TabsTrigger value="blocks" className="h-7 text-[10px] uppercase font-bold px-3">Block Builder</TabsTrigger>
                                   <TabsTrigger value="preview" className="h-7 text-[10px] uppercase font-bold px-3">Live Preview</TabsTrigger>
                                 </TabsList>
                               </Tabs>
                             </div>
 
-                            <Tabs defaultValue="edit" className="w-full">
-                              <TabsContent value="edit" className="mt-0">
-                                <Textarea 
-                                  id={`blog-content-${index}`}
-                                  value={blog.content} 
-                                  onChange={(e) => updateItem('blogs', index, 'content', e.target.value)}
-                                  className="bg-kaki-black/40 border-white/10 min-h-[600px] rounded-[2.5rem] px-10 py-10 focus:border-purple-500/50 leading-relaxed font-inter text-lg"
-                                  placeholder="Tell your story..."
-                                />
+                            <Tabs defaultValue="blocks" className="w-full relative">
+                              <TabsContent value="blocks" className="mt-0 space-y-4">
+                                <div className="space-y-4 min-h-[400px]">
+                                  {(blog.blocks || []).map((block: any, bIdx: number) => (
+                                    <div 
+                                      key={block.id || bIdx} 
+                                      className="p-4 bg-white/5 border border-white/10 rounded-2xl space-y-3 relative group cursor-move transition-all duration-200"
+                                      draggable
+                                      onDragStart={(e) => handleDragStart(e, index, bIdx)}
+                                      onDragEnd={handleDragEnd}
+                                      onDragOver={handleDragOver}
+                                      onDragLeave={handleDragLeave}
+                                      onDrop={(e) => handleDrop(e, index, bIdx)}
+                                    >
+                                      <div className="flex items-center justify-between">
+                                        <Badge variant="outline" className="text-purple-400 border-purple-500/30 uppercase text-[10px] tracking-wider">{block.type}</Badge>
+                                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                          {['kicker', 'title', 'subtitle', 'excerpt', 'heading', 'paragraph', 'quote'].includes(block.type) && (
+                                            <div className="flex items-center gap-2 mr-2">
+                                              <select 
+                                                value={block.fontSize || 'default'} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'fontSize', e.target.value)}
+                                                className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                              >
+                                                <option value="default">Default Size</option>
+                                                <option value="text-xs">XS</option>
+                                                <option value="text-sm">SM</option>
+                                                <option value="text-base">Base</option>
+                                                <option value="text-lg">LG</option>
+                                                <option value="text-xl">XL</option>
+                                                <option value="text-2xl">2XL</option>
+                                                <option value="text-3xl">3XL</option>
+                                                <option value="text-4xl">4XL</option>
+                                                <option value="text-5xl">5XL</option>
+                                                <option value="text-6xl">6XL</option>
+                                                <option value="text-7xl">7XL</option>
+                                                <option value="text-8xl">8XL</option>
+                                                <option value="text-9xl">9XL</option>
+                                              </select>
+                                              <div className="flex items-center gap-1 border border-white/10 rounded px-1 py-1 bg-[#1a1a1a] h-[26px]">
+                                                <label className="text-[9px] uppercase text-white/50 font-bold px-1" title="Text Color">Color</label>
+                                                <input 
+                                                  type="color" 
+                                                  value={block.textColor || '#ffffff'} 
+                                                  onChange={(e) => updateBlock(index, bIdx, 'textColor', e.target.value)}
+                                                  className="w-4 h-4 rounded cursor-pointer bg-transparent border-0 p-0"
+                                                />
+                                              </div>
+                                            </div>
+                                          )}
+                                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => moveBlock(index, bIdx, 'up')} disabled={bIdx === 0}>
+                                            <ArrowUp className="w-3 h-3" />
+                                          </Button>
+                                          <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => moveBlock(index, bIdx, 'down')} disabled={bIdx === (blog.blocks || []).length - 1}>
+                                            <ArrowDown className="w-3 h-3" />
+                                          </Button>
+                                          <Button size="icon" variant="destructive" className="h-6 w-6 ml-2" onClick={() => removeBlock(index, bIdx)}>
+                                            <Trash2 className="w-3 h-3" />
+                                          </Button>
+                                        </div>
+                                      </div>
+
+                                      {block.type === 'kicker' && (
+                                        <Input 
+                                          value={block.content} 
+                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                          placeholder="Kicker / Category Label (e.g. SOCIAL MEDIA MARKETING)"
+                                          className="text-sm font-bold uppercase tracking-widest text-purple-400 bg-kaki-black/50 border-white/10"
+                                        />
+                                      )}
+
+                                      {block.type === 'title' && (
+                                        <Input 
+                                          value={block.content} 
+                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                          placeholder="Main Title"
+                                          className="text-4xl font-extrabold bg-kaki-black/50 border-white/10 py-6"
+                                        />
+                                      )}
+
+                                      {block.type === 'subtitle' && (
+                                        <Input 
+                                          value={block.content} 
+                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                          placeholder="Subtitle"
+                                          className="text-xl font-medium bg-kaki-black/50 border-white/10 py-4 text-white/80"
+                                        />
+                                      )}
+
+                                      {block.type === 'excerpt' && (
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'bold')} className="h-6 w-6 p-0"><Bold className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                          </div>
+                                          <Textarea 
+                                            id={`block-content-${index}-${bIdx}`}
+                                            value={block.content || ''} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="The Lead / Summary text..."
+                                            className="min-h-[100px] bg-kaki-black/50 border-white/10 italic text-purple-200"
+                                          />
+                                        </div>
+                                      )}
+
+                                      {block.type === 'divider' && (
+                                        <div className="py-4 space-y-6">
+                                          <div className="flex flex-wrap gap-6 items-center bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
+                                            <div className="space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Thickness (px)</label>
+                                              <Input 
+                                                type="number" 
+                                                min="1"
+                                                value={block.size || ''} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'size', e.target.value)}
+                                                placeholder="1"
+                                                className="bg-kaki-black/50 border-white/10 h-10 w-24 text-sm"
+                                              />
+                                            </div>
+                                            <div className="space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Color</label>
+                                              <div className="flex items-center gap-2">
+                                                <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-white/10 bg-kaki-black/50">
+                                                  <input 
+                                                    type="color" 
+                                                    value={block.color || '#ffffff'} 
+                                                    onChange={(e) => updateBlock(index, bIdx, 'color', e.target.value)}
+                                                    className="absolute inset-0 w-[200%] h-[200%] -top-1/2 -left-1/2 cursor-pointer"
+                                                  />
+                                                </div>
+                                                <Button variant="ghost" size="icon" onClick={() => updateBlock(index, bIdx, 'color', '')} className="h-10 w-10"><Trash2 className="w-4 h-4 text-white/40 hover:text-white/80" /></Button>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="py-4">
+                                            <hr style={{ borderTopWidth: `${block.size || 1}px`, borderColor: block.color || 'rgba(255,255,255,0.2)' }} className="my-0" />
+                                          </div>
+                                        </div>
+                                      )}
+
+                                      {block.type === 'heading' && (
+                                        <Input 
+                                          value={block.content} 
+                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                          placeholder="Section Heading"
+                                          className="text-2xl font-bold bg-kaki-black/50 border-white/10"
+                                        />
+                                      )}
+
+                                      {block.type === 'paragraph' && (
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'bold')} className="h-6 w-6 p-0"><Bold className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                            
+                                            <div className="w-px h-4 bg-white/10 mx-1"></div>
+                                            
+                                            <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
+                                          </div>
+                                          <Textarea 
+                                            id={`block-content-${index}-${bIdx}`}
+                                            value={block.content || ''} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Paragraph text..."
+                                            className="min-h-[100px] bg-kaki-black/50 border-white/10"
+                                          />
+                                        </div>
+                                      )}
+
+                                      {block.type === 'table' && (
+                                        <TableEditor 
+                                          block={block}
+                                          content={block.content} 
+                                          onChange={(val) => updateBlock(index, bIdx, 'content', val)} 
+                                          updateSetting={(key, val) => updateBlock(index, bIdx, key, val)}
+                                        />
+                                      )}
+
+                                      {block.type === 'image' && (
+                                        <div className="space-y-4">
+                                          <div className="flex flex-col md:flex-row gap-4">
+                                            <div className="flex-1 space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Image Source</label>
+                                              <div className="flex gap-2">
+                                                <Input 
+                                                  value={block.content || ''} 
+                                                  onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                                  placeholder="Image URL"
+                                                  className="bg-kaki-black/50 border-white/10 h-11"
+                                                />
+                                                <Button size="icon" className="bg-purple-600 hover:bg-purple-700 h-11 w-11 shrink-0" onClick={() => handleFileUpload((url) => updateBlock(index, bIdx, 'content', url), 'image')}>
+                                                  <UploadCloud className="w-5 h-5" />
+                                                </Button>
+                                              </div>
+                                            </div>
+                                            <div className="w-full md:w-32 space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Image Size</label>
+                                              <select 
+                                                value={block.imageSize || 'full'} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'imageSize', e.target.value)}
+                                                className="w-full bg-[#1a1a1a] border border-white/10 text-white/70 text-sm rounded-xl px-3 h-11 outline-none focus:border-purple-500"
+                                              >
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                                <option value="full">Full Width</option>
+                                              </select>
+                                            </div>
+                                            <div className="w-full md:w-32 space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Alignment</label>
+                                              <select 
+                                                value={block.imageAlignment || 'center'} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'imageAlignment', e.target.value)}
+                                                className="w-full bg-[#1a1a1a] border border-white/10 text-white/70 text-sm rounded-xl px-3 h-11 outline-none focus:border-purple-500"
+                                              >
+                                                <option value="left">Left</option>
+                                                <option value="center">Center</option>
+                                                <option value="right">Right</option>
+                                              </select>
+                                            </div>
+                                            <div className="w-full md:w-32 space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Radius</label>
+                                              <select 
+                                                value={block.imageRadius || 'large'} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'imageRadius', e.target.value)}
+                                                className="w-full bg-[#1a1a1a] border border-white/10 text-white/70 text-sm rounded-xl px-3 h-11 outline-none focus:border-purple-500"
+                                              >
+                                                <option value="none">None</option>
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                                <option value="full">Full</option>
+                                              </select>
+                                            </div>
+                                          </div>
+                                          {block.content && (
+                                            <div className={`flex ${block.imageAlignment === 'left' ? 'justify-start' : block.imageAlignment === 'right' ? 'justify-end' : 'justify-center'}`}>
+                                              <img 
+                                                src={resolveApiUrl(block.content)} 
+                                                alt="Block Preview" 
+                                                className={`${block.imageSize === 'small' ? 'w-1/3' : block.imageSize === 'medium' ? 'w-1/2' : block.imageSize === 'large' ? 'w-3/4' : 'w-full'} ${block.imageRadius === 'none' ? 'rounded-none' : block.imageRadius === 'small' ? 'rounded-md' : block.imageRadius === 'medium' ? 'rounded-xl' : block.imageRadius === 'full' ? 'rounded-full' : 'rounded-3xl'} max-h-[300px] object-cover border border-white/10`} 
+                                              />
+                                            </div>
+                                          )}
+                                        </div>
+                                      )}
+
+                                      {block.type === 'quote' && (
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'bold')} className="h-6 w-6 p-0"><Bold className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                          </div>
+                                          <Textarea 
+                                            id={`block-content-${index}-${bIdx}`}
+                                            value={block.content || ''} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Blockquote text..."
+                                            className="min-h-[80px] bg-kaki-black/50 border-white/10 italic text-purple-200"
+                                          />
+                                        </div>
+                                      )}
+
+                                      {block.type === 'video' && (
+                                        <div className="flex gap-2">
+                                            <Input 
+                                              value={block.content} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                              placeholder="Video URL or YouTube Link"
+                                              className="bg-kaki-black/50 border-white/10"
+                                            />
+                                            <Button size="icon" className="bg-purple-600 hover:bg-purple-700" onClick={() => handleFileUpload((url) => updateBlock(index, bIdx, 'content', url), 'video')}>
+                                              <UploadCloud className="w-4 h-4" />
+                                            </Button>
+                                        </div>
+                                      )}
+                                      {block.type === 'callout' && (
+                                        <div className="space-y-4 bg-kaki-black/50 p-4 rounded-xl border border-white/10">
+                                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <Input 
+                                              value={block.calloutTitle || ''} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'calloutTitle', e.target.value)}
+                                              placeholder="Callout Title (e.g. KEY TAKEAWAYS)"
+                                              className="bg-white/5 border-white/10 text-sm font-bold"
+                                            />
+                                            <div className="flex flex-wrap items-center gap-4">
+                                              <div className="flex items-center gap-2 bg-[#1a1a1a] p-1.5 rounded border border-white/10">
+                                                <label className="text-[10px] uppercase text-white/50 font-bold">Border</label>
+                                                <input type="color" value={block.calloutBorderColor || '#10b981'} onChange={(e) => updateBlock(index, bIdx, 'calloutBorderColor', e.target.value)} className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0" />
+                                              </div>
+                                              <div className="flex items-center gap-2 bg-[#1a1a1a] p-1.5 rounded border border-white/10">
+                                                <label className="text-[10px] uppercase text-white/50 font-bold">Background</label>
+                                                <input type="color" value={block.calloutBgColor || '#ecfdf5'} onChange={(e) => updateBlock(index, bIdx, 'calloutBgColor', e.target.value)} className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0" />
+                                              </div>
+                                              <div className="flex items-center gap-2 bg-[#1a1a1a] p-1.5 rounded border border-white/10">
+                                                <label className="text-[10px] uppercase text-white/50 font-bold">Title</label>
+                                                <input type="color" value={block.calloutTitleColor || '#047857'} onChange={(e) => updateBlock(index, bIdx, 'calloutTitleColor', e.target.value)} className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0" />
+                                              </div>
+                                            </div>
+                                          </div>
+                                            <div className="flex flex-wrap items-center gap-2 mb-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5 col-span-1 md:col-span-2">
+                                              <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'bold')} className="h-6 w-6 p-0"><Bold className="w-3 h-3" /></Button>
+                                              <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
+                                              <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
+                                              <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                            </div>
+                                            <div className="col-span-1 md:col-span-2">
+                                              <Textarea 
+                                                id={`block-content-${index}-${bIdx}`}
+                                                value={block.content || ''} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                                placeholder="Highlight text... use '- text' for bullets"
+                                                className="bg-white/5 border-white/10 min-h-[100px]"
+                                              />
+                                            </div>
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+
+                                  {(blog.blocks || []).length === 0 && (
+                                    <div className="text-center py-12 border-2 border-dashed border-white/10 rounded-2xl">
+                                      <p className="text-kaki-grey">No blocks yet. Add a block to start building your article.</p>
+                                    </div>
+                                  )}
+                                </div>
                               </TabsContent>
                               <TabsContent value="preview" className="mt-0">
-                                <div className="bg-white/5 border border-white/10 min-h-[600px] rounded-[2.5rem] px-10 py-10 overflow-auto prose prose-invert max-w-none">
-                                  {blog.content.split('\n').map((line: string, lIdx: number) => {
-                                    if (line.startsWith('![') && line.includes('](')) {
-                                      const urlMatch = line.match(/\((.*?)\)/);
-                                      if (urlMatch) {
-                                        return <img key={lIdx} src={resolveApiUrl(urlMatch[1])} alt="Blog inline" className="w-full rounded-2xl border border-white/10 my-8 shadow-2xl" />;
+                                <div className={`bg-white/5 border border-white/10 min-h-[600px] rounded-[2.5rem] px-10 py-10 overflow-auto prose prose-invert max-w-none ${blog.fontFamily === 'serif' ? 'font-serif' : blog.fontFamily === 'mono' ? 'font-mono' : 'font-sans'}`}>
+                                  {/* Preview Blocks */}
+                                  {blog.blocks && blog.blocks.length > 0 ? (
+                                    <div className="">
+                                      {blog.blocks.map((block: any, pIdx: number) => {
+                                        const getSizeClass = (defaultSize: string) => (block.fontSize && block.fontSize !== 'default') ? block.fontSize : defaultSize;
+                                        
+                                        const getColorStyle = () => block.textColor ? { color: block.textColor } : undefined;
+                                        
+                                        const renderRichText = (text: string) => {
+                                          return text.split('\n').map((line, i) => {
+                                            let content = line;
+                                            let isBullet = false;
+                                            if (content.trim().startsWith('- ') || content.trim().startsWith('• ')) {
+                                              isBullet = true;
+                                              content = content.trim().substring(2);
+                                            }
+                                            
+                                            let parts: any[] = [content];
+                                            
+                                            let newParts: any[] = [];
+                                            parts.forEach(p => {
+                                              if (typeof p !== 'string') { newParts.push(p); return; }
+                                              const arr = p.split(/(\*\*.*?\*\*)/g);
+                                              arr.forEach((part, idx) => {
+                                                if (part.startsWith('**') && part.endsWith('**')) newParts.push(<strong key={`b-${idx}`} className="font-bold">{part.slice(2, -2)}</strong>);
+                                                else if (part) newParts.push(part);
+                                              });
+                                            });
+                                            parts = newParts;
+
+                                            newParts = [];
+                                            parts.forEach(p => {
+                                              if (typeof p !== 'string') { newParts.push(p); return; }
+                                              const arr = p.split(/(\*.*?\*)/g);
+                                              arr.forEach((part, idx) => {
+                                                if (part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) newParts.push(<em key={`i-${idx}`} className="italic">{part.slice(1, -1)}</em>);
+                                                else if (part) newParts.push(part);
+                                              });
+                                            });
+                                            parts = newParts;
+
+                                            newParts = [];
+                                            parts.forEach(p => {
+                                              if (typeof p !== 'string') { newParts.push(p); return; }
+                                              const arr = p.split(/(<u>.*?<\/u>)/g);
+                                              arr.forEach((part, idx) => {
+                                                if (part.startsWith('<u>') && part.endsWith('</u>')) newParts.push(<u key={`u-${idx}`} className="underline underline-offset-2">{part.slice(3, -4)}</u>);
+                                                else if (part) newParts.push(part);
+                                              });
+                                            });
+                                            parts = newParts;
+
+                                            newParts = [];
+                                            parts.forEach(p => {
+                                              if (typeof p !== 'string') { newParts.push(p); return; }
+                                              const arr = p.split(/(~~.*?~~)/g);
+                                              arr.forEach((part, idx) => {
+                                                if (part.startsWith('~~') && part.endsWith('~~')) newParts.push(<del key={`s-${idx}`} className="line-through opacity-70">{part.slice(2, -2)}</del>);
+                                                else if (part) newParts.push(part);
+                                              });
+                                            });
+                                            parts = newParts;
+
+                                            if (isBullet) {
+                                              return <li key={i} className="ml-6 list-disc mb-2">{parts}</li>;
+                                            }
+                                            return <p key={i} className="mb-2 last:mb-0">{parts}</p>;
+                                          });
+                                        };
+
+                                        if (block.type === 'kicker') return <p key={pIdx} className={`${getSizeClass('text-sm')} font-bold uppercase tracking-widest text-purple-400 mb-2`} style={getColorStyle()}>{block.content}</p>;
+                                        if (block.type === 'title') return <h1 key={pIdx} className={`${getSizeClass('text-5xl')} font-black mt-4 mb-6 leading-tight`} style={getColorStyle()}>{block.content}</h1>;
+                                        if (block.type === 'subtitle') return <h2 key={pIdx} className={`${getSizeClass('text-2xl')} text-white/60 mb-8`} style={getColorStyle()}>{block.content}</h2>;
+                                        if (block.type === 'excerpt') return <blockquote key={pIdx} className={`border-l-4 border-purple-500 pl-6 py-4 my-8 bg-white/5 italic rounded-r-xl ${getSizeClass('text-xl')} text-purple-200`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</blockquote>;
+                                        if (block.type === 'divider') return <hr key={pIdx} style={{ borderTopWidth: `${block.size || 1}px`, borderColor: block.color || 'rgba(255,255,255,0.2)' }} className="my-10" />;
+                                        if (block.type === 'heading') return <h2 key={pIdx} className={`${getSizeClass('text-3xl')} font-bold mt-8 mb-4`} style={getColorStyle()}>{block.content}</h2>;
+                                        if (block.type === 'paragraph') {
+                                          const spacingClass = block.spacing === 'none' ? 'mb-0' : 
+                                                               block.spacing === 'small' ? 'mb-4' : 
+                                                               block.spacing === 'medium' ? 'mb-8' : 
+                                                               block.spacing === 'large' ? 'mb-12' : 'mb-6';
+                                          return <div key={pIdx} className={`${getSizeClass('text-lg')} ${spacingClass} text-white/80 leading-relaxed`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</div>;
+                                        }
+                                        if (block.type === 'callout') {
+                                          const borderColor = block.calloutBorderColor || '#10b981';
+                                          const bgColor = block.calloutBgColor || '#ecfdf5';
+                                          const titleColor = block.calloutTitleColor || '#047857';
+                                          
+                                          return (
+                                            <div key={pIdx} className="my-8 p-6 rounded-r-xl border-l-[6px] shadow-sm" style={{ borderLeftColor: borderColor, backgroundColor: bgColor }}>
+                                              {block.calloutTitle && (
+                                                <h4 className="text-sm font-bold uppercase tracking-widest mb-3" style={{ color: titleColor }}>
+                                                  {block.calloutTitle}
+                                                </h4>
+                                              )}
+                                              <div className="text-gray-800 text-lg leading-relaxed">
+                                                {block.content && renderRichText(block.content)}
+                                              </div>
+                                            </div>
+                                          );
+                                        }
+                                        if (block.type === 'table') {
+                                          let tableData: string[][] = [];
+                                          try { tableData = JSON.parse(block.content || '[]'); } catch (e) { tableData = []; }
+                                          if (tableData.length === 0) return null;
+                                          
+                                          const borderSize = block.tableBorderSize !== undefined ? `${block.tableBorderSize}px` : '1px';
+                                          const borderColor = block.tableBorderColor || '#e5e7eb';
+                                          const headerBg = block.tableHeaderBg || '#f9fafb';
+                                          const headerColor = block.tableHeaderColor || '#111827';
+                                          
+                                          const tableStyle = { borderCollapse: 'collapse' as const };
+                                          const thStyle = { border: `${borderSize} solid ${borderColor}`, backgroundColor: headerBg, color: headerColor };
+                                          const tdStyle = { border: `${borderSize} solid ${borderColor}` };
+
+                                          return (
+                                            <div key={pIdx} className="overflow-x-auto my-8 rounded-xl bg-white text-gray-900 shadow-xl">
+                                              <table className="w-full text-left" style={tableStyle}>
+                                                <thead>
+                                                  <tr>
+                                                    {tableData[0]?.map((head: string, i: number) => (
+                                                      <th key={i} style={thStyle} className="px-6 py-4 text-sm font-bold uppercase tracking-wider">{head}</th>
+                                                    ))}
+                                                  </tr>
+                                                </thead>
+                                                <tbody>
+                                                  {tableData.slice(1).map((row: string[], rI: number) => (
+                                                    <tr key={rI} className="hover:bg-gray-50/50 transition-colors">
+                                                      {row.map((cell: string, cI: number) => (
+                                                        <td key={cI} style={tdStyle} className="px-6 py-4 whitespace-pre-wrap">{cell}</td>
+                                                      ))}
+                                                    </tr>
+                                                  ))}
+                                                </tbody>
+                                              </table>
+                                            </div>
+                                          );
+                                        }
+                                        if (block.type === 'image') {
+                                          const sizeClass = block.imageSize === 'small' ? 'w-full md:w-1/3' : block.imageSize === 'medium' ? 'w-full md:w-1/2' : block.imageSize === 'large' ? 'w-full md:w-3/4' : 'w-full';
+                                          const alignClass = block.imageAlignment === 'left' ? 'justify-start' : block.imageAlignment === 'right' ? 'justify-end' : 'justify-center';
+                                          const radiusClass = block.imageRadius === 'none' ? 'rounded-none' : block.imageRadius === 'small' ? 'rounded-md' : block.imageRadius === 'medium' ? 'rounded-xl' : block.imageRadius === 'full' ? 'rounded-full' : 'rounded-3xl';
+                                          return (
+                                            <div key={pIdx} className={`flex ${alignClass} my-8`}>
+                                              <img src={resolveApiUrl(block.content)} className={`${sizeClass} ${radiusClass} border border-white/10`} alt="Preview" />
+                                            </div>
+                                          );
+                                        }
+                                        if (block.type === 'quote') return <blockquote key={pIdx} className={`border-l-4 border-purple-500 pl-6 py-4 my-8 bg-white/5 italic rounded-r-xl ${getSizeClass('text-xl')}`} style={block.textColor ? { color: block.textColor } : undefined}>{block.content && renderRichText(block.content)}</blockquote>;
+                                        if (block.type === 'video') return <div key={pIdx} className="my-8 aspect-video rounded-2xl overflow-hidden border border-white/10"><video src={resolveApiUrl(block.content)} controls className="w-full h-full object-cover" /></div>;
+                                        return null;
+                                      })}
+                                    </div>
+                                  ) : (
+                                    /* Preview Legacy Markdown */
+                                    blog.content.split('\n').map((line: string, lIdx: number) => {
+                                      if (line.startsWith('![') && line.includes('](')) {
+                                        const urlMatch = line.match(/\((.*?)\)/);
+                                        if (urlMatch) {
+                                          return <img key={lIdx} src={resolveApiUrl(urlMatch[1])} alt="Blog inline" className="w-full rounded-2xl border border-white/10 my-8 shadow-2xl" />;
+                                        }
                                       }
-                                    }
-                                    if (line.startsWith('## ')) return <h2 key={lIdx}>{parseInline(line.replace('## ', ''))}</h2>;
-                                    if (line.startsWith('### ')) return <h3 key={lIdx}>{parseInline(line.replace('### ', ''))}</h3>;
-                                    if (line.startsWith('> ')) return <blockquote key={lIdx} className="border-l-4 border-purple-500 pl-4">{parseInline(line.replace('> ', ''))}</blockquote>;
-                                    if (line.trim() === '') return <br key={lIdx} />;
-                                    return <p key={lIdx}>{parseInline(line)}</p>;
-                                  })}
+                                      if (line.startsWith('## ')) return <h2 key={lIdx}>{parseInline(line.replace('## ', ''))}</h2>;
+                                      if (line.startsWith('### ')) return <h3 key={lIdx}>{parseInline(line.replace('### ', ''))}</h3>;
+                                      if (line.startsWith('> ')) return <blockquote key={lIdx} className="border-l-4 border-purple-500 pl-4">{parseInline(line.replace('> ', ''))}</blockquote>;
+                                      if (line.trim() === '') return <br key={lIdx} />;
+                                      return <p key={lIdx}>{parseInline(line)}</p>;
+                                    })
+                                  )}
                                 </div>
                               </TabsContent>
                             </Tabs>
                           </div>
                         </div>
                       </div>
+                    </div>
                     </div>
                   ))
                 )}

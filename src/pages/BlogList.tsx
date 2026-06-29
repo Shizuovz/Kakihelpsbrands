@@ -96,21 +96,30 @@ const BlogList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {blogs.map((blog) => (
                 <Link key={blog.id} to={`/blogs/${blog.id}`} className="group">
-                  <Card className="bg-white border-gray-200 overflow-hidden h-full transition-all duration-500 hover:border-purple-300 hover:shadow-xl hover:translate-y-[-8px] rounded-[2rem]">
-                    <div className="aspect-video relative overflow-hidden">
-                      <img 
-                        src={resolveApiUrl(blog.image)} 
-                        alt={blog.title}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                      <div className="absolute top-4 left-4">
-                        <Badge className="bg-purple-600 text-white border-none px-3 py-1">
-                          {blog.category}
-                        </Badge>
+                  <Card className={`bg-white border-gray-200 overflow-hidden h-full transition-all duration-500 hover:border-purple-300 hover:shadow-xl hover:translate-y-[-8px] rounded-[2rem] flex flex-col ${!blog.image ? 'justify-center bg-gradient-to-br from-purple-50/30 to-white border-purple-100/50' : ''}`}>
+                    {blog.image && (
+                      <div className="aspect-video relative overflow-hidden shrink-0">
+                        <img 
+                          src={resolveApiUrl(blog.image)} 
+                          alt={blog.title}
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                        <div className="absolute top-4 left-4">
+                          <Badge className="bg-purple-600 text-white border-none px-3 py-1">
+                            {blog.category}
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
-                    <CardContent className="p-8 space-y-4">
+                    )}
+                    <CardContent className={`p-8 space-y-4 flex-grow flex flex-col ${!blog.image ? 'pt-10' : ''}`}>
+                      {!blog.image && blog.category && (
+                        <div className="mb-2">
+                          <Badge className="bg-purple-100 text-purple-700 border-none px-3 py-1">
+                            {blog.category}
+                          </Badge>
+                        </div>
+                      )}
                       <div className="flex items-center gap-4 text-xs text-gray-500">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
@@ -121,13 +130,13 @@ const BlogList = () => {
                           {blog.author}
                         </div>
                       </div>
-                      <h3 className="text-2xl font-bold text-gray-900 group-hover:text-purple-600 transition-colors leading-tight">
-                        {blog.title}
+                      <h3 className={`font-bold text-gray-900 group-hover:text-purple-600 transition-colors leading-tight ${!blog.image ? 'text-3xl' : 'text-2xl'}`}>
+                        {blog.title || (blog.blocks?.find((b: any) => b.type === 'title')?.content) || 'Untitled'}
                       </h3>
-                      <p className="text-gray-600 line-clamp-3 leading-relaxed">
-                        {blog.excerpt}
+                      <p className="text-gray-600 line-clamp-3 leading-relaxed flex-grow">
+                        {blog.excerpt || (blog.blocks?.find((b: any) => b.type === 'excerpt')?.content) || (blog.blocks?.find((b: any) => b.type === 'paragraph')?.content) || ''}
                       </p>
-                      <div className="pt-4 flex items-center text-purple-600 font-bold group-hover:translate-x-2 transition-transform">
+                      <div className="pt-4 flex items-center text-purple-600 font-bold group-hover:translate-x-2 transition-transform mt-auto">
                         Read Story <ArrowRight className="w-4 h-4 ml-2" />
                       </div>
                     </CardContent>
