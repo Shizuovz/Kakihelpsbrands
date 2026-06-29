@@ -45,7 +45,8 @@ import {
   Strikethrough,
   List,
   Layers,
-  FileSpreadsheet
+  FileSpreadsheet,
+  Link2 as LinkIcon
 } from 'lucide-react';
 import { UserHoardingsManager } from '@/components/UserHoardingsManager';
 import { Separator } from '@/components/ui/separator';
@@ -512,7 +513,7 @@ export const AdminContent = () => {
     }
   };
 
-  const handleFormat = (elementId: string, currentText: string, onUpdate: (text: string) => void, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough') => {
+  const handleFormat = (elementId: string, currentText: string, onUpdate: (text: string) => void, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough' | 'link') => {
     const textarea = document.getElementById(elementId) as HTMLTextAreaElement;
     if (!textarea) return;
 
@@ -531,6 +532,7 @@ export const AdminContent = () => {
       case 'quote': replacement = `\n> ${selection || 'QUOTE'}`; offsetStart = 3; offsetEnd = 0; break;
       case 'underline': replacement = `<u>${selection || 'underlined text'}</u>`; offsetStart = 3; offsetEnd = 4; break;
       case 'strikethrough': replacement = `~~${selection || 'strikethrough text'}~~`; offsetStart = 2; offsetEnd = 2; break;
+      case 'link': replacement = `[${selection || 'link text'}](https://)`; offsetStart = 1; offsetEnd = 11; break;
     }
 
     const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
@@ -1618,30 +1620,84 @@ export const AdminContent = () => {
                                       </div>
 
                                       {block.type === 'kicker' && (
-                                        <Input 
-                                          value={block.content} 
-                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
-                                          placeholder="Kicker / Category Label (e.g. SOCIAL MEDIA MARKETING)"
-                                          className="text-sm font-bold uppercase tracking-widest text-purple-400 bg-kaki-black/50 border-white/10"
-                                        />
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <select 
+                                              value={block.fontWeight || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Weight</option>
+                                              <option value="font-light">Light</option>
+                                              <option value="font-normal">Normal</option>
+                                              <option value="font-medium">Medium</option>
+                                              <option value="font-semibold">Semibold</option>
+                                              <option value="font-bold">Bold</option>
+                                              <option value="font-extrabold">Extrabold</option>
+                                              <option value="font-black">Black</option>
+                                            </select>
+                                          </div>
+                                          <Input 
+                                            value={block.content} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Kicker / Category Label (e.g. SOCIAL MEDIA MARKETING)"
+                                            className="text-sm font-bold uppercase tracking-widest text-purple-400 bg-kaki-black/50 border-white/10"
+                                          />
+                                        </div>
                                       )}
 
                                       {block.type === 'title' && (
-                                        <Input 
-                                          value={block.content} 
-                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
-                                          placeholder="Main Title"
-                                          className="text-4xl font-extrabold bg-kaki-black/50 border-white/10 py-6"
-                                        />
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <select 
+                                              value={block.fontWeight || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Weight</option>
+                                              <option value="font-light">Light</option>
+                                              <option value="font-normal">Normal</option>
+                                              <option value="font-medium">Medium</option>
+                                              <option value="font-semibold">Semibold</option>
+                                              <option value="font-bold">Bold</option>
+                                              <option value="font-extrabold">Extrabold</option>
+                                              <option value="font-black">Black</option>
+                                            </select>
+                                          </div>
+                                          <Input 
+                                            value={block.content} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Main Title"
+                                            className="text-4xl font-extrabold bg-kaki-black/50 border-white/10 py-6"
+                                          />
+                                        </div>
                                       )}
 
                                       {block.type === 'subtitle' && (
-                                        <Input 
-                                          value={block.content} 
-                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
-                                          placeholder="Subtitle"
-                                          className="text-xl font-medium bg-kaki-black/50 border-white/10 py-4 text-white/80"
-                                        />
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <select 
+                                              value={block.fontWeight || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Weight</option>
+                                              <option value="font-light">Light</option>
+                                              <option value="font-normal">Normal</option>
+                                              <option value="font-medium">Medium</option>
+                                              <option value="font-semibold">Semibold</option>
+                                              <option value="font-bold">Bold</option>
+                                              <option value="font-extrabold">Extrabold</option>
+                                              <option value="font-black">Black</option>
+                                            </select>
+                                          </div>
+                                          <Input 
+                                            value={block.content} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Subtitle"
+                                            className="text-xl font-medium bg-kaki-black/50 border-white/10 py-4 text-white/80"
+                                          />
+                                        </div>
                                       )}
 
                                       {block.type === 'excerpt' && (
@@ -1651,6 +1707,7 @@ export const AdminContent = () => {
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'link')} className="h-6 w-6 p-0"><LinkIcon className="w-3 h-3" /></Button>
                                           </div>
                                           <Textarea 
                                             id={`block-content-${index}-${bIdx}`}
@@ -1698,12 +1755,30 @@ export const AdminContent = () => {
                                       )}
 
                                       {block.type === 'heading' && (
-                                        <Input 
-                                          value={block.content} 
-                                          onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
-                                          placeholder="Section Heading"
-                                          className="text-2xl font-bold bg-kaki-black/50 border-white/10"
-                                        />
+                                        <div className="space-y-2">
+                                          <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <select 
+                                              value={block.fontWeight || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Weight</option>
+                                              <option value="font-light">Light</option>
+                                              <option value="font-normal">Normal</option>
+                                              <option value="font-medium">Medium</option>
+                                              <option value="font-semibold">Semibold</option>
+                                              <option value="font-bold">Bold</option>
+                                              <option value="font-extrabold">Extrabold</option>
+                                              <option value="font-black">Black</option>
+                                            </select>
+                                          </div>
+                                          <Input 
+                                            value={block.content} 
+                                            onChange={(e) => updateBlock(index, bIdx, 'content', e.target.value)}
+                                            placeholder="Section Heading"
+                                            className="text-2xl font-bold bg-kaki-black/50 border-white/10"
+                                          />
+                                        </div>
                                       )}
 
                                       {block.type === 'paragraph' && (
@@ -1713,6 +1788,7 @@ export const AdminContent = () => {
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                            <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'link')} className="h-6 w-6 p-0"><LinkIcon className="w-3 h-3" /></Button>
                                             
                                             <div className="w-px h-4 bg-white/10 mx-1"></div>
                                             
@@ -1726,6 +1802,21 @@ export const AdminContent = () => {
                                               <option value="small">Small</option>
                                               <option value="medium">Medium</option>
                                               <option value="large">Large</option>
+                                            </select>
+
+                                            <select 
+                                              value={block.fontWeight || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Weight</option>
+                                              <option value="font-light">Light</option>
+                                              <option value="font-normal">Normal</option>
+                                              <option value="font-medium">Medium</option>
+                                              <option value="font-semibold">Semibold</option>
+                                              <option value="font-bold">Bold</option>
+                                              <option value="font-extrabold">Extrabold</option>
+                                              <option value="font-black">Black</option>
                                             </select>
                                           </div>
                                           <Textarea 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link } from "react-router-dom";
 import { API_BASE_URL } from "@/config";
 import { resolveApiUrl } from "@/utils/resolveApiUrl";
@@ -27,8 +27,40 @@ const BlogDetail = () => {
     };
 
     fetchBlog();
-    window.scrollTo(0, 0);
   }, [id]);
+
+  useEffect(() => {
+    if (blog) {
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  }, [blog]);
+
+  const tableOfContents = useMemo(() => {
+    if (!blog) return [];
+    
+    if (blog.blocks && blog.blocks.length > 0) {
+      return blog.blocks
+        .map((b: any, idx: number) => ({ ...b, originalIdx: idx }))
+        .filter((b: any) => b.type === 'heading' && b.content)
+        .map((b: any) => ({
+          id: `heading-${b.originalIdx}`,
+          title: b.content
+        }));
+    } else if (blog.content) {
+      const headings: { id: string, title: string }[] = [];
+      blog.content.split('\n').forEach((line: string, idx: number) => {
+        if (line.startsWith('## ') || line.startsWith('### ')) {
+          const title = line.replace(/^#+\s/, '');
+          headings.push({
+            id: `legacy-heading-${idx}`,
+            title
+          });
+        }
+      });
+      return headings;
+    }
+    return [];
+  }, [blog]);
 
   if (isLoading) {
     return (
@@ -108,10 +140,32 @@ const BlogDetail = () => {
       </section>
 
       {/* Article Content */}
-      <section className="pb-24 px-6 relative overflow-hidden">
+      <section className="pb-24 px-6 relative">
 
-        <div className="container mx-auto max-w-3xl">
-          {/* Legacy Excerpt as a pull-quote */}
+        <div className="container mx-auto max-w-6xl flex flex-col lg:flex-row gap-12 lg:gap-20">
+          
+          {/* Quick Access Sidebar */}
+          {tableOfContents.length > 0 && (
+            <div className="hidden lg:block lg:w-1/4 shrink-0">
+              <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto bg-gray-50/80 backdrop-blur-xl border border-gray-100 rounded-3xl p-6 shadow-xl shadow-gray-200/50">
+                <h4 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-6">On this page</h4>
+                <nav className="space-y-4">
+                  {tableOfContents.map((heading: any) => (
+                    <a 
+                      key={heading.id} 
+                      href={`#${heading.id}`}
+                      className="block text-sm font-semibold text-gray-700 hover:text-purple-600 transition-colors leading-relaxed"
+                    >
+                      {heading.title}
+                    </a>
+                  ))}
+                </nav>
+              </div>
+            </div>
+          )}
+
+          <div className="lg:w-3/4 max-w-3xl">
+            {/* Legacy Excerpt as a pull-quote */}
           {(!blog.blocks || blog.blocks.length === 0) && blog.excerpt && (
             <div className="mb-16 italic text-2xl md:text-3xl font-medium text-purple-800 leading-relaxed border-l-4 border-purple-500 pl-8 py-2 bg-purple-50 rounded-r-3xl pr-6">
               {blog.excerpt}
@@ -131,6 +185,7 @@ const BlogDetail = () => {
               <div className="">
                 {blog.blocks.map((block: any, idx: number) => {
                   const getSizeClass = (defaultSize: string) => (block.fontSize && block.fontSize !== 'default') ? block.fontSize : defaultSize;
+                  const getWeightClass = (defaultWeight: string) => (block.fontWeight && block.fontWeight !== 'default') ? block.fontWeight : defaultWeight;
                   const getColorStyle = () => block.textColor ? { color: block.textColor } : undefined;
                   
                   const renderRichText = (text: string) => {
@@ -188,6 +243,31 @@ const BlogDetail = () => {
                       });
                       parts = newParts;
 
+                      newParts = [];
+                      parts.forEach(p => {
+                        if (typeof p !== 'string') { newParts.push(p); return; }
+                        const arr = p.split(/(\[.*?\]\(.*?\))/g);
+                        arr.forEach((part, idx) => {
+                          const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
+                          if (linkMatch) {
+                            newParts.push(
+                              <a 
+                                key={`l-${idx}`} 
+                                href={linkMatch[2]} 
+                                target={linkMatch[2].startsWith('http') ? '_blank' : '_self'}
+                                rel={linkMatch[2].startsWith('http') ? 'noopener noreferrer' : ''}
+                                className="text-purple-600 hover:text-purple-800 font-bold underline"
+                              >
+                                {linkMatch[1]}
+                              </a>
+                            );
+                          } else if (part) {
+                            newParts.push(part);
+                          }
+                        });
+                      });
+                      parts = newParts;
+
                       if (isBullet) {
                         return <li key={i} className="ml-6 list-disc mb-2">{parts}</li>;
                       }
@@ -195,18 +275,18 @@ const BlogDetail = () => {
                     });
                   };
 
-                  if (block.type === 'kicker') return <p key={idx} className={`${getSizeClass('text-sm')} font-bold uppercase tracking-widest text-purple-600 mb-2`} style={getColorStyle()}>{block.content}</p>;
-                  if (block.type === 'title') return <h1 key={idx} className={`${getSizeClass('text-4xl md:text-6xl')} font-black mb-6 tracking-tight leading-tight text-gray-900`} style={getColorStyle()}>{block.content}</h1>;
-                  if (block.type === 'subtitle') return <h2 key={idx} className={`${getSizeClass('text-2xl')} text-gray-600 mb-8`} style={getColorStyle()}>{block.content}</h2>;
-                  if (block.type === 'excerpt') return <blockquote key={idx} className={`italic ${getSizeClass('text-2xl md:text-3xl')} font-medium text-purple-800 leading-relaxed border-l-4 border-purple-500 pl-8 py-4 bg-purple-50 my-8 rounded-r-3xl pr-6`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</blockquote>;
+                  if (block.type === 'kicker') return <p key={idx} className={`${getSizeClass('text-sm')} ${getWeightClass('font-bold')} uppercase tracking-widest text-purple-600 mb-2`} style={getColorStyle()}>{block.content}</p>;
+                  if (block.type === 'title') return <h1 key={idx} className={`${getSizeClass('text-4xl md:text-6xl')} ${getWeightClass('font-black')} mb-6 tracking-tight leading-tight text-gray-900`} style={getColorStyle()}>{block.content}</h1>;
+                  if (block.type === 'subtitle') return <h2 key={idx} className={`${getSizeClass('text-2xl')} ${getWeightClass('font-medium')} text-gray-600 mb-8`} style={getColorStyle()}>{block.content}</h2>;
+                  if (block.type === 'excerpt') return <blockquote key={idx} className={`italic ${getSizeClass('text-2xl md:text-3xl')} ${getWeightClass('font-medium')} text-purple-800 leading-relaxed border-l-4 border-purple-500 pl-8 py-4 bg-purple-50 my-8 rounded-r-3xl pr-6`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</blockquote>;
                   if (block.type === 'divider') return <hr key={idx} style={{ borderTopWidth: `${block.size || 1}px`, borderColor: block.color || 'rgba(229,231,235,1)' }} className="my-10" />;
-                  if (block.type === 'heading') return <h2 key={idx} className={`mt-12 mb-6 ${getSizeClass('text-3xl')} font-bold`} style={getColorStyle()}>{block.content}</h2>;
+                  if (block.type === 'heading') return <h2 id={`heading-${idx}`} key={idx} className={`scroll-mt-32 mt-12 mb-6 ${getSizeClass('text-3xl')} ${getWeightClass('font-bold')}`} style={getColorStyle()}>{block.content}</h2>;
                   if (block.type === 'paragraph') {
                     const spacingClass = block.spacing === 'none' ? 'mb-0' : 
                                          block.spacing === 'small' ? 'mb-4' : 
                                          block.spacing === 'medium' ? 'mb-8' : 
                                          block.spacing === 'large' ? 'mb-12' : 'mb-8';
-                    return <div key={idx} className={`${block.fontSize && block.fontSize !== 'default' ? block.fontSize : ''} ${spacingClass}`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</div>;
+                    return <div key={idx} className={`${block.fontSize && block.fontSize !== 'default' ? block.fontSize : ''} ${getWeightClass('font-normal')} ${spacingClass}`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</div>;
                   }
                   if (block.type === 'callout') {
                     const borderColor = block.calloutBorderColor || '#10b981';
@@ -246,7 +326,7 @@ const BlogDetail = () => {
                           <thead>
                             <tr>
                               {tableData[0]?.map((head: string, i: number) => (
-                                <th key={i} style={thStyle} className="px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider">{head}</th>
+                                <th key={i} style={thStyle} className="px-6 py-4 text-sm font-bold text-gray-900 uppercase tracking-wider">{head ? renderRichText(head) : ''}</th>
                               ))}
                             </tr>
                           </thead>
@@ -254,7 +334,7 @@ const BlogDetail = () => {
                             {tableData.slice(1).map((row: string[], rI: number) => (
                               <tr key={rI} className="hover:bg-gray-50/50 transition-colors">
                                 {row.map((cell: string, cI: number) => (
-                                  <td key={cI} style={tdStyle} className="px-6 py-4 text-gray-700 whitespace-pre-wrap">{cell}</td>
+                                  <td key={cI} style={tdStyle} className="px-6 py-4 text-gray-700 whitespace-pre-wrap">{cell ? renderRichText(cell) : ''}</td>
                                 ))}
                               </tr>
                             ))}
@@ -362,8 +442,8 @@ const BlogDetail = () => {
                     return newParts.filter(p => p !== '');
                   };
 
-                  if (line.startsWith('## ')) return <h2 key={idx} className="mt-12 text-3xl font-bold">{parseInline(line.replace('## ', ''))}</h2>;
-                  if (line.startsWith('### ')) return <h3 key={idx} className="mt-10 text-2xl font-bold">{parseInline(line.replace('### ', ''))}</h3>;
+                  if (line.startsWith('## ')) return <h2 id={`legacy-heading-${idx}`} key={idx} className="scroll-mt-32 mt-12 text-3xl font-bold">{parseInline(line.replace('## ', ''))}</h2>;
+                  if (line.startsWith('### ')) return <h3 id={`legacy-heading-${idx}`} key={idx} className="scroll-mt-32 mt-10 text-2xl font-bold">{parseInline(line.replace('### ', ''))}</h3>;
                   if (line.startsWith('> ')) return <blockquote key={idx} className="italic text-xl py-6 border-l-4 border-purple-500 pl-6 bg-gray-50 my-8 rounded-r-2xl">{parseInline(line.replace('> ', ''))}</blockquote>;
                   if (line.trim() === '') return <br key={idx} />;
                   return <p key={idx}>{parseInline(line)}</p>;
@@ -419,6 +499,7 @@ const BlogDetail = () => {
             <Button asChild size="lg" className="bg-purple-600 hover:bg-purple-700 text-white rounded-full px-12 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-purple-500/10">
               <Link to="/blogs">Back To Blog Journal</Link>
             </Button>
+          </div>
           </div>
         </div>
       </section>

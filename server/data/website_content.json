@@ -632,7 +632,7 @@
         {
           "id": 1782380675772,
           "type": "table",
-          "content": "[[\"Layer\",\"What it does\",\"What it looks like broken\"],[\"Strategy\",\"Row 1 CelDefines the audience, objective, and single messagel 2\",\"“We post when we have time.”\"],[\"Content\",\"Turns the message into formats people consume\",\"Stock-photo posts, recycled press releases\"],[\"Distribution\",\"Gets content to the right community (organic + paid)\",\"Posting into the void, boosting randomly\"],[\"Measurement\",\"Connects activity to outcomes; feeds the next cycle\",\"Reporting likes; ignoring leads and sales\"]]",
+          "content": "[[\"Layer\",\"What it does\",\"What it looks like broken\"],[\"**Strategy**\",\"Row 1 CelDefines the audience, objective, and single messagel 2\",\"“We post when we have time.”\"],[\"**Content**\",\"Turns the message into formats people consume\",\"Stock-photo posts, recycled press releases\"],[\"**Distribution**\",\"Gets content to the right community (organic + paid)\",\"Posting into the void, boosting randomly\"],[\"**Measurement**\",\"Connects activity to outcomes; feeds the next cycle\",\"Reporting likes; ignoring leads and sales\"]]",
           "tableHeaderBg": "#0ca678",
           "tableBorderColor": "#000000"
         },
@@ -1381,33 +1381,6 @@
           "type": "divider",
           "content": "",
           "color": "#017951"
-        },
-        {
-          "id": 1782557789013,
-          "type": "heading",
-          "content": "17. Appendix: SEO & Publishing Notes",
-          "textColor": "#017951"
-        },
-        {
-          "id": 1782557802858,
-          "type": "paragraph",
-          "content": "*For the KAKI web team — keep as an internal reference or remove before publishing.*\n\n**Primary keyword:** Social Media Marketing\n**\nSupporting keywords: **social media marketing agency, social media strategy, business social media, digital marketing, Instagram marketing, Facebook marketing, LinkedIn marketing, content marketing, social media campaign, brand awareness, organic reach, paid ads, lead generation, event marketing."
-        },
-        {
-          "id": 1782557829177,
-          "type": "table",
-          "content": "[[\"Field\",\"Recommended value\"],[\"Meta title (≤60 chars)\",\"Social Media Marketing in 2026: A Practical Guide | KAKI\"],[\"Meta description (≤155)\",\"A practical 2026 guide to social media marketing for businesses, institutions & events — frameworks, ROI, and real campaigns. Built by KAKI.\"],[\"URL slug\",\"/social-media-marketing\"],[\"Breadcrumb\",\"Home › Services › Social Media Marketing\"],[\"Schema\",\"Article + FAQPage + Organization + BreadcrumbList\"]]",
-          "tableHeaderBg": "#017951"
-        },
-        {
-          "id": 1782557898797,
-          "type": "paragraph",
-          "content": "**Internal links:** KAKI service pages (Studio, Marketing, Design, Production), the contact/consultation page, and individual case-study pages (Nagaland Super League, Hornbill Festival, Nagaland Tourism). Link the CRAFT section from related posts.\n\n**External authority references:** Sprout Social (trends, ROI, Index), Hootsuite (Social Trends), HubSpot (content-format ROI), Social Media Today, and the AIFF / public record for the NSL case study."
-        },
-        {
-          "id": 1782557919051,
-          "type": "paragraph",
-          "content": "**Suggested image alt text:**\n\n•\tHero: Social media marketing strategy session at KAKI creative agency\n•\tCRAFT diagram: KAKI CRAFT framework for social media marketing campaigns\n•\tPlatform table: Comparison of Instagram, Facebook, YouTube and LinkedIn for business marketing\n•\tCase study: Nagaland Super League social media and content campaign\n•\tTemplate: Weekly social media content planning template\n\n**AEO/GEO note:** Every major section opens with a one-line direct answer so answer engines (Google AI Overviews, ChatGPT, Gemini, Claude, Perplexity, Copilot) can extract a clean response. Keep those opening lines intact when editing."
         }
       ]
     }
