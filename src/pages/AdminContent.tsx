@@ -204,6 +204,7 @@ export const AdminContent = () => {
   const [statusFilter, setStatusFilter] = useState('all');
   const [sortBy, setSortBy] = useState('newest');
   const [hoardings, setHoardings] = useState<any[]>([]);
+  const [editingBlogIndex, setEditingBlogIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const token = localStorage.getItem('adminToken');
@@ -382,6 +383,17 @@ export const AdminContent = () => {
       current = current[key];
     }
     const newArray = [...current, defaultItem];
+    setContent(updateStateDeep(content, sectionPath, newArray));
+  };
+
+  const prependItem = (sectionPath: string, defaultItem: any) => {
+    const keys = sectionPath.split('.');
+    let current = content;
+    for (const key of keys) {
+      if (!current[key]) current[key] = []; // initialize if missing
+      current = current[key];
+    }
+    const newArray = [defaultItem, ...current];
     setContent(updateStateDeep(content, sectionPath, newArray));
   };
 
@@ -1423,17 +1435,20 @@ export const AdminContent = () => {
                 <CardDescription className="text-kaki-grey text-lg pl-1">Craft stories and share professional insights with your audience</CardDescription>
               </div>
               <Button 
-                onClick={() => addItem('blogs', { 
-                  id: Date.now(), 
-                  title: 'New Perspective on Brand Strategy', 
-                  author: 'KAKI Team',
-                  category: 'Design Strategy',
-                  date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
-                  image: '',
-                  excerpt: 'Briefly describe your article here...',
-                  content: '## Start writing your article here...',
-                  blocks: []
-                })}
+                onClick={() => {
+                  prependItem('blogs', { 
+                    id: Date.now(), 
+                    title: 'New Perspective on Brand Strategy', 
+                    author: 'KAKI Team',
+                    category: 'Design Strategy',
+                    date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                    image: '',
+                    excerpt: 'Briefly describe your article here...',
+                    content: '## Start writing your article here...',
+                    blocks: []
+                  });
+                  setEditingBlogIndex(0);
+                }}
                 className="bg-purple-600 hover:bg-purple-700 text-white px-10 h-14 rounded-full shadow-2xl shadow-purple-500/30 transition-all hover:scale-105 active:scale-95 text-lg font-bold"
               >
                 <Plus className="w-6 h-6 mr-3" /> CREATE NEW POST
@@ -1451,6 +1466,7 @@ export const AdminContent = () => {
                   </div>
                 ) : (
                   content.blogs.map((blog: any, index: number) => (
+                    editingBlogIndex === index ? (
                     <div key={blog.id || index} className="space-y-6">
                       <div className="sticky top-4 z-[60] bg-[#1a1a1a]/95 backdrop-blur-xl border border-white/10 p-3 rounded-2xl shadow-2xl flex items-center justify-center gap-2 flex-wrap max-w-5xl mx-auto">
                         <span className="text-xs font-bold uppercase text-white/40 mr-2">Add New:</span>
@@ -1471,11 +1487,24 @@ export const AdminContent = () => {
                       </div>
                       <div className="p-8 md:p-12 border border-white/10 rounded-[3.5rem] bg-gradient-to-br from-white/[0.05] to-white/[0.02] shadow-2xl space-y-10 relative group transition-all hover:border-purple-500/40">
                       <div className="absolute -top-4 right-8 flex gap-3 opacity-0 group-hover:opacity-100 transition-all translate-y-4 group-hover:translate-y-0">
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          className="w-12 h-12 rounded-full shadow-2xl border-4 border-kaki-black bg-white/5 hover:bg-white/10 text-white"
+                          onClick={() => setEditingBlogIndex(null)}
+                          title="Close Editor"
+                        >
+                          <ArrowUp className="w-5 h-5" />
+                        </Button>
                         <Button 
                           variant="destructive" 
                           size="icon" 
                           className="w-12 h-12 rounded-full shadow-2xl border-4 border-kaki-black"
-                          onClick={() => removeItem('blogs', index)}
+                          onClick={() => {
+                            removeItem('blogs', index);
+                            setEditingBlogIndex(null);
+                          }}
+                          title="Delete Blog"
                         >
                           <Trash2 className="w-5 h-5" />
                         </Button>
@@ -2168,6 +2197,26 @@ export const AdminContent = () => {
                       </div>
                     </div>
                     </div>
+                    ) : (
+                      <Card key={blog.id || index} className="bg-white/5 border-white/10 text-white hover:border-purple-500/50 transition-colors">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                          <div>
+                            <CardTitle className="text-xl">{blog.title || 'Untitled Post'}</CardTitle>
+                            <CardDescription className="text-kaki-grey mt-1">{blog.date} • {blog.category}</CardDescription>
+                          </div>
+                          <div className="flex gap-2">
+                            <Button variant="outline" size="sm" onClick={() => setEditingBlogIndex(index)}>
+                              <PenTool className="w-4 h-4 mr-2" /> Edit
+                            </Button>
+                            <Button variant="destructive" size="sm" onClick={() => {
+                              if (confirm('Delete this post?')) removeItem('blogs', index);
+                            }}>
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        </CardHeader>
+                      </Card>
+                    )
                   ))
                 )}
               </div>

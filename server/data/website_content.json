@@ -562,7 +562,7 @@
       "category": "SOCIAL MEDIA MARKETING",
       "date": "June 25, 2026",
       "image": "",
-      "excerpt": "For Businesses, Institutions, and Organizations",
+      "excerpt": "For Businesses, Institutions, and Organizations\n\nA working field guide for owners, founders, government departments, NGOs, federations, and event teams who need social media to produce results — not just activity.",
       "content": "## Start writing your article here...",
       "blocks": [
         {
@@ -573,40 +573,42 @@
         {
           "id": 1782379941427,
           "type": "title",
-          "content": "The 2026 Practical Guide"
+          "content": "The 2026 Practical Guide",
+          "fontWeight": "font-bold"
         },
         {
           "id": 1782379950792,
           "type": "subtitle",
-          "content": "For Businesses, Institutions, and Organizations"
+          "content": "For Businesses, Institutions, and Organizations",
+          "fontSize": "default",
+          "fontWeight": "font-normal"
         },
         {
           "id": 1782379972745,
           "type": "divider",
-          "content": ""
+          "content": "",
+          "color": "#0f766e"
         },
         {
-          "id": 1782379957901,
+          "id": 1782798056010,
           "type": "excerpt",
           "content": "A working field guide for owners, founders, government departments, NGOs, federations, and event teams who need social media to produce results — not just activity.",
           "fontSize": "text-sm"
         },
         {
-          "id": 1782380020277,
-          "type": "heading",
-          "content": "KEY TAKEAWAYS",
-          "textColor": "#017951"
-        },
-        {
-          "id": 1782380031806,
-          "type": "paragraph",
-          "content": "•\tSocial media marketing in 2026 is a distribution and trust system, not a posting schedule. The brands winning treat it like infrastructure.\n•\tThe biggest reason organizations waste money on social is strategy-by-imitation — copying what worked for a different audience, category, or year.\n•\tReach is now earned through relevance, not volume. Platforms reward content matched to a specific community; broad, generic posts get filtered out.\n•\tAI made content cheap, which made judgment expensive. Audiences distrust obvious “AI slop.” The edge belongs to teams pairing AI speed with human taste.\n•\tA tourism board, a sports league, a bakery, and an energy company should never run the same playbook. Strategy is set by the objective and audience.\n•\tThe agencies worth hiring connect a post to a business outcome. A partner that only reports likes is reporting a hobby.\n"
+          "id": 1782797862213,
+          "type": "callout",
+          "content": "•\tSocial media marketing in 2026 is a distribution and trust system, not a posting schedule. The brands winning treat it like infrastructure.\n•\tThe biggest reason organizations waste money on social is strategy-by-imitation — copying what worked for a different audience, category, or year.\n•\tReach is now earned through relevance, not volume. Platforms reward content matched to a specific community; broad, generic posts get filtered out.\n•\tAI made content cheap, which made judgment expensive. Audiences distrust obvious “AI slop.” The edge belongs to teams pairing AI speed with human taste.\n•\tA tourism board, a sports league, a bakery, and an energy company should never run the same playbook. Strategy is set by the objective and audience.\n•\tThe agencies worth hiring connect a post to a business outcome. A partner that only reports likes is reporting a hobby.",
+          "calloutBorderColor": "#c9971c",
+          "calloutTitleColor": "#c9971c",
+          "calloutBgColor": "#fbf3e2",
+          "calloutTitle": "KEY TAKEAWAYS"
         },
         {
           "id": 1782380044158,
           "type": "heading",
           "content": "1. Executive Summary",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782380051572,
@@ -616,13 +618,14 @@
         {
           "id": 1782380060159,
           "type": "divider",
-          "content": ""
+          "content": "",
+          "color": "#0f766e"
         },
         {
           "id": 1782380064354,
           "type": "heading",
           "content": "2. What Social Media Marketing Actually Is in 2026",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782380662713,
@@ -633,8 +636,9 @@
           "id": 1782380675772,
           "type": "table",
           "content": "[[\"Layer\",\"What it does\",\"What it looks like broken\"],[\"**Strategy**\",\"Row 1 CelDefines the audience, objective, and single messagel 2\",\"“We post when we have time.”\"],[\"**Content**\",\"Turns the message into formats people consume\",\"Stock-photo posts, recycled press releases\"],[\"**Distribution**\",\"Gets content to the right community (organic + paid)\",\"Posting into the void, boosting randomly\"],[\"**Measurement**\",\"Connects activity to outcomes; feeds the next cycle\",\"Reporting likes; ignoring leads and sales\"]]",
-          "tableHeaderBg": "#0ca678",
-          "tableBorderColor": "#000000"
+          "tableHeaderBg": "#0f766e",
+          "tableBorderColor": "#000000",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782453323507,
@@ -646,20 +650,21 @@
           "type": "callout",
           "content": "Before you create a single asset, you should be able to finish this sentence: “We want [specific audience] to [specific action], and we’ll know it worked when [specific metric] moves.” If you can’t, no amount of content will save the campaign.",
           "calloutTitle": "EXPERT TIP",
-          "calloutBorderColor": "#017951",
-          "calloutBgColor": "#baf7dd"
+          "calloutBorderColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitleColor": "#0f766e"
         },
         {
           "id": 1782471188633,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782471235955,
           "type": "heading",
           "content": "3. Why Most Social Media Marketing Quietly Fails",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782471258927,
@@ -680,37 +685,42 @@
           "id": 1782471292439,
           "type": "callout",
           "content": "Most social media failure is not a content-quality problem. It’s a clarity problem. Organizations that can’t say who they’re talking to and what they want them to do will fail with beautiful content just as reliably as with bad content.",
-          "calloutTitle": "The uncomfortable truth: "
+          "calloutTitle": "The uncomfortable truth: ",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782471314737,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782540255018,
           "type": "heading",
           "content": "4. Myth vs. Fact",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782540314914,
           "type": "table",
           "content": "[[\"Myth\",\"Fact\"],[\"“More followers = more business.”\",\"Influence beats follower count. A relevant 7,000-person community converts better than 70,000 disengaged followers.\"],[\"“Post daily or the algorithm punishes you.”\",\"Consistency matters, but relevance matters more. Three sharp posts beat fourteen forgettable ones.\"],[\"“Go viral and you’ve won.”\",\"The worldwide viral hit is fading. 2026 rewards niche alignment with the right small segment far more than one-off virality.\"],[\"“Organic is dead, just pay for ads.”\",\"Organic builds trust and compounding value; paid buys reach and speed. You need both, for different jobs.\"],[\"“AI will replace the social team.”\",\"AI replaced the typing, not the thinking. It speeds production; humans still own strategy, voice, and judgment.\"],[\"“Social is for awareness, not real outcomes.”\",\"Social drives ticket sales, enrolments, participation, sponsorship, and reputation — when tied to those goals from the start.\"]]",
-          "tableBorderColor": "#017951"
+          "tableBorderColor": "#017951",
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782540448757,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782540471497,
           "type": "heading",
           "content": "5. What Changed in 2026 (And What You Should Do About It)",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782540487328,
@@ -729,12 +739,14 @@
           "id": 1782540690919,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782547883093,
           "type": "table",
-          "content": "[[\"Step\",\"Question it answers\",\"Output\"],[\"C — Clarify\",\"Who exactly are we talking to, and what one action do we want?\",\"A one-sentence objective\"],[\"R — Research\",\"What does this audience care about, search for, and trust?\",\"Audience + keyword map\"],[\"A — Architect\",\"What content system delivers that message repeatedly?\",\"Content pillars + formats\"],[\"F — Fuel\",\"How do we distribute it — organic plus paid amplification?\",\"Channel + budget plan\"],[\"T — Track\",\"What single number proves it worked, and how do we improve?\",\"Metric + review cadence\"]]"
+          "content": "[[\"Step\",\"Question it answers\",\"Output\"],[\"C — Clarify\",\"Who exactly are we talking to, and what one action do we want?\",\"A one-sentence objective\"],[\"R — Research\",\"What does this audience care about, search for, and trust?\",\"Audience + keyword map\"],[\"A — Architect\",\"What content system delivers that message repeatedly?\",\"Content pillars + formats\"],[\"F — Fuel\",\"How do we distribute it — organic plus paid amplification?\",\"Channel + budget plan\"],[\"T — Track\",\"What single number proves it worked, and how do we improve?\",\"Metric + review cadence\"]]",
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782547979041,
@@ -746,20 +758,21 @@
           "type": "callout",
           "content": "If you can’t complete Clarify and Track, don’t spend money on Architect and Fuel. You’ll just be funding guesswork at scale.",
           "calloutTitle": "DECISION RULE",
-          "calloutBorderColor": "#017951",
-          "calloutTitleColor": "#9ff9df"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782548070134,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782548083225,
           "type": "heading",
           "content": "7. Which Platform, For Which Goal",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782548095160,
@@ -769,7 +782,9 @@
         {
           "id": 1782548109433,
           "type": "table",
-          "content": "[[\"Platform\",\"Best for\",\"Primary job\",\"Watch out for\"],[\"Instagram\",\"Brand, lifestyle, events, retail, tourism\",\"Awareness + community + social search\",\"Falling organic reach on generic posts\"],[\"Facebook\",\"Local reach, groups, events, older demographics\",\"Discovery, events, social commerce\",\"Younger audiences less active\"],[\"YouTube\",\"Deep trust, education, documentary, long-form\",\"Conversion + credibility\",\"Higher production effort\"],[\"LinkedIn\",\"B2B, corporate, government, recruitment\",\"Authority + partnerships + hiring\",\"Wrong tone kills it instantly\"],[\"X (Twitter)\",\"Real-time, news, public statements\",\"Announcements + reputation\",\"Volatile; needs fast moderation\"],[\"WhatsApp / Broadcast\",\"Direct community, retention, service\",\"Loyalty + customer service\",\"Easy to over-message and annoy\"]]"
+          "content": "[[\"Platform\",\"Best for\",\"Primary job\",\"Watch out for\"],[\"Instagram\",\"Brand, lifestyle, events, retail, tourism\",\"Awareness + community + social search\",\"Falling organic reach on generic posts\"],[\"Facebook\",\"Local reach, groups, events, older demographics\",\"Discovery, events, social commerce\",\"Younger audiences less active\"],[\"YouTube\",\"Deep trust, education, documentary, long-form\",\"Conversion + credibility\",\"Higher production effort\"],[\"LinkedIn\",\"B2B, corporate, government, recruitment\",\"Authority + partnerships + hiring\",\"Wrong tone kills it instantly\"],[\"X (Twitter)\",\"Real-time, news, public statements\",\"Announcements + reputation\",\"Volatile; needs fast moderation\"],[\"WhatsApp / Broadcast\",\"Direct community, retention, service\",\"Loyalty + customer service\",\"Easy to over-message and annoy\"]]",
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782548271324,
@@ -782,20 +797,21 @@
           "type": "callout",
           "content": "Being excellent on two platforms beats being mediocre on six. Most organizations spread themselves too thin. Pick where your audience actually is, win there, then expand.",
           "calloutTitle": "EXPERT TIP",
-          "calloutBgColor": "#c2ffe2",
-          "calloutBorderColor": "#017951"
+          "calloutBgColor": "#e6f4f1",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e"
         },
         {
           "id": 1782548320997,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782548635779,
           "type": "heading",
           "content": "8. Why Every Industry Needs a Different Playbook",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782548660165,
@@ -806,7 +822,7 @@
           "id": 1782548676379,
           "type": "paragraph",
           "content": "**Government & Public Sector**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -825,7 +841,7 @@
           "type": "paragraph",
           "content": "**Sports Federations & Leagues**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782549115252,
@@ -843,7 +859,7 @@
           "type": "paragraph",
           "content": "**Events & Festivals**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782549272621,
@@ -860,7 +876,7 @@
           "id": 1782549317503,
           "type": "paragraph",
           "content": "**Education & NGOs**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -878,7 +894,7 @@
           "id": 1782549382630,
           "type": "paragraph",
           "content": "**Retail & Consumer Brands**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -896,7 +912,7 @@
           "id": 1782554645692,
           "type": "paragraph",
           "content": "**Fitness & Lifestyle**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -914,7 +930,7 @@
           "id": 1782554726117,
           "type": "paragraph",
           "content": "**Hospitality & Entertainment**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -932,7 +948,7 @@
           "id": 1782555142227,
           "type": "paragraph",
           "content": "**Corporate**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -951,7 +967,7 @@
           "type": "paragraph",
           "content": "**Environmental Initiatives**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782555272425,
@@ -968,19 +984,21 @@
           "id": 1782555313943,
           "type": "callout",
           "content": "Notice the platform barely changes across these sectors — the objective, metric, and content style change completely. Anyone selling a one-size-fits-all “package” is selling you someone else’s strategy.",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782555365569,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782555375359,
           "type": "heading",
           "content": "9. Case Study: The Nagaland Super League",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782555397670,
@@ -996,20 +1014,21 @@
           "id": 1782555475986,
           "type": "callout",
           "content": "**A note on metrics:** The public record above is verifiable. The precise reach, view, and growth figures belong to the league and its production partners. When adapting this case study for KAKI’s own site, insert your verified analytics here — e.g., [total video views], [organic follower growth], [peak match-day reach] — pulled directly from platform dashboards. Publish numbers you can defend, never estimates. Defensible numbers are the entire basis of trust with future sponsors and clients.",
-          "calloutBgColor": "#fff7db",
-          "calloutBorderColor": "#c78800"
+          "calloutBgColor": "#fbf3e2",
+          "calloutBorderColor": "#c9971c",
+          "calloutTitleColor": "#c9971c"
         },
         {
           "id": 1782555540445,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782555584724,
           "type": "heading",
           "content": "10. Organic vs. Paid: How to Split the Budget",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782555604866,
@@ -1019,7 +1038,9 @@
         {
           "id": 1782555620839,
           "type": "table",
-          "content": "[[\"\",\"Organic\",\"Paid\"],[\"What it buys\",\"Trust, community, compounding value\",\"Reach, speed, precise targeting\"],[\"Time to results\",\"Slow (builds over months)\",\"Fast (days)\"],[\"Cost pattern\",\"Time + talent\",\"Direct ad spend\"],[\"Best for\",\"Reputation, loyalty, long-term brand\",\"Launches, events, ticket pushes, sales\"],[\"Risk\",\"Easy to under-resource and abandon\",\"Easy to waste without good content + targeting\"],[\"Honest benchmark\",\"ROI shows up as leads, retention, trust\",\"Often cited around ~1.75:1 or higher, done well\"]]"
+          "content": "[[\"\",\"Organic\",\"Paid\"],[\"What it buys\",\"Trust, community, compounding value\",\"Reach, speed, precise targeting\"],[\"Time to results\",\"Slow (builds over months)\",\"Fast (days)\"],[\"Cost pattern\",\"Time + talent\",\"Direct ad spend\"],[\"Best for\",\"Reputation, loyalty, long-term brand\",\"Launches, events, ticket pushes, sales\"],[\"Risk\",\"Easy to under-resource and abandon\",\"Easy to waste without good content + targeting\"],[\"Honest benchmark\",\"ROI shows up as leads, retention, trust\",\"Often cited around ~1.75:1 or higher, done well\"]]",
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782555867567,
@@ -1037,19 +1058,21 @@
           "type": "callout",
           "content": "Never run paid ads to fix a content problem. If a post doesn’t earn engagement organically, paying to show it to more people just buys more people ignoring it. Fix the message first.",
           "calloutTitle": "EXPERT TIP",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782555970392,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782555988627,
           "type": "heading",
           "content": "11. Measuring ROI Without Lying to Yourself",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782556010374,
@@ -1060,13 +1083,15 @@
           "id": 1782556028480,
           "type": "paragraph",
           "content": "**Step 1 — Separate the three metric tiers**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "small"
         },
         {
           "id": 1782556044512,
           "type": "table",
-          "content": "[[\"Tier\",\"Metrics\",\"What it tells you\",\"Trap\"],[\"Vanity\",\"Likes, followers, impressions\",\"That something happened\",\"Easy to inflate and fool yourself\"],[\"Engagement\",\"Saves, shares, comments, watch time, DMs\",\"That content resonated\",\"Better, but not business impact\"],[\"Outcome\",\"Leads, enquiries, ticket sales, sign-ups, revenue\",\"That it worked\",\"Harder to track — so most skip it\"]]"
+          "content": "[[\"Tier\",\"Metrics\",\"What it tells you\",\"Trap\"],[\"Vanity\",\"Likes, followers, impressions\",\"That something happened\",\"Easy to inflate and fool yourself\"],[\"Engagement\",\"Saves, shares, comments, watch time, DMs\",\"That content resonated\",\"Better, but not business impact\"],[\"Outcome\",\"Leads, enquiries, ticket sales, sign-ups, revenue\",\"That it worked\",\"Harder to track — so most skip it\"]]",
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782556181544,
@@ -1077,7 +1102,7 @@
           "id": 1782556188228,
           "type": "paragraph",
           "content": "**Step 2 — Use the simple ROI logic**",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782556256764,
@@ -1104,20 +1129,22 @@
           "id": 1782556340062,
           "type": "callout",
           "content": "☐\tThe objective set at the start\n☐\tThe one primary outcome metric\n☐\tWhat moved, and the likely reason\n☐\tOne clear recommendation for next cycle\n☐\tNo metric included just to look impressive\n",
-          "calloutBorderColor": "#017951",
-          "calloutTitle": "A report worth reading contains:"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitle": "A report worth reading contains:",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782556372097,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782556416125,
           "type": "heading",
           "content": "12. The 11 Most Common Mistakes",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782556434682,
@@ -1128,19 +1155,21 @@
           "id": 1782556596277,
           "type": "callout",
           "content": "The brands that lose at social media in 2026 aren’t the ones doing it badly. They’re the ones doing it busily — lots of motion, no direction.",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782556617170,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782556627111,
           "type": "heading",
           "content": "13. A Reusable Content System (With Template)",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782556642766,
@@ -1150,8 +1179,8 @@
         {
           "id": 1782556651886,
           "type": "paragraph",
-          "content": "The pillar model",
-          "textColor": "#017951",
+          "content": "**The pillar model**",
+          "textColor": "#0f766e",
           "spacing": "small"
         },
         {
@@ -1163,13 +1192,14 @@
           "id": 1782556681790,
           "type": "table",
           "content": "[[\"Pillar\",\"Purpose\",\"Example formats\"],[\"Proof\",\"Build belief\",\"Member transformations, results, reviews\"],[\"Teach\",\"Build authority\",\"Form tips, nutrition myths, short tutorials\"],[\"Belong\",\"Build community\",\"Behind-the-scenes, member spotlights, day-in-the-life\"],[\"Invite\",\"Drive action\",\"Free-trial offers, class schedules, sign-up CTAs\"]]",
-          "tableHeaderBg": "#017951"
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782556958484,
           "type": "paragraph",
           "content": "**Weekly planning template (copy this)**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "small"
         },
         {
@@ -1183,19 +1213,21 @@
           "type": "callout",
           "content": "☐\tDoes it serve one specific audience?\n☐\tIs the first 2 seconds / first line a real hook?\n☐\tIs there one clear action to take?\n☐\tDoes it sound like a human, not a template?\n☐\tWould the right person stop scrolling for this?",
           "calloutTitle": "Content-quality checklist (before you post):",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782557060541,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782557120784,
           "type": "heading",
           "content": "14. How to Choose a Social Media Marketing Agency",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557135894,
@@ -1206,26 +1238,29 @@
           "id": 1782557156912,
           "type": "table",
           "content": "[[\"Green flags\",\"Red flags\"],[\"Asks about your business goals first\",\"Leads with “we’ll post X times a week”\"],[\"Shows how they measure outcomes\",\"Reports only likes and followers\"],[\"Has real, relevant category experience\",\"Shows a generic, anonymous portfolio\"],[\"Adapts strategy to your industry\",\"Sells one “package” to everyone\"],[\"Explains why, not just what\",\"Hides behind jargon\"],[\"Owns production (or partners well)\",\"Outsources everything invisibly\"],[\"Comfortable being measured\",\"Avoids accountability for results\"]]",
-          "tableHeaderBg": "#017951"
+          "tableHeaderBg": "#0f766e",
+          "tableHeaderColor": "#ffffff"
         },
         {
           "id": 1782557252065,
           "type": "callout",
           "content": "The best test of an agency is the first meeting. If they spend it asking sharp questions about your objectives instead of pitching their services, that’s the one.",
           "calloutTitle": "EXPERT TIP",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782557272608,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782557289200,
           "type": "heading",
           "content": "15. Who Should Talk to KAKI — and Who Shouldn’t",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557301526,
@@ -1241,7 +1276,7 @@
           "id": 1782557383062,
           "type": "paragraph",
           "content": "**Ways to start**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -1254,25 +1289,27 @@
           "id": 1782557429175,
           "type": "callout",
           "content": "Start with an audit or a strategy session at kakihelpsbrands.com. The right first step is almost always clarity, not content.",
-          "calloutBorderColor": "#017951"
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
         },
         {
           "id": 1782557449708,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         },
         {
           "id": 1782557459544,
           "type": "heading",
           "content": "16. Frequently Asked Questions",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557474100,
           "type": "paragraph",
           "content": "**What is social media marketing?**",
-          "textColor": "#017951",
+          "textColor": "#0f766e",
           "spacing": "none"
         },
         {
@@ -1285,7 +1322,7 @@
           "type": "paragraph",
           "content": "**How much should an organization spend?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557518802,
@@ -1297,7 +1334,7 @@
           "type": "paragraph",
           "content": "**How long before it shows results?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557547127,
@@ -1309,7 +1346,7 @@
           "type": "paragraph",
           "content": "**Is organic reach dead?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557573507,
@@ -1321,7 +1358,7 @@
           "type": "paragraph",
           "content": "**Should we use AI to create content?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557596250,
@@ -1333,7 +1370,7 @@
           "type": "paragraph",
           "content": "**Which platform is best for my business?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557627410,
@@ -1345,7 +1382,7 @@
           "type": "paragraph",
           "content": "**How do we measure ROI?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557650137,
@@ -1357,7 +1394,7 @@
           "type": "paragraph",
           "content": "**Why do industries need different strategies?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557673415,
@@ -1369,7 +1406,7 @@
           "type": "paragraph",
           "content": "**Do small organizations really need an agency?**",
           "spacing": "none",
-          "textColor": "#017951"
+          "textColor": "#0f766e"
         },
         {
           "id": 1782557765793,
@@ -1380,7 +1417,7 @@
           "id": 1782557773885,
           "type": "divider",
           "content": "",
-          "color": "#017951"
+          "color": "#0f766e"
         }
       ]
     }
