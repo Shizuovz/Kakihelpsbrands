@@ -6,6 +6,7 @@ import { Calendar, User, ArrowLeft, Twitter, Linkedin, Facebook, Mail } from "lu
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { Helmet } from 'react-helmet-async';
 
 const BlogDetail = () => {
   const { id } = useParams();
@@ -87,6 +88,45 @@ const BlogDetail = () => {
 
   return (
     <div className={`min-h-screen bg-white text-gray-900 pt-24 ${blog.fontFamily === 'serif' ? 'font-serif' : blog.fontFamily === 'mono' ? 'font-mono' : 'font-sans'}`}>
+      <Helmet>
+        <title>{blog.seoTitle || `${blog.title} | KAKI`}</title>
+        <meta name="description" content={blog.seoDescription || blog.excerpt || "Read the latest from KAKI."} />
+        {/* Open Graph Tags */}
+        <meta property="og:title" content={blog.seoTitle || blog.title} />
+        <meta property="og:description" content={blog.seoDescription || blog.excerpt} />
+        {blog.image && <meta property="og:image" content={resolveApiUrl(blog.image)} />}
+        <meta property="og:url" content={window.location.href} />
+        <meta property="og:type" content="article" />
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={blog.seoTitle || blog.title} />
+        <meta name="twitter:description" content={blog.seoDescription || blog.excerpt} />
+        {blog.image && <meta name="twitter:image" content={resolveApiUrl(blog.image)} />}
+        {/* Canonical Link */}
+        <link rel="canonical" href={window.location.href} />
+        {/* Dynamic Schema */}
+        <script type="application/ld+json">
+          {blog.seoSchema || JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Article",
+            "headline": blog.seoTitle || blog.title,
+            "image": blog.image ? [resolveApiUrl(blog.image)] : [],
+            "author": {
+              "@type": "Person",
+              "name": blog.author
+            },
+            "publisher": {
+              "@type": "Organization",
+              "name": "KAKI",
+              "logo": {
+                "@type": "ImageObject",
+                "url": `${window.location.origin}/lovable-uploads/6603f71a-d4dd-425a-afda-cf5ab134e5ab.png`
+              }
+            },
+            "datePublished": blog.date
+          })}
+        </script>
+      </Helmet>
       {/* Article Hero (Legacy or Image/Meta only if blocks) */}
       <section className="pt-20 px-6">
         <div className="container mx-auto max-w-4xl text-center">

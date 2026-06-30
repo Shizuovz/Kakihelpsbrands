@@ -1553,6 +1553,29 @@ export const AdminContent = () => {
                             </div>
 
                             <div className="space-y-3">
+                              <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">SEO & Publishing Notes</label>
+                              <div className="space-y-4 p-6 bg-kaki-black/60 rounded-[2rem] border border-white/5 backdrop-blur-xl shadow-inner">
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">URL Slug</label>
+                                  <Input value={blog.id || ''} onChange={(e) => updateItem('blogs', index, 'id', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm font-mono text-white" placeholder="e.g. social-media-marketing" />
+                                  <p className="text-[10px] text-kaki-grey/50 pl-1">Changing this will change the URL of the post.</p>
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Meta Title</label>
+                                  <Input value={blog.seoTitle || ''} onChange={(e) => updateItem('blogs', index, 'seoTitle', e.target.value)} className="bg-kaki-black/50 border-white/10 h-11 rounded-xl text-sm font-bold text-white" placeholder="Optimal SEO Title" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Meta Description</label>
+                                  <Textarea value={blog.seoDescription || ''} onChange={(e) => updateItem('blogs', index, 'seoDescription', e.target.value)} className="bg-kaki-black/50 border-white/10 rounded-xl text-sm min-h-[80px] text-white/80" placeholder="Optimal SEO description for search engines" />
+                                </div>
+                                <div className="space-y-2">
+                                  <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Custom Schema JSON-LD (Optional)</label>
+                                  <Textarea value={blog.seoSchema || ''} onChange={(e) => updateItem('blogs', index, 'seoSchema', e.target.value)} className="bg-kaki-black/50 border-white/10 rounded-xl text-xs font-mono min-h-[120px] text-white/80" placeholder="{ '@context': 'https://schema.org', ... }" />
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="space-y-3">
                               <label className="text-xs text-purple-400 font-bold uppercase tracking-widest pl-2">Story Visual</label>
                               <div className="p-6 bg-kaki-black/60 rounded-[2rem] border border-white/5 backdrop-blur-xl space-y-4">
                                 <div className="flex gap-2">

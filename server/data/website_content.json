@@ -556,7 +556,7 @@
   },
   "blogs": [
     {
-      "id": 1782379908658,
+      "id": "social-media-marketing",
       "title": "The 2026 Practical Guide",
       "author": "Prepared by KAKI",
       "category": "SOCIAL MEDIA MARKETING",
@@ -568,7 +568,8 @@
         {
           "id": 1782379929098,
           "type": "kicker",
-          "content": "SOCIAL MEDIA MARKETING"
+          "content": "SOCIAL MEDIA MARKETING",
+          "textColor": "#0f766e"
         },
         {
           "id": 1782379941427,
@@ -1419,7 +1420,9 @@
           "content": "",
           "color": "#0f766e"
         }
-      ]
+      ],
+      "seoTitle": "Social Media Marketing in 2026: A Practical Guide | KAKI",
+      "seoDescription": "A practical 2026 guide to social media marketing for businesses, institutions & events — frameworks, ROI, and real campaigns. Built by KAKI."
     }
   ],
   "lifeAtKaki": {
