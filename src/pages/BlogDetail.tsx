@@ -167,7 +167,7 @@ const BlogDetail = () => {
           </div>
 
           {blog.image && (
-            <div className="relative rounded-[3rem] overflow-hidden mb-20 bg-gray-100 border border-gray-200 shadow-2xl shadow-purple-500/5 group">
+            <div className="relative rounded-[3rem] overflow-hidden mb-20 bg-gray-100 border border-gray-200 group">
               <img
                 src={resolveApiUrl(blog.image)}
                 alt={blog.title || "Blog cover"}
@@ -227,6 +227,13 @@ const BlogDetail = () => {
                   const getSizeClass = (defaultSize: string) => (block.fontSize && block.fontSize !== 'default') ? block.fontSize : defaultSize;
                   const getWeightClass = (defaultWeight: string) => (block.fontWeight && block.fontWeight !== 'default') ? block.fontWeight : defaultWeight;
                   const getColorStyle = () => block.textColor ? { color: block.textColor } : undefined;
+                  const getSpacingClass = (defaultSpacing: string) => {
+                    if (block.spacing === 'none') return 'mb-0 mt-0';
+                    if (block.spacing === 'small') return 'mb-4 mt-2';
+                    if (block.spacing === 'medium') return 'mb-8 mt-4';
+                    if (block.spacing === 'large') return 'mb-12 mt-8';
+                    return defaultSpacing;
+                  };
                   
                   const renderRichText = (text: string) => {
                     return text.split('\n').map((line, i) => {
@@ -237,96 +244,33 @@ const BlogDetail = () => {
                         content = content.trim().substring(2);
                       }
                       
-                      let parts: any[] = [content];
-                      
-                      let newParts: any[] = [];
-                      parts.forEach(p => {
-                        if (typeof p !== 'string') { newParts.push(p); return; }
-                        const arr = p.split(/(\*\*.*?\*\*)/g);
-                        arr.forEach((part, idx) => {
-                          if (part.startsWith('**') && part.endsWith('**')) newParts.push(<strong key={`b-${idx}`} className="font-bold">{part.slice(2, -2)}</strong>);
-                          else if (part) newParts.push(part);
+                      let html = content
+                        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                        .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+                        .replace(/<u>(.*?)<\/u>/g, '<u class="underline underline-offset-2">$1</u>')
+                        .replace(/~~(.*?)~~/g, '<del class="line-through opacity-70">$1</del>')
+                        .replace(/\[color=(#[0-9a-fA-F]{6})\](.*?)\[\/color\]/g, '<span style="color: $1">$2</span>')
+                        .replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
+                          const target = url.startsWith('http') ? '_blank' : '_self';
+                          const rel = url.startsWith('http') ? 'noopener noreferrer' : '';
+                          return `<a href="${url}" target="${target}" rel="${rel}" class="text-purple-600 hover:text-purple-800 font-bold underline">${text}</a>`;
                         });
-                      });
-                      parts = newParts;
-
-                      newParts = [];
-                      parts.forEach(p => {
-                        if (typeof p !== 'string') { newParts.push(p); return; }
-                        const arr = p.split(/(\*.*?\*)/g);
-                        arr.forEach((part, idx) => {
-                          if (part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) newParts.push(<em key={`i-${idx}`} className="italic">{part.slice(1, -1)}</em>);
-                          else if (part) newParts.push(part);
-                        });
-                      });
-                      parts = newParts;
-
-                      newParts = [];
-                      parts.forEach(p => {
-                        if (typeof p !== 'string') { newParts.push(p); return; }
-                        const arr = p.split(/(<u>.*?<\/u>)/g);
-                        arr.forEach((part, idx) => {
-                          if (part.startsWith('<u>') && part.endsWith('</u>')) newParts.push(<u key={`u-${idx}`} className="underline underline-offset-2">{part.slice(3, -4)}</u>);
-                          else if (part) newParts.push(part);
-                        });
-                      });
-                      parts = newParts;
-
-                      newParts = [];
-                      parts.forEach(p => {
-                        if (typeof p !== 'string') { newParts.push(p); return; }
-                        const arr = p.split(/(~~.*?~~)/g);
-                        arr.forEach((part, idx) => {
-                          if (part.startsWith('~~') && part.endsWith('~~')) newParts.push(<del key={`s-${idx}`} className="line-through opacity-70">{part.slice(2, -2)}</del>);
-                          else if (part) newParts.push(part);
-                        });
-                      });
-                      parts = newParts;
-
-                      newParts = [];
-                      parts.forEach(p => {
-                        if (typeof p !== 'string') { newParts.push(p); return; }
-                        const arr = p.split(/(\[.*?\]\(.*?\))/g);
-                        arr.forEach((part, idx) => {
-                          const linkMatch = part.match(/\[(.*?)\]\((.*?)\)/);
-                          if (linkMatch) {
-                            newParts.push(
-                              <a 
-                                key={`l-${idx}`} 
-                                href={linkMatch[2]} 
-                                target={linkMatch[2].startsWith('http') ? '_blank' : '_self'}
-                                rel={linkMatch[2].startsWith('http') ? 'noopener noreferrer' : ''}
-                                className="text-purple-600 hover:text-purple-800 font-bold underline"
-                              >
-                                {linkMatch[1]}
-                              </a>
-                            );
-                          } else if (part) {
-                            newParts.push(part);
-                          }
-                        });
-                      });
-                      parts = newParts;
 
                       if (isBullet) {
-                        return <li key={i} className="ml-6 list-disc mb-2">{parts}</li>;
+                        return <li key={i} className="ml-6 list-disc mb-2" dangerouslySetInnerHTML={{ __html: html }} />;
                       }
-                      return <p key={i} className="mb-2 last:mb-0">{parts}</p>;
+                      return <p key={i} className="mb-2 last:mb-0" dangerouslySetInnerHTML={{ __html: html }} />;
                     });
                   };
 
-                  if (block.type === 'kicker') return <p key={idx} className={`${getSizeClass('text-sm')} ${getWeightClass('font-bold')} uppercase tracking-widest text-purple-600 mb-2`} style={getColorStyle()}>{block.content}</p>;
-                  if (block.type === 'title') return <h1 key={idx} className={`${getSizeClass('text-4xl md:text-6xl')} ${getWeightClass('font-black')} mb-6 tracking-tight leading-tight text-gray-900`} style={getColorStyle()}>{block.content}</h1>;
-                  if (block.type === 'subtitle') return <h2 key={idx} className={`${getSizeClass('text-2xl')} ${getWeightClass('font-medium')} text-gray-600 mb-8`} style={getColorStyle()}>{block.content}</h2>;
-                  if (block.type === 'excerpt') return <blockquote key={idx} className={`italic ${getSizeClass('text-2xl md:text-3xl')} ${getWeightClass('font-medium')} text-purple-800 leading-relaxed border-l-4 border-purple-500 pl-8 py-4 bg-purple-50 my-8 rounded-r-3xl pr-6`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</blockquote>;
-                  if (block.type === 'divider') return <hr key={idx} style={{ borderTopWidth: `${block.size || 1}px`, borderColor: block.color || 'rgba(229,231,235,1)' }} className="my-10" />;
-                  if (block.type === 'heading') return <h2 id={`heading-${idx}`} key={idx} className={`scroll-mt-32 mt-12 mb-6 ${getSizeClass('text-3xl')} ${getWeightClass('font-bold')}`} style={getColorStyle()}>{block.content}</h2>;
+                  if (block.type === 'kicker') return <p key={idx} className={`${getSizeClass('text-sm')} ${getWeightClass('font-bold')} uppercase tracking-widest text-purple-600 ${getSpacingClass('mb-2')}`} style={getColorStyle()}>{block.content}</p>;
+                  if (block.type === 'title') return <h1 key={idx} className={`${getSizeClass('text-4xl md:text-6xl')} ${getWeightClass('font-black')} ${getSpacingClass('mb-6')} tracking-tight leading-tight text-gray-900`} style={getColorStyle()}>{block.content}</h1>;
+                  if (block.type === 'subtitle') return <h2 key={idx} className={`${getSizeClass('text-2xl')} ${getWeightClass('font-medium')} text-gray-600 ${getSpacingClass('mb-8')}`} style={getColorStyle()}>{block.content}</h2>;
+                  if (block.type === 'excerpt') return <blockquote key={idx} className={`italic ${getSizeClass('text-2xl md:text-3xl')} ${getWeightClass('font-medium')} text-purple-800 leading-relaxed border-l-4 border-purple-500 pl-8 py-4 bg-purple-50 rounded-r-3xl pr-6 ${getSpacingClass('my-8')}`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</blockquote>;
+                  if (block.type === 'divider') return <hr key={idx} style={{ borderTopWidth: `${block.size || 1}px`, borderColor: block.color || 'rgba(229,231,235,1)' }} className={getSpacingClass('my-10')} />;
+                  if (block.type === 'heading') return <h2 id={`heading-${idx}`} key={idx} className={`scroll-mt-32 ${getSizeClass('text-3xl')} ${getWeightClass('font-bold')} ${getSpacingClass('mt-12 mb-6')}`} style={getColorStyle()}>{block.content}</h2>;
                   if (block.type === 'paragraph') {
-                    const spacingClass = block.spacing === 'none' ? 'mb-0' : 
-                                         block.spacing === 'small' ? 'mb-4' : 
-                                         block.spacing === 'medium' ? 'mb-8' : 
-                                         block.spacing === 'large' ? 'mb-12' : 'mb-8';
-                    return <div key={idx} className={`${block.fontSize && block.fontSize !== 'default' ? block.fontSize : ''} ${getWeightClass('font-normal')} ${spacingClass}`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</div>;
+                    return <div key={idx} className={`${block.fontSize && block.fontSize !== 'default' ? block.fontSize : ''} ${getWeightClass('font-normal')} ${getSpacingClass('mb-8')}`} style={getColorStyle()}>{block.content && renderRichText(block.content)}</div>;
                   }
                   if (block.type === 'callout') {
                     const borderColor = block.calloutBorderColor || '#10b981';
@@ -340,7 +284,7 @@ const BlogDetail = () => {
                             {block.calloutTitle}
                           </h4>
                         )}
-                        <div className="text-gray-800 text-lg leading-relaxed">
+                        <div className="text-lg leading-relaxed" style={{ color: block.calloutTextColor || '#1f2937' }}>
                           {block.content && renderRichText(block.content)}
                         </div>
                       </div>
@@ -361,7 +305,7 @@ const BlogDetail = () => {
                     const tdStyle = { border: `${borderSize} solid ${borderColor}` };
 
                     return (
-                      <div key={idx} className="overflow-x-auto my-12 rounded-2xl shadow-xl bg-white">
+                      <div key={idx} className="overflow-x-auto my-12 rounded-2xl bg-white">
                         <table className="w-full text-left" style={tableStyle}>
                           <thead>
                             <tr>
@@ -395,7 +339,7 @@ const BlogDetail = () => {
                                         block.imageRadius === 'full' ? 'rounded-full' : 'rounded-3xl';
                     return (
                       <div key={idx} className={`flex ${alignClass} my-12`}>
-                        <img src={resolveApiUrl(block.content)} alt="Blog content block" className={`${sizeClass} ${radiusClass} border border-gray-200 shadow-2xl`} />
+                        <img src={resolveApiUrl(block.content)} alt="Blog content block" className={`${sizeClass} ${radiusClass} border border-gray-200`} />
                       </div>
                     );
                   }
@@ -410,7 +354,7 @@ const BlogDetail = () => {
                   if (line.startsWith('![') && line.includes('](')) {
                     const urlMatch = line.match(/\((.*?)\)/);
                     if (urlMatch) {
-                      return <img key={idx} src={resolveApiUrl(urlMatch[1])} alt="Blog content" className="w-full rounded-3xl border border-white/10 my-12 shadow-2xl" />;
+                      return <img key={idx} src={resolveApiUrl(urlMatch[1])} alt="Blog content" className="w-full rounded-3xl border border-white/10 my-12" />;
                     }
                   }
                   const parseInline = (text: string) => {

@@ -525,7 +525,7 @@ export const AdminContent = () => {
     }
   };
 
-  const handleFormat = (elementId: string, currentText: string, onUpdate: (text: string) => void, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough' | 'link') => {
+  const handleFormat = (elementId: string, currentText: string, onUpdate: (text: string) => void, type: 'bold' | 'italic' | 'header' | 'quote' | 'underline' | 'strikethrough' | 'link' | 'color', colorValue?: string) => {
     const textarea = document.getElementById(elementId) as HTMLTextAreaElement;
     if (!textarea) return;
 
@@ -545,6 +545,10 @@ export const AdminContent = () => {
       case 'underline': replacement = `<u>${selection || 'underlined text'}</u>`; offsetStart = 3; offsetEnd = 4; break;
       case 'strikethrough': replacement = `~~${selection || 'strikethrough text'}~~`; offsetStart = 2; offsetEnd = 2; break;
       case 'link': replacement = `[${selection || 'link text'}](https://)`; offsetStart = 1; offsetEnd = 11; break;
+      case 'color': 
+        replacement = `[color=${colorValue || '#ffffff'}]${selection || 'text'}[/color]`; 
+        offsetStart = 15; offsetEnd = 8; 
+        break;
     }
 
     const newText = currentText.substring(0, start) + replacement + currentText.substring(end);
@@ -561,72 +565,15 @@ export const AdminContent = () => {
   };
 
   const parseInline = (text: string) => {
-    // Basic inline markdown parser for preview
-    let parts: any[] = [text];
-    
-    // Bold: **text**
-    const boldRegex = /\*\*(.*?)\*\*/g;
-    let newParts: any[] = [];
-    parts.forEach(p => {
-        if (typeof p !== 'string') { newParts.push(p); return; }
-        let lastIdx = 0;
-        let match;
-        while ((match = boldRegex.exec(p)) !== null) {
-            newParts.push(p.substring(lastIdx, match.index));
-            newParts.push(<strong key={`bold-${match.index}`} className="text-white font-black">{match[1]}</strong>);
-            lastIdx = boldRegex.lastIndex;
-        }
-        newParts.push(p.substring(lastIdx));
-    });
-    parts = newParts.filter(p => p !== '');
+    let html = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-black">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em class="text-purple-300 font-medium italic">$1</em>')
+      .replace(/<u>(.*?)<\/u>/g, '<u class="decoration-purple-500/50">$1</u>')
+      .replace(/~~(.*?)~~/g, '<del class="opacity-50 line-through">$1</del>')
+      .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 underline underline-offset-2">$1</a>')
+      .replace(/\[color=(#[0-9a-fA-F]{6})\](.*?)\[\/color\]/g, '<span style="color: $1">$2</span>');
 
-    // Italic: *text*
-    newParts = [];
-    const italicRegex = /\*(.*?)\*/g;
-    parts.forEach(p => {
-        if (typeof p !== 'string') { newParts.push(p); return; }
-        let lastIdx = 0;
-        let match;
-        while ((match = italicRegex.exec(p)) !== null) {
-            newParts.push(p.substring(lastIdx, match.index));
-            newParts.push(<em key={`italic-${match.index}`} className="text-purple-300 font-medium italic">{match[1]}</em>);
-            lastIdx = italicRegex.lastIndex;
-        }
-        newParts.push(p.substring(lastIdx));
-    });
-    parts = newParts.filter(p => p !== '');
-
-    // Underline: <u>text</u>
-    newParts = [];
-    const underlineRegex = /<u>(.*?)<\/u>/g;
-    parts.forEach(p => {
-        if (typeof p !== 'string') { newParts.push(p); return; }
-        let lastIdx = 0;
-        let match;
-        while ((match = underlineRegex.exec(p)) !== null) {
-            newParts.push(p.substring(lastIdx, match.index));
-            newParts.push(<u key={`underline-${match.index}`} className="decoration-purple-500/50">{match[1]}</u>);
-            lastIdx = underlineRegex.lastIndex;
-        }
-        newParts.push(p.substring(lastIdx));
-    });
-    parts = newParts.filter(p => p !== '');
-
-    // Strikethrough: ~~text~~
-    newParts = [];
-    const strikeRegex = /~~(.*?)~~/g;
-    parts.forEach(p => {
-        if (typeof p !== 'string') { newParts.push(p); return; }
-        let lastIdx = 0;
-        let match;
-        while ((match = strikeRegex.exec(p)) !== null) {
-            newParts.push(p.substring(lastIdx, match.index));
-            newParts.push(<del key={`strike-${match.index}`} className="opacity-50 line-through">{match[1]}</del>);
-            lastIdx = strikeRegex.lastIndex;
-        }
-        newParts.push(p.substring(lastIdx));
-    });
-    return newParts.filter(p => p !== '');
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
   };
 
   const filteredInquiries = useMemo(() => {
@@ -1675,6 +1622,17 @@ export const AdminContent = () => {
                                         <div className="space-y-2">
                                           <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
                                             <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
+                                            <select 
                                               value={block.fontWeight || 'default'} 
                                               onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
                                               className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
@@ -1702,6 +1660,17 @@ export const AdminContent = () => {
                                         <div className="space-y-2">
                                           <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
                                             <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
+                                            <select 
                                               value={block.fontWeight || 'default'} 
                                               onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
                                               className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
@@ -1728,6 +1697,17 @@ export const AdminContent = () => {
                                       {block.type === 'subtitle' && (
                                         <div className="space-y-2">
                                           <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
+                                            <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
                                             <select 
                                               value={block.fontWeight || 'default'} 
                                               onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
@@ -1760,6 +1740,18 @@ export const AdminContent = () => {
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'link')} className="h-6 w-6 p-0"><LinkIcon className="w-3 h-3" /></Button>
+                                            <div className="w-px h-4 bg-white/10 mx-1"></div>
+                                            <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
                                           </div>
                                           <Textarea 
                                             id={`block-content-${index}-${bIdx}`}
@@ -1774,6 +1766,20 @@ export const AdminContent = () => {
                                       {block.type === 'divider' && (
                                         <div className="py-4 space-y-6">
                                           <div className="flex flex-wrap gap-6 items-center bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
+                                            <div className="space-y-2">
+                                              <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Spacing</label>
+                                              <select 
+                                                value={block.spacing || 'default'} 
+                                                onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                                className="w-full bg-[#1a1a1a] border border-white/10 text-white/70 text-sm rounded-xl px-3 h-10 outline-none focus:border-purple-500"
+                                              >
+                                                <option value="default">Default</option>
+                                                <option value="none">None</option>
+                                                <option value="small">Small</option>
+                                                <option value="medium">Medium</option>
+                                                <option value="large">Large</option>
+                                              </select>
+                                            </div>
                                             <div className="space-y-2">
                                               <label className="text-[10px] text-kaki-grey uppercase font-bold pl-1">Thickness (px)</label>
                                               <Input 
@@ -1810,6 +1816,17 @@ export const AdminContent = () => {
                                         <div className="space-y-2">
                                           <div className="flex flex-wrap items-center gap-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5">
                                             <select 
+                                              value={block.spacing || 'default'} 
+                                              onChange={(e) => updateBlock(index, bIdx, 'spacing', e.target.value)}
+                                              className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
+                                            >
+                                              <option value="default">Default Spacing</option>
+                                              <option value="none">No Spacing</option>
+                                              <option value="small">Small</option>
+                                              <option value="medium">Medium</option>
+                                              <option value="large">Large</option>
+                                            </select>
+                                            <select 
                                               value={block.fontWeight || 'default'} 
                                               onChange={(e) => updateBlock(index, bIdx, 'fontWeight', e.target.value)}
                                               className="bg-[#1a1a1a] border border-white/10 text-white/70 text-[10px] uppercase font-bold rounded px-2 py-1 outline-none focus:border-purple-500"
@@ -1841,6 +1858,12 @@ export const AdminContent = () => {
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
                                             <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'link')} className="h-6 w-6 p-0"><LinkIcon className="w-3 h-3" /></Button>
+                                            
+                                            <div className="relative flex items-center justify-center h-6 w-6 ml-1 rounded hover:bg-white/10 cursor-pointer overflow-hidden border border-white/10" title="Text Color">
+                                              <span className="text-[10px] font-bold text-white z-10 pointer-events-none" style={{ textShadow: '0 0 2px black' }}>A</span>
+                                              <input type="color" className="absolute opacity-0 inset-0 w-[200%] h-[200%] -top-2 -left-2 cursor-pointer" onBlur={(e) => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'color', e.target.value)} />
+                                              <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 via-green-500 to-blue-500 z-10 pointer-events-none"></div>
+                                            </div>
                                             
                                             <div className="w-px h-4 bg-white/10 mx-1"></div>
                                             
@@ -2012,6 +2035,10 @@ export const AdminContent = () => {
                                                 <label className="text-[10px] uppercase text-white/50 font-bold">Title</label>
                                                 <input type="color" value={block.calloutTitleColor || '#047857'} onChange={(e) => updateBlock(index, bIdx, 'calloutTitleColor', e.target.value)} className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0" />
                                               </div>
+                                              <div className="flex items-center gap-2 bg-[#1a1a1a] p-1.5 rounded border border-white/10">
+                                                <label className="text-[10px] uppercase text-white/50 font-bold">Text</label>
+                                                <input type="color" value={block.calloutTextColor || '#1f2937'} onChange={(e) => updateBlock(index, bIdx, 'calloutTextColor', e.target.value)} className="w-5 h-5 rounded cursor-pointer bg-transparent border-0 p-0" />
+                                              </div>
                                             </div>
                                           </div>
                                             <div className="flex flex-wrap items-center gap-2 mb-2 bg-[#1a1a1a] p-1.5 rounded-xl border border-white/5 col-span-1 md:col-span-2">
@@ -2019,6 +2046,7 @@ export const AdminContent = () => {
                                               <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'italic')} className="h-6 w-6 p-0"><Italic className="w-3 h-3" /></Button>
                                               <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'underline')} className="h-6 w-6 p-0"><Underline className="w-3 h-3" /></Button>
                                               <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'strikethrough')} className="h-6 w-6 p-0"><Strikethrough className="w-3 h-3" /></Button>
+                                              <Button variant="ghost" size="sm" onClick={() => handleFormat(`block-content-${index}-${bIdx}`, block.content || '', (t) => updateBlock(index, bIdx, 'content', t), 'link')} className="h-6 w-6 p-0"><LinkIcon className="w-3 h-3" /></Button>
                                             </div>
                                             <div className="col-span-1 md:col-span-2">
                                               <Textarea 
@@ -2060,56 +2088,18 @@ export const AdminContent = () => {
                                               content = content.trim().substring(2);
                                             }
                                             
-                                            let parts: any[] = [content];
-                                            
-                                            let newParts: any[] = [];
-                                            parts.forEach(p => {
-                                              if (typeof p !== 'string') { newParts.push(p); return; }
-                                              const arr = p.split(/(\*\*.*?\*\*)/g);
-                                              arr.forEach((part, idx) => {
-                                                if (part.startsWith('**') && part.endsWith('**')) newParts.push(<strong key={`b-${idx}`} className="font-bold">{part.slice(2, -2)}</strong>);
-                                                else if (part) newParts.push(part);
-                                              });
-                                            });
-                                            parts = newParts;
-
-                                            newParts = [];
-                                            parts.forEach(p => {
-                                              if (typeof p !== 'string') { newParts.push(p); return; }
-                                              const arr = p.split(/(\*.*?\*)/g);
-                                              arr.forEach((part, idx) => {
-                                                if (part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) newParts.push(<em key={`i-${idx}`} className="italic">{part.slice(1, -1)}</em>);
-                                                else if (part) newParts.push(part);
-                                              });
-                                            });
-                                            parts = newParts;
-
-                                            newParts = [];
-                                            parts.forEach(p => {
-                                              if (typeof p !== 'string') { newParts.push(p); return; }
-                                              const arr = p.split(/(<u>.*?<\/u>)/g);
-                                              arr.forEach((part, idx) => {
-                                                if (part.startsWith('<u>') && part.endsWith('</u>')) newParts.push(<u key={`u-${idx}`} className="underline underline-offset-2">{part.slice(3, -4)}</u>);
-                                                else if (part) newParts.push(part);
-                                              });
-                                            });
-                                            parts = newParts;
-
-                                            newParts = [];
-                                            parts.forEach(p => {
-                                              if (typeof p !== 'string') { newParts.push(p); return; }
-                                              const arr = p.split(/(~~.*?~~)/g);
-                                              arr.forEach((part, idx) => {
-                                                if (part.startsWith('~~') && part.endsWith('~~')) newParts.push(<del key={`s-${idx}`} className="line-through opacity-70">{part.slice(2, -2)}</del>);
-                                                else if (part) newParts.push(part);
-                                              });
-                                            });
-                                            parts = newParts;
+                                            let html = content
+                                              .replace(/\*\*(.*?)\*\*/g, '<strong class="font-bold">$1</strong>')
+                                              .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+                                              .replace(/<u>(.*?)<\/u>/g, '<u class="underline underline-offset-2">$1</u>')
+                                              .replace(/~~(.*?)~~/g, '<del class="line-through opacity-70">$1</del>')
+                                              .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:text-purple-300 underline underline-offset-2">$1</a>')
+                                              .replace(/\[color=(#[0-9a-fA-F]{6})\](.*?)\[\/color\]/g, '<span style="color: $1">$2</span>');
 
                                             if (isBullet) {
-                                              return <li key={i} className="ml-6 list-disc mb-2">{parts}</li>;
+                                              return <li key={i} className="ml-6 list-disc mb-2" dangerouslySetInnerHTML={{ __html: html }} />;
                                             }
-                                            return <p key={i} className="mb-2 last:mb-0">{parts}</p>;
+                                            return <p key={i} className="mb-2 last:mb-0" dangerouslySetInnerHTML={{ __html: html }} />;
                                           });
                                         };
 
@@ -2138,7 +2128,7 @@ export const AdminContent = () => {
                                                   {block.calloutTitle}
                                                 </h4>
                                               )}
-                                              <div className="text-gray-800 text-lg leading-relaxed">
+                                              <div className="text-lg leading-relaxed" style={{ color: block.calloutTextColor || '#1f2937' }}>
                                                 {block.content && renderRichText(block.content)}
                                               </div>
                                             </div>
@@ -2159,7 +2149,7 @@ export const AdminContent = () => {
                                           const tdStyle = { border: `${borderSize} solid ${borderColor}` };
 
                                           return (
-                                            <div key={pIdx} className="overflow-x-auto my-8 rounded-xl bg-white text-gray-900 shadow-xl">
+                                            <div key={pIdx} className="overflow-x-auto my-8 rounded-xl bg-white text-gray-900">
                                               <table className="w-full text-left" style={tableStyle}>
                                                 <thead>
                                                   <tr>

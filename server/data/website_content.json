@@ -556,6 +556,1092 @@
   },
   "blogs": [
     {
+      "id": "digital-marketing",
+      "title": "Digital Marketing for Businesses",
+      "author": "KAKI ",
+      "category": "Digital Marketing",
+      "date": "June 30, 2026",
+      "image": "",
+      "excerpt": "A guide for owners, founders, and decision-makers, not marketers. What actually works now, which channels fit your business, what results to expect, and when to bring in help.",
+      "content": "## Start writing your article here...",
+      "blocks": [
+        {
+          "id": 1782808414220,
+          "type": "kicker",
+          "content": "DIGITAL MARKETING GUIDE  •  2026",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782808700716,
+          "type": "title",
+          "content": "Digital Marketing for Businesses",
+          "fontWeight": "font-bold"
+        },
+        {
+          "id": 1782808717685,
+          "type": "subtitle",
+          "content": "The Practical 2026 Guide",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782808742090,
+          "type": "excerpt",
+          "content": "A guide for owners, founders, and decision-makers, not marketers. What actually works now, which channels fit your business, what results to expect, and when to bring in help.",
+          "fontSize": "text-sm"
+        },
+        {
+          "id": 1782808781762,
+          "type": "callout",
+          "content": "Digital marketing is the system you use to get found, get chosen, and get bought online. Done well, it turns strangers into customers through a connected set of channels: your website, search visibility (SEO and the newer AI search layer), social media, paid advertising, content, and email. Around 69% of all advertising money worldwide now flows through digital channels, and global ad spend crossed $1 trillion for the first time in 2026. The real question is not whether to do digital marketing. It is which channels deserve your money, in what order, and what return to expect.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitle": "QUICK ANSWER"
+        },
+        {
+          "id": 1782808837995,
+          "type": "paragraph",
+          "content": "The state of play, in three numbers",
+          "fontWeight": "font-extrabold"
+        },
+        {
+          "id": 1782808876905,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782808882/kaki_assets/mmpeddsjnkjv9v2ldq0i.png",
+          "imageRadius": "none"
+        },
+        {
+          "id": 1782808923994,
+          "type": "paragraph",
+          "content": "This guide answers the six questions every decision-maker actually has:\n1.\tIs digital marketing worth investing in?\n2.\tHow does it grow a business?\n3.\tWhich channels should my business invest in?\n4.\tWhen should I hire an agency?\n5.\tWhat results should I expect, and how soon?\n6.\tHow do I tell a good partner from a bad one?"
+        },
+        {
+          "id": 1782808965514,
+          "type": "callout",
+          "content": "1. What digital marketing really is        2. Is it worth it? The honest ROI picture\n3. How digital marketing grows a business        4. The KAKI Growth Stack\n5. The channels, explained        6. The big channel comparisons\n7. Which channels fit your business        8. The AI search shift: SEO, AEO, GEO\n9. In-house vs agency: when to hire        10. What results to expect, and when\n11. Myths vs facts        12. The eight most expensive mistakes\n13. Your 30-minute readiness worksheet        14. Frequently asked questions\n15. Where to go next        16. Further reading and trusted resources",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitle": "ON THIS PAGE"
+        },
+        {
+          "id": 1782809040222,
+          "type": "heading",
+          "content": "Key takeaways",
+          "textColor": "#0f766e",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782809078090,
+          "type": "callout",
+          "content": "**•\tDigital is the main advertising medium now, not an experiment.** It is roughly 69% of global ad spend, and the rest of the budget is shrinking.\n**•\tThe channels work as a system.** A great ad sending traffic to a weak website wastes money. The return comes from the connections, not the parts.\n**•\tSearch has changed.** AI Overviews now appear on a large share of Google searches and have cut clicks to the top organic result by around 58% on affected queries. Getting cited by AI now matters as much as ranking.\n**•\tDifferent industries need different strategies.** A tourism board, a cricket association, and a bakery should not run the same playbook.\n**•\tExpect months, not days.** Paid ads can produce leads this week. SEO and content compound over quarters, then keep paying.\n**•\tHire help** when the cost of doing this badly, or not at all, exceeds the cost of doing it right.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782809177597,
+          "type": "heading",
+          "content": "1. What digital marketing really is",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782809187449,
+          "type": "divider",
+          "content": "",
+          "color": "#0f766e",
+          "size": "4",
+          "spacing": "small"
+        },
+        {
+          "id": 1782810126165,
+          "type": "callout",
+          "content": "Digital marketing is every paid, earned, and owned activity you use online to get discovered, build trust, and convert attention into revenue.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitle": "QUICK ANSWER"
+        },
+        {
+          "id": 1782811679271,
+          "type": "paragraph",
+          "content": "Strip away the jargon and digital marketing is three jobs:\n\n**1.\tGet found **by people already looking (search, maps, AI answers) and put yourself in front of people who should be looking (social, ads, video).\n**2.\tGet chosen **once they find you, through a credible website, strong reviews, clear messaging, and proof you can deliver.\n**3.\tGet bought,** by removing friction between interest and purchase, then keeping that customer through email and retention.\n\nEverything else is detail. SEO, Google Ads, Meta Ads, content, branding, website design, social media, video, email: these are all instruments. The orchestra is the point. A useful way to think about ownership of each channel:"
+        },
+        {
+          "id": 1782811750786,
+          "type": "table",
+          "content": "[[\"Type\",\"You control\",\"Examples\",\"What it buys you\"],[\"**Owned**\",\"Fully\",\"Website, email list, blog\",\"Long-term equity. Nobody can take it away.\"],[\"**Earned**\",\"Indirectly\",\"Rankings, AI citations, reviews, shares\",\"Trust and reach you did not pay cash for.\"],[\"**Paid**\",\"While you pay\",\"Google Ads, Meta Ads, sponsorships\",\"Speed. Results stop when spend stops.\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782811972514,
+          "type": "paragraph",
+          "content": "The mistake most businesses make is renting (paid) without ever building (owned and earned). You end up paying for the same customer twice."
+        },
+        {
+          "id": 1782811982058,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36",
+          "size": "1"
+        },
+        {
+          "id": 1782814559040,
+          "type": "heading",
+          "content": "2. Is it worth it? The honest ROI picture",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782814577913,
+          "type": "divider",
+          "content": "",
+          "spacing": "small",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782814603559,
+          "type": "callout",
+          "content": "For almost every business with customers who use a phone, yes. But “digital marketing” is not one investment with one return. Each channel has a different cost, speed, and payback. The honest answer is that it depends on the channel and how well it is run.",
+          "calloutTitle": "QUICK ANSWER",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782814637981,
+          "type": "paragraph",
+          "content": "Here is what current industry data shows about returns by channel. Treat these as directional benchmarks, not promises. Your numbers depend on your margins, your market, and your execution."
+        },
+        {
+          "id": 1782814653374,
+          "type": "table",
+          "content": "[[\"Channel\",\"Typical reported return\",\"Speed\",\"Best for\"],[\"**Email marketing**\",\"~$36 to $42 per $1 (Litmus 2025)\",\"Fast (once you have a list)\",\"Repeat purchase, retention\"],[\"**SEO / content**\",\"Median ~748% over time; 3x leads at lower cost\",\"Slow, then compounds\",\"Long-term demand, authority\"],[\"**Google Ads (search)**\",\"Modest per-dollar, immediate\",\"Immediate\",\"Capturing existing demand\"],[\"**Paid social (Meta)**\",\"~$1.75 to $4 per $1 by setup\",\"Fast\",\"Awareness, retargeting\"],[\"**Organic social**\",\"Hard to attribute directly\",\"Slow\",\"Trust, community, recall\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782814791395,
+          "type": "paragraph",
+          "content": "Two things to take from that table. First, email and SEO are the quiet workhorses. They are unglamorous, and they consistently out-earn the channels businesses get excited about. Second, paid ads buy speed, not loyalty. They are excellent when you need leads this month. They are a poor substitute for the owned assets that make every future campaign cheaper."
+        },
+        {
+          "id": 1782814812039,
+          "type": "paragraph",
+          "content": "**Traditional marketing vs digital marketing**",
+          "spacing": "small"
+        },
+        {
+          "id": 1782814821931,
+          "type": "table",
+          "content": "[[\"Factor\",\"Traditional marketing\",\"Digital marketing\"],[\"**Measurability**\",\"Weak. You guess what worked.\",\"Strong. Leads and sales tracked by channel.\"],[\"**Targeting**\",\"Broad. Everyone who passes the hoarding.\",\"Precise. Location, interest, intent.\"],[\"**Cost to start**\",\"High, often fixed\",\"Flexible, can start small\"],[\"**Speed to adjust**\",\"Slow. The print run is committed.\",\"Immediate. Pause a bad ad in seconds.\"],[\"**Best at**\",\"Mass local awareness, prestige\",\"Demand capture, measurable growth\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782815012208,
+          "type": "paragraph",
+          "content": "Traditional is not dead. A well-placed hoarding during a festival or a stadium sponsorship still builds real awareness. The smart move is not digital instead of traditional. It is using each for what it does best, and measuring the half you finally can measure."
+        },
+        {
+          "id": 1782815020020,
+          "type": "callout",
+          "content": "*“The point of digital is not that it is cheaper. The point is that for the first time you can see which half of your marketing is working.”*",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782815092791,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782815125614,
+          "type": "heading",
+          "content": "3. How digital marketing grows a business",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782815134187,
+          "type": "divider",
+          "content": "",
+          "spacing": "small",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782815171180,
+          "type": "callout",
+          "content": "It grows a business by moving people through a predictable journey, from never having heard of you, to trusting you, to buying, to buying again and telling others. Each channel does a specific job at a specific stage.",
+          "calloutTitle": "QUICK ANSWER",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782815206434,
+          "type": "paragraph",
+          "content": "Customers do not go from stranger to buyer in one step. They move through stages, and most marketing failures come from using the wrong channel at the wrong stage, like running a “buy now” ad at people who have never heard your name."
+        },
+        {
+          "id": 1782815281489,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782815287/kaki_assets/y4dec93chhbkjgeidzwh.png",
+          "imageRadius": "none",
+          "imageSize": "large"
+        },
+        {
+          "id": 1782815350363,
+          "type": "paragraph",
+          "content": "The growth comes from the handoffs. A video ad earns attention. Search and content answer the research questions. The website closes the trust gap. A search ad catches the person at the moment of intent. Email brings them back. Reviews bring their friends.\n\nWhen a business says “we tried Facebook ads and they didn’t work,” nine times out of ten the ads were fine. The website they pointed to was confusing, or there was no follow-up email, or the offer asked for a wedding on the first date. The channel got blamed for a system failure."
+        },
+        {
+          "id": 1782815359417,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782815381068,
+          "type": "heading",
+          "content": "4. The KAKI Growth Stack",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782815389353,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e",
+          "spacing": "small"
+        },
+        {
+          "id": 1782815431588,
+          "type": "paragraph",
+          "content": "Most agencies sell channels. We build systems. After years of running campaigns across very different industries, we work in a fixed order, because skipping a stage is the most common reason marketing money disappears."
+        },
+        {
+          "id": 1782815499000,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782815505/kaki_assets/nxc8qxe0mtuljq0m96xg.png",
+          "imageRadius": "none",
+          "imageSize": "large"
+        },
+        {
+          "id": 1782815544360,
+          "type": "paragraph",
+          "content": "**Why the order matters.** Goals before tactics: “more followers” is not a goal, “40 qualified enquiries a month at a cost we can afford” is. Research before spending saves more money than any clever tactic. Brand before website, because a website is brand strategy made visible. Website before traffic, because driving traffic to a site that does not convert is paying to fill a leaking bucket. SEO and content before paid, so ads become a multiplier rather than a crutch. And analytics before optimisation, because you cannot improve what you have not measured."
+        },
+        {
+          "id": 1782815565543,
+          "type": "callout",
+          "content": "If a prospective partner wants to start at stage 8 (run me some ads) without touching stages 1 to 7, they are selling activity, not growth.",
+          "calloutBorderColor": "#c9971c",
+          "calloutTitleColor": "#c9971c",
+          "calloutBgColor": "#fbf3e2",
+          "calloutTitle": "EXPERT TIP"
+        },
+        {
+          "id": 1782815613556,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782815630292,
+          "type": "heading",
+          "content": "5. The channels, explained for non-marketers",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782815643109,
+          "type": "divider",
+          "content": "",
+          "spacing": "small",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782815662932,
+          "type": "paragraph",
+          "content": "You do not need to master these. You need to understand what each one is for, so you can tell whether your money is being spent sensibly.\n\n**Search Engine Optimisation (SEO)**\nSEO is the work of becoming the answer when someone searches for what you offer. It is the highest-trust, lowest-ongoing-cost source of customers, and also slow and competitive, which is exactly why it is defensible. Its three pillars are technical (can engines read your site), content (do you answer the question better than anyone), and authority (do credible sites and AI systems treat you as a source). Google’s [Search Essentials](https://) lays out the baseline.\n\n**Local SEO**\nIf you serve a place, local SEO is the single highest-return channel available, and most competitors do it badly. Around 46% of Google searches have local intent, and 76% of “near me” searches on a phone lead to a visit within 24 hours [(BrightLocal)](https://). A complete [Google Business Profile](https://) makes customers 2.7 times more likely to consider you reputable. The work is unglamorous: claim and complete your profile, earn consistent reviews, keep details accurate everywhere, and build pages for each service and area.\n\n**Content Marketing**\nContent is what makes every other channel work: the post that ranks, the video that gets shared, the case study that closes the deal. Content marketing generates roughly three times the leads of outbound at about 62% lower cost. The catch is that it only works at quality and consistency. One strong article a quarter beats forty thin ones, especially now that AI systems choose which sources to trust.\n\n**Social Media Marketing**\nSocial is where attention lives and where brands become familiar before anyone is ready to buy. Two honest truths: organic reach has collapsed (Facebook shows a brand’s posts to roughly 5% of its own followers), and that does not make social pointless. It makes social a place to build recall and community that you amplify with paid budget. Winners treat each platform natively rather than posting the same thing everywhere.\n\n**Video and Photography**\nVideo is no longer optional. In Wyzowl’s 2026 survey, 91% of businesses use video and 82% say it delivers good return, and HubSpot names short-form video the highest-ROI content format. Good visuals make a brand feel real in the half-second before someone scrolls past. This is where most local businesses lose, posting phone snapshots while competitors post craft.\n\n**Paid Advertising (Google and Meta)**\n[Google Ads](https://) puts you in front of people actively searching, which is why search ads convert: the intent is already there. [Meta Ads](https://) target people by who they are and what they do, which is why Meta is unmatched for creating demand and retargeting. The skill is not “running ads.” Anyone can spend money. The skill is targeting, creative, landing pages, and measurement, the difference between a 2x return and a 6x one.\n\n**Branding and Website Design**\nYour brand is the promise. Your website is where the promise is kept or broken. A website is not a digital brochure, it is your best salesperson, working every hour, and its job is to turn a visitor into an enquiry. Speed, clarity, mobile experience, and trust signals matter more than visual flourish. [PageSpeed Insights](https://) will tell you in 30 seconds whether your site is fast enough.\n\n**Email Marketing**\nEmail is the highest-ROI channel in marketing and the most underused by small businesses. It returns roughly $36 to $42 for every dollar spent [(Litmus)](https://) because you own the list: no algorithm decides whether your message is seen. Automated sequences do the work once and earn for years.\n\n**Analytics and Performance Marketing**\nThis is the discipline that separates marketing from gambling. Without [Google Analytics](https://) and proper tracking, you are guessing which channels produce revenue. Performance marketing is simply marketing held accountable to a number: cost per lead, cost per acquisition, return on ad spend."
+        },
+        {
+          "id": 1782815990868,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782816010514,
+          "type": "heading",
+          "content": "6. The big channel comparisons",
+          "spacing": "small",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782816017903,
+          "type": "divider",
+          "content": "",
+          "spacing": "small",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782816039575,
+          "type": "paragraph",
+          "content": "These are the questions clients ask us most. There is no universally correct answer, only the correct answer for your situation. The tables show how to find it."
+        },
+        {
+          "id": 1782816047476,
+          "type": "paragraph",
+          "content": "**SEO vs Google Ads**"
+        },
+        {
+          "id": 1782816066955,
+          "type": "table",
+          "content": "[[\"\",\"SEO\",\"Google Ads\"],[\"**Speed**\",\"Months to build\",\"Live today\"],[\"**Cost over time**\",\"Drops as rankings hold\",\"Stays, you pay per click forever\"],[\"**Trust**\",\"Higher (earned)\",\"Lower (people know it’s an ad)\"],[\"**Stops when you stop paying?**\",\"No\",\"Yes, immediately\"],[\"**Best for**\",\"Long-term demand, authority\",\"Launches, urgent leads, testing\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816200321,
+          "type": "paragraph",
+          "content": "**Verdict:** Run ads to capture demand now while SEO builds the asset that lowers your cost later. They are partners, not rivals."
+        },
+        {
+          "id": 1782816212049,
+          "type": "paragraph",
+          "content": "**SEO vs Social Media Marketing**",
+          "spacing": "default"
+        },
+        {
+          "id": 1782816218258,
+          "type": "table",
+          "content": "[[\"\",\"SEO\",\"Social Media\"],[\"**Intent**\",\"High (they’re searching)\",\"Low (they’re scrolling)\"],[\"**Job**\",\"Capture existing demand\",\"Create demand, build recall\"],[\"**Content lifespan**\",\"Years\",\"Hours to days\"],[\"**Best for**\",\"Found at the buying moment\",\"Remembered before it\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816377198,
+          "type": "paragraph",
+          "content": "**Verdict:** SEO catches the fish. Social stocks the pond."
+        },
+        {
+          "id": 1782816386781,
+          "type": "paragraph",
+          "content": "**Google Ads vs Meta Ads**",
+          "spacing": "default"
+        },
+        {
+          "id": 1782816393602,
+          "type": "table",
+          "content": "[[\"\",\"Google Ads\",\"Meta Ads\"],[\"**Targets**\",\"What people search for (intent)\",\"Who people are (interest, behaviour)\"],[\"**Mindset**\",\"“I want this now”\",\"“I wasn’t looking, but interesting”\"],[\"**Best for**\",\"High-intent services, local demand\",\"Visual products, demand creation\"],[\"**Creative needs**\",\"Lighter\",\"Heavy, video-first\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816502209,
+          "type": "paragraph",
+          "content": "**Verdict:** Google for demand you can harvest. Meta for demand you have to grow."
+        },
+        {
+          "id": 1782816509920,
+          "type": "paragraph",
+          "content": "**Organic vs Paid Marketing**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782816611579,
+          "type": "table",
+          "content": "[[\"\",\"Organic\",\"Paid\"],[\"**Cost**\",\"Time and skill\",\"Cash\"],[\"**Speed**\",\"Slow\",\"Fast\"],[\"**Durability**\",\"Compounds, lasts\",\"Stops when budget stops\"],[\"**Risk**\",\"Slow to show return\",\"Burns money fast if mismanaged\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816721509,
+          "type": "paragraph",
+          "content": "**Verdict:** Paid for now, organic for forever. A healthy business builds both."
+        },
+        {
+          "id": 1782816731570,
+          "type": "paragraph",
+          "content": "**Website vs Social Media**"
+        },
+        {
+          "id": 1782816742472,
+          "type": "table",
+          "content": "[[\"\",\"Your Website\",\"Social Media\"],[\"Ownership\",\"You own it fully\",\"You rent space on a platform\"],[\"Algorithm risk\",\"None\",\"High, reach can vanish overnight\"],[\"Converts to sale?\",\"Yes, designed to\",\"Rarely, designed to engage\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816815140,
+          "type": "paragraph",
+          "content": "**Verdict:** Social is rented land. Your website is the land you own. Build on the land you own."
+        },
+        {
+          "id": 1782816827795,
+          "type": "paragraph",
+          "content": "**Short-form vs Long-form Content**"
+        },
+        {
+          "id": 1782816835274,
+          "type": "table",
+          "content": "[[\"\",\"Short-form (Reels, Shorts)\",\"Long-form (articles, YouTube)\"],[\"Job\",\"Reach, discovery, recall\",\"Trust, depth, ranking, AI citation\"],[\"Shelf life\",\"Days\",\"Years\"],[\"Best for\",\"Top of funnel\",\"Middle and bottom of funnel\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782816912406,
+          "type": "paragraph",
+          "content": "**Verdict:** Short-form gets you discovered. Long-form gets you trusted. You need both."
+        },
+        {
+          "id": 1782816922298,
+          "type": "paragraph",
+          "content": "**Local SEO vs National SEO**"
+        },
+        {
+          "id": 1782816930936,
+          "type": "table",
+          "content": "[[\"\",\"Local SEO\",\"National SEO\"],[\"**Competing for**\",\"“Near me,” map pack, your city\",\"Broad terms, the whole country\"],[\"**Key asset**\",\"Google Business Profile, reviews\",\"Authority, backlinks, deep content\"],[\"**Difficulty**\",\"Lower, faster wins\",\"Higher, slower\"],[\"**Best for**\",\"Shops, services, hospitality, clinics\",\"Ecommerce, SaaS, national brands\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782817061690,
+          "type": "paragraph",
+          "content": "**Verdict:** If you serve a place, win the place first. National before you own local is running before you walk."
+        },
+        {
+          "id": 1782817071398,
+          "type": "paragraph",
+          "content": "**Awareness vs Lead-Generation Campaigns**"
+        },
+        {
+          "id": 1782817078435,
+          "type": "table",
+          "content": "[[\"\",\"Awareness\",\"Lead Generation\"],[\"**Goal**\",\"Be known and remembered\",\"Get a name and a number\"],[\"**Measured by**\",\"Reach, recall, engagement\",\"Cost per lead, conversions\"],[\"**Best timing**\",\"Launches, events, rebrands\",\"When you can handle more enquiries\"],[\"**Mistake to avoid**\",\"Measuring it by direct sales\",\"Running it before awareness exists\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782817177530,
+          "type": "paragraph",
+          "content": "**Verdict:** You cannot generate leads from an audience that has never heard of you. Sequence awareness, then capture."
+        },
+        {
+          "id": 1782817191960,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782900699232,
+          "type": "heading",
+          "content": "7. Which channels fit your business",
+          "fontWeight": "font-semibold",
+          "spacing": "small"
+        },
+        {
+          "id": 1782900706993,
+          "type": "divider",
+          "content": "",
+          "color": "#0f766e",
+          "size": "4",
+          "spacing": "small"
+        },
+        {
+          "id": 1782978821254,
+          "type": "callout",
+          "content": "The right channel mix depends on how your customers find and decide. A tourist planning a trip, a parent choosing a school, and a fan following a tournament behave completely differently. Below is how we think about each sector, drawn from the kinds of clients we work with.",
+          "calloutTitle": "QUICK ANSWER",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782978920717,
+          "type": "paragraph",
+          "content": "**Tourism and Destinations**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782978930837,
+          "type": "paragraph",
+          "content": "*KAKI experience: Nagaland Tourism, Hornbill Festival*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782978961113,
+          "type": "paragraph",
+          "content": "Tourism is sold on emotion and discovered visually. The journey starts months before travel, on Instagram, YouTube, and in AI travel answers, and ends with a search for logistics. The mix: strong video and photography to inspire, SEO for planning-stage searches, and social to stay top of mind across a long consideration window. A festival like Hornbill is an awareness and event-marketing challenge: build anticipation, capture the energy live, and turn footage into next year’s promotion.\n"
+        },
+        {
+          "id": 1782979053045,
+          "type": "paragraph",
+          "content": "**Sports and Federations**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979060773,
+          "type": "paragraph",
+          "content": "*KAKI experience: Nagaland Olympic Association, Nagaland Cricket Association, Nagaland Athletics, the Nagaland Super League, Indian Athletics*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979112242,
+          "type": "paragraph",
+          "content": "Sport is community and emotion at scale. Fans want to belong, not be sold to. The winning approach is organic-led: consistent match content, athlete storytelling, short-form video built for sharing, and live coverage that makes followers feel part of the event. The Nagaland Super League is a clear example: build an audience around the competition itself, let community engagement do the reach, and turn fixtures into a content calendar. Paid budget then amplifies what is already resonating.\n"
+        },
+        {
+          "id": 1782979122883,
+          "type": "paragraph",
+          "content": "**Events and Festivals**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979139287,
+          "type": "paragraph",
+          "content": "*KAKI experience: Hornbill Festival, Bloom Bazaar, Live Now Events*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979165240,
+          "type": "paragraph",
+          "content": "Events live or die by a deadline. The structure: an awareness phase (build the audience and anticipation), a conversion phase (drive ticket sales with paid ads and urgency), and a capture phase (collect footage and contacts to fuel next time). The audience and content library you keep afterward is often worth more than the event’s own ticket revenue.\n"
+        },
+        {
+          "id": 1782979170460,
+          "type": "paragraph",
+          "content": "**Education and NGOs**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979183659,
+          "type": "paragraph",
+          "content": "*KAKI experience: Scholar Academy, J.V. Rise Foundation, NBHM Eco-Bee*",
+          "spacing": "none",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782979208244,
+          "type": "paragraph",
+          "content": "Education and mission-driven organisations sell trust, and trust is earned with proof, not promises. Parents and donors research carefully. The mix leans on content and SEO (answer the questions they actually search), credibility signals, and email for nurturing a decision rarely made on the first visit. For NGOs, storytelling and email are especially powerful when messaging is purpose-led.\n"
+        },
+        {
+          "id": 1782979213383,
+          "type": "paragraph",
+          "content": "**Retail and Consumer Brands**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979225407,
+          "type": "paragraph",
+          "content": "*KAKI experience: Lenskart, Annalia Beauty, Dough Re Mi Bakes*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979254532,
+          "type": "paragraph",
+          "content": "Retail is visual, impulse-driven, and increasingly discovered on social. The mix: Meta Ads and short-form video to create demand, strong photography to make products irresistible, local SEO so “near me” searches find your store, and email to turn one-time buyers into repeat customers, where the real margin is.\n"
+        },
+        {
+          "id": 1782979259334,
+          "type": "paragraph",
+          "content": "**Hospitality**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979272834,
+          "type": "paragraph",
+          "content": "*KAKI experience: Skylounge Dimapur, Infinity Inc.*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979296425,
+          "type": "paragraph",
+          "content": "Hospitality is chosen on reputation and atmosphere. Reviews and photos decide bookings. The mix: an immaculate Google Business Profile, active review management, atmospheric photography and video, and local SEO for “best [place] in [city]” searches. Most of the battle is won before the customer speaks to you.\n"
+        },
+        {
+          "id": 1782979300673,
+          "type": "paragraph",
+          "content": "**Fitness**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979321987,
+          "type": "paragraph",
+          "content": "*KAKI experience: The Fitness House, Combat Academy*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979344279,
+          "type": "paragraph",
+          "content": "Fitness is sold on transformation and community, and bought locally. Location is the top reason members join and stay. The mix: local SEO, transformation and class content on social, energetic video, and paid local ads with strong trial offers. Retention matters enormously because the economics depend on members staying, not just signing up.\n"
+        },
+        {
+          "id": 1782979352092,
+          "type": "paragraph",
+          "content": "**Corporate and Industrial**",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979358109,
+          "type": "paragraph",
+          "content": "*KAKI experience: Fitzroy Energy & Minerals*",
+          "textColor": "#0f766e",
+          "spacing": "none"
+        },
+        {
+          "id": 1782979386182,
+          "type": "paragraph",
+          "content": "Corporate and B2B buyers move slowly and rationally. Credibility is everything. The mix: a professional website that signals scale, SEO and content for the specific terms buyers search, LinkedIn for reputation, and clear case studies. Reaching the right hundred people matters more than reaching a hundred thousand.\n"
+        },
+        {
+          "id": 1782979440715,
+          "type": "callout",
+          "content": "If your “agency” recommends the same channel mix to a cricket federation, a bakery, and an energy company, that is a template, not a strategy.",
+          "calloutBorderColor": "#c9971c",
+          "calloutTitleColor": "#c9971c",
+          "calloutBgColor": "#fbf3e2",
+          "calloutTitle": "EXPERT TIP"
+        },
+        {
+          "id": 1782979476611,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782979560350,
+          "type": "heading",
+          "content": "8. The AI search shift: SEO, AEO, and GEO",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782979567646,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782979584237,
+          "type": "callout",
+          "content": "Search is changing faster than at any point in 20 years. AI now answers many questions directly, before anyone clicks a website. To stay visible, businesses have to optimise not just to rank but to be cited by AI systems. This is the most important shift in digital marketing right now, and most businesses have not adjusted.",
+          "calloutTitle": "QUICK ANSWER",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782979687228,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782979693/kaki_assets/wozotzjwrslirexhaexz.png",
+          "imageRadius": "none"
+        },
+        {
+          "id": 1782979707222,
+          "type": "paragraph",
+          "content": "Here is what happened. Google began placing AI Overviews at the top of results. On searches where one appears, clicks to the top organic result fell by around 58% ([Ahrefs, Dec 2025](https://)). At the same time, people increasingly ask ChatGPT, Gemini, Perplexity, and Copilot directly. This does not mean SEO is dead. It means SEO now has two new siblings:\n\n**•\tAEO (Answer Engine Optimisation):** structuring content so it can be lifted cleanly into an AI answer or featured snippet. Concise answers, clear definitions, organised FAQs, and structured data.\n**•\tGEO (Generative Engine Optimisation):** earning the authority that makes AI systems cite you as a source. This rewards original data, genuine expertise, clear structure, and being referenced across the web.\n\nThe encouraging news: when a brand is cited inside an AI Overview, it earns roughly 35% more clicks than uncited competitors on the same page. And human-written, expert content still dominates. An October 2025 analysis found around 86% of articles ranking in Google and cited by AI assistants were human-written. The path forward is not to chase the algorithm. It is to be genuinely the best, most trustworthy source on your topic, structured so machines can read it."
+        },
+        {
+          "id": 1782979772556,
+          "type": "callout",
+          "content": "“Ranking number one used to be the finish line. Now the finish line is being the source the AI quotes. The work that earns one increasingly earns the other: real expertise, clearly structured.”",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782979807485,
+          "type": "paragraph",
+          "content": "This is precisely why we restructured how we build content at KAKI: every major page answers a question directly, is structured for both human scanning and machine extraction, and is backed by the authority signals AI systems reward. (This guide is built that way on purpose.)"
+        },
+        {
+          "id": 1782979815374,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782979832740,
+          "type": "heading",
+          "content": "9. In-house vs agency: when to hire",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782979839175,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782979854917,
+          "type": "callout",
+          "content": "Build in-house when marketing is core to your product and you can afford a full team. Hire an agency when you need a range of senior skills you cannot justify employing full-time, or when doing it badly is costing more than doing it right. Most growing businesses use a hybrid: an internal owner plus a specialist partner.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitle": "QUICK ANSWER"
+        },
+        {
+          "id": 1782979908723,
+          "type": "table",
+          "content": "[[\"Factor\",\"In-house team\",\"Agency\"],[\"Cost\",\"High fixed (salaries, tools, training)\",\"Variable, scalable\"],[\"Breadth of skill\",\"Limited to who you hire\",\"Full team: SEO, ads, design, video, analytics\"],[\"Speed to start\",\"Slow (hire, onboard, learn)\",\"Fast, ready now\"],[\"Brand knowledge\",\"Deep, always present\",\"Builds over time\"],[\"Best when\",\"Marketing is your core engine at scale\",\"You need senior, varied skills without headcount\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782980203042,
+          "type": "paragraph",
+          "content": "A single in-house marketer cannot realistically be expert at SEO, paid ads, content, video, photography, web development, and analytics. Those are separate crafts. That is the gap a good agency fills: a full bench of specialists for less than the cost of two or three salaries.\n\n**Hire a partner when any of these are true:**\n•\tYou are spending on ads but cannot say what they return.\n•\tYour website looks dated next to competitors, or is slow on a phone.\n•\tYou are posting on social with no plan and no results.\n•\tYou know AI search is changing things and you have no response.\n•\tYou are growing and marketing has become the bottleneck.\n\nThe wrong reason to hire is “everyone else has an agency.” The right reason is “the cost of getting this wrong, or not doing it, is higher than the fee.”"
+        },
+        {
+          "id": 1782980522387,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782980537517,
+          "type": "heading",
+          "content": "10. What results to expect, and when",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782980547645,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782980567223,
+          "type": "callout",
+          "content": "Paid ads can produce leads within days. Social takes weeks to build momentum. SEO and content take months to show and then compound for years. Anyone promising fast SEO results or guaranteed rankings is either inexperienced or dishonest.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutTitle": "QUICK ANSWER",
+          "calloutBgColor": "#e6f4f1"
+        },
+        {
+          "id": 1782980626829,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782980632/kaki_assets/fzkzwqdnjyzxw8vjconm.png",
+          "imageRadius": "none",
+          "imageSize": "large"
+        },
+        {
+          "id": 1782980692711,
+          "type": "paragraph",
+          "content": "A few honest benchmarks: **SEO is a multi-year asset** (average time to full payback is around 2.7 years, with median returns near 748% once it lands). **Ads are immediate but rented** (you see data in days, and results stop the day you stop paying). **Local SEO is the fastest organic win** for place-based businesses, often visible within a couple of months.\n\n**What good looks like reported to you:** not “likes” and “impressions,” but enquiries, cost per lead, conversion rate, and revenue influenced. If your reports are full of vanity metrics and short on business outcomes, that is a warning sign."
+        },
+        {
+          "id": 1782980750864,
+          "type": "callout",
+          "content": "Ask any prospective partner: “What will you report to me, and how will it connect to revenue?” The answer tells you everything.",
+          "calloutBorderColor": "#c9971c",
+          "calloutTitleColor": "#c9971c",
+          "calloutBgColor": "#fbf3e2",
+          "calloutTitle": "EXPERT TIP"
+        },
+        {
+          "id": 1782980786570,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782980805341,
+          "type": "heading",
+          "content": "11. Myths vs facts",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782980820687,
+          "type": "divider",
+          "content": "",
+          "color": "#0f766e",
+          "size": "4"
+        },
+        {
+          "id": 1782980839773,
+          "type": "table",
+          "content": "[[\"Myth\",\"Fact\"],[\"“SEO is dead because of AI.”\",\"SEO changed, it did not die. It now includes being cited by AI. Quality matters more than ever.\"],[\"“More followers means more sales.”\",\"Reach without conversion is a vanity metric. Small, engaged audiences beat large dead ones.\"],[\"“Just boost the post.”\",\"Boosting is the least efficient way to spend on Meta. Proper campaigns return far more.\"],[\"“We tried digital, it didn’t work.”\",\"Usually the system failed (weak site, no follow-up), not the channel.\"],[\"“Good products market themselves.”\",\"The best product nobody can find loses to a decent product everybody sees.\"],[\"“We’ll go viral.”\",\"Virality is luck, not a strategy. Consistency is a strategy.\"],[\"“Cheaper agency, same result.”\",\"You are buying skill and judgment. The cheap option usually costs more in wasted spend.\"],[\"“Set it and forget it.”\",\"Marketing is a loop, not a launch. The returns are in the iteration.\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782980964188,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782980975566,
+          "type": "heading",
+          "content": "12. The eight most expensive mistakes",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782980990423,
+          "type": "divider",
+          "content": "",
+          "color": "#0f766e",
+          "size": "4"
+        },
+        {
+          "id": 1782981031930,
+          "type": "paragraph",
+          "content": "**1.\tDriving traffic to a site that cannot convert.** Fix the website before you buy a single click.\n**2.\tNo way to capture leads.** Paid traffic with no email capture means paying for the same person twice.\n**3.\tPosting without a strategy.** Random social activity feels productive and produces nothing.\n**4.\tIgnoring Google Business Profile.** For local businesses, this is free, high-intent visibility left on the table.\n**5.\tChasing every platform at once. **Two channels done well beat six done badly.\n**6.\tMeasuring the wrong things.** Likes are not revenue. Track cost per lead and conversion.\n**7.\tStopping too soon.** Pulling the plug on SEO at month three, right before it starts working.\n**8.\tNo response to AI search.** Treating 2026 search like 2020 search while competitors get cited."
+        },
+        {
+          "id": 1782981108187,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782981122711,
+          "type": "heading",
+          "content": "13. Your 30-minute readiness worksheet",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782981133975,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782981151243,
+          "type": "paragraph",
+          "content": "Score yourself. One point for each “yes.” Be honest.",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981165709,
+          "type": "paragraph",
+          "content": "**Foundations**",
+          "spacing": "small",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782981200203,
+          "type": "paragraph",
+          "content": "☐  We have a clear, single business goal for marketing (a number, not “growth”).\n☐  Our website loads fast on a phone (check on PageSpeed Insights).\n☐  A first-time visitor understands what we do within five seconds.\n☐  We have a complete, verified Google Business Profile (if we serve a place).",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981343575,
+          "type": "paragraph",
+          "content": "**Visibility**",
+          "textColor": "#0f766e",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981379679,
+          "type": "paragraph",
+          "content": "☐  We show up when people search for what we sell.\n☐  We publish content that answers our customers’ real questions.\n☐  We have a plan for AI search, not just traditional Google.",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981389111,
+          "type": "paragraph",
+          "content": "**Conversion and retention**",
+          "textColor": "#0f766e",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981413285,
+          "type": "paragraph",
+          "content": "☐  We capture contact details from interested visitors.\n☐  We have at least one automated email sequence running.\n☐  We ask for and manage reviews.",
+          "spacing": "small"
+        },
+        {
+          "id": 1782981457944,
+          "type": "paragraph",
+          "content": "**Measurement**",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782981478468,
+          "type": "paragraph",
+          "content": "☐  We have analytics installed and actually look at it.\n☐  We know our cost per lead, at least roughly."
+        },
+        {
+          "id": 1782981519433,
+          "type": "callout",
+          "content": ""
+        },
+        {
+          "id": 1782981529675,
+          "type": "callout",
+          "content": "**•\t10 to 12:** You are ahead of most. Focus on optimisation and AI search.\n**•\t6 to 9:** Solid foundation, real gaps. A focused plan produces quick wins.\n**•\t0 to 5:** You are leaving significant revenue on the table. Start with the foundations, in order.",
+          "calloutBorderColor": "#0f766e",
+          "calloutTitleColor": "#0f766e",
+          "calloutBgColor": "#e6f4f1",
+          "calloutTitle": "How to read your score"
+        },
+        {
+          "id": 1782982121275,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782982222120,
+          "type": "heading",
+          "content": "14. Frequently asked questions",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782982226528,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782982245351,
+          "type": "paragraph",
+          "content": "**What is digital marketing in simple terms?**\nIt is everything you do online to get found, get chosen, and get bought: your website, search visibility, social media, advertising, content, and email, working together to turn attention into customers.\n\n**How much should a small business spend on digital marketing?**\nThere is no universal number, but a common guideline is a percentage of revenue, often 7% to 12% for growing businesses, weighted toward the channels that fit your model. More useful than a budget rule is a target: decide what a customer is worth, and spend up to a sensible fraction of that to acquire one.\n\n**Which is better, SEO or paid ads?**\nNeither is universally better. Paid ads buy speed and stop when you stop paying. SEO is slow to build but becomes your cheapest source of customers and keeps working. Most businesses run ads now while building SEO for later.\n\n**How long until digital marketing works?**\nPaid ads: days. Social: weeks. Local SEO: a couple of months. SEO and content: six to twelve months to show clearly, then compounding for years. Anyone promising fast SEO results is not being straight with you.\n\n**Is digital marketing worth it for a small or local business?**\nFor local businesses it is often the highest-return option available, because nearly half of Google searches have local intent and most “near me” searches lead to a visit within a day. A strong Google Business Profile alone can transform a local business’s enquiries.\n\n**Has AI made SEO useless?**\nNo. It changed the goal. You now optimise to be cited by AI answers as well as to rank. Quality, expertise, and clear structure matter more than ever, and brands cited by AI earn meaningfully more clicks.\n\n**When should I hire a digital marketing agency?**\nWhen you need a range of senior skills you cannot justify employing full-time, or when doing marketing badly costs more than doing it well. Many businesses use a hybrid of an internal owner plus a specialist partner.\n\n**How do I know if my marketing is working?**\nLook past likes and impressions. The real measures are enquiries, cost per lead, conversion rate, and revenue influenced. If your reports do not connect to those, you are measuring the wrong things."
+        },
+        {
+          "id": 1782982397868,
+          "type": "divider",
+          "content": "",
+          "color": "#1c2b36"
+        },
+        {
+          "id": 1782982412164,
+          "type": "heading",
+          "content": "15. Where to go next",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782982417968,
+          "type": "divider",
+          "content": "",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782982441249,
+          "type": "paragraph",
+          "content": "Digital marketing is wide, and this guide is the map. The detailed routes deserve their own articles. As we publish them, this cluster fills in:"
+        },
+        {
+          "id": 1782982485731,
+          "type": "image",
+          "content": "https://res.cloudinary.com/dvnpkmzpf/image/upload/v1782982493/kaki_assets/spcf1ox5eshrfcuzardh.png",
+          "imageRadius": "none",
+          "imageSize": "large"
+        },
+        {
+          "id": 1782982508227,
+          "type": "paragraph",
+          "content": "**Who should reach out to KAKI, and why:**\n\n**•\tBusiness owners and founders** who suspect they are wasting marketing money but cannot prove where. Start with an audit.\n**•\tOrganisations launching something** (an event, a tournament, a destination campaign, a new location). Start with a strategy conversation.\n**•\tTeams who know AI search is changing the game** and want a real plan, not a panic. Speak with a strategist."
+        },
+        {
+          "id": 1782982564809,
+          "type": "callout",
+          "content": "Book a consultation, request a digital marketing audit, or speak with a strategist. We will tell you the truth about what your business needs, even when the truth is “you don’t need to spend as much as you think.”\nVisit  [kakihelpsbrands.com](https://www.kakihelpsbrands.com/) \nPhone: 88374 02472    Email: connect@kakihelpsbrands.com",
+          "calloutBorderColor": "#0f766e",
+          "calloutBgColor": "#1c2b36",
+          "calloutTitleColor": "#ffffff",
+          "calloutTitle": "Talk to KAKI",
+          "calloutTextColor": "#ffffff"
+        },
+        {
+          "id": 1782983733741,
+          "type": "heading",
+          "content": "16. Further reading and trusted resources",
+          "spacing": "small",
+          "fontWeight": "font-semibold"
+        },
+        {
+          "id": 1782983747363,
+          "type": "divider",
+          "content": "",
+          "spacing": "small",
+          "size": "4",
+          "color": "#0f766e"
+        },
+        {
+          "id": 1782983776113,
+          "type": "paragraph",
+          "content": "**[color=#0f766e]Official platform documentation[/color]**\n•\tGoogle Search Essentials   , the baseline for being found on Google.\n•\tGoogle Business Profile Help   , set up and manage local visibility.\n•\tGoogle Ads Help Center   , official guidance on search and display advertising.\n•\tGoogle Analytics Help   , measurement and tracking.\n•\tPageSpeed Insights   , test your site’s speed and experience.\n•\tThink with Google   , consumer-behaviour and insight library.\n•\tMeta Business Help Center   , Facebook and Instagram advertising.\n•\tSchema.org   , the structured-data vocabulary behind rich results and AEO.\n\n**[color=#0f766e]Research and data cited in this guide[/color]**\n•\tdentsu Global Ad Spend Forecast 2026   , ad spend crossing $1 trillion.\n•\tAhrefs: AI Overviews Reduce Clicks (Dec 2025)   , the 58% finding.\n•\tSearch Engine Land: AI Overviews CTR study   , citation and CTR data.\n•\tBrightLocal Local SEO Statistics   , local search and profile data.\n•\tBacklinko Local SEO Statistics   , “near me” and local-pack behaviour.\n•\tLitmus 2025 State of Email   , email return benchmarks.\n\n**[color=#0f766e]Industry publications for ongoing learning[/color]**\n•\t[Search Engine Journal](https://www.searchenginejournal.com/) and Search Engine Land for search news.\n•\t[HubSpot](https://www.hubspot.com/), Ahrefs, Semrush, and Moz for practical education."
+        },
+        {
+          "id": 1782985335697,
+          "type": "heading",
+          "content": "Appendix A: Before you publish",
+          "fontWeight": "font-semibold",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782985351723,
+          "type": "paragraph",
+          "content": "This document is publication-ready apart from the highlighted placeholders, which only your team can confirm. Replace each one, then delete this appendix.\n\n**•\tClient results** (Sections 7): replace the highlighted [INSERT ... METRIC] notes with real, verified figures. Do not publish invented numbers.\n**•\tContact details** (Section 15): add phone, email, and a booking link.\n**•\tAuthor byline:** consider naming a real strategist for stronger E-E-A-T (search and AI reward a human author).\n**•\tInternal links:** point the topic-cluster items to each article URL as you publish them.\n**•\tSchema and meta:** hand Appendix B and C to your web developer or paste into your SEO plugin."
+        },
+        {
+          "id": 1782985436867,
+          "type": "heading",
+          "content": "Appendix B: Publishing metadata",
+          "fontWeight": "font-semibold",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782985459802,
+          "type": "table",
+          "content": "[[\"Field\",\"Value\"],[\"**SEO title**\",\"Digital Marketing for Businesses: The Complete 2026 Guide | KAKI\"],[\"**Meta description**\",\"A decision-maker’s guide to digital marketing. What works in 2026, which channels fit your business, what results to expect, and when to hire an agency.\"],[\"**URL slug**\",\"/digital-marketing/\"],[\"**Primary keyword**\",\"digital marketing\"],[\"**Primary image ALT**\",\"KAKI digital marketing strategy framework for businesses\"]]",
+          "tableHeaderBg": "#1c2b36",
+          "tableHeaderColor": "#ffffff"
+        },
+        {
+          "id": 1782985599375,
+          "type": "heading",
+          "content": "Appendix C: Schema markup (for your developer)",
+          "fontWeight": "font-semibold",
+          "textColor": "#0f766e"
+        },
+        {
+          "id": 1782985624505,
+          "type": "paragraph",
+          "content": "Place these JSON-LD blocks in the page head or via your SEO plugin. Update URLs, dates, and organisation details."
+        },
+        {
+          "id": 1782985675848,
+          "type": "callout",
+          "content": "{\n  \"@context\": \"https://schema.org\",\n  \"@type\": \"Article\",\n  \"headline\": \"Digital Marketing for Businesses: The Practical 2026 Guide\",\n  \"author\": { \"@type\": \"Organization\", \"name\": \"KAKI\", \"url\": \"https://kakihelpsbrands.com\" },\n  \"publisher\": { \"@type\": \"Organization\", \"name\": \"KAKI\",\n    \"logo\": { \"@type\": \"ImageObject\", \"url\": \"https://kakihelpsbrands.com/[LOGO-URL]\" } },\n  \"datePublished\": \"[PUBLISH-DATE]\",\n  \"dateModified\": \"[MODIFIED-DATE]\",\n  \"mainEntityOfPage\": \"https://kakihelpsbrands.com/digital-marketing/\"\n}\n \nFAQPage: include each Q&A from Section 14 as a Question / acceptedAnswer pair.\nBreadcrumbList: Home > Digital Marketing.\n",
+          "calloutBorderColor": "#1c2b36",
+          "calloutBgColor": "#f2f2f2"
+        }
+      ],
+      "seoTitle": "Digital Marketing for Businesses: The Complete 2026 Guide | KAKI",
+      "seoDescription": "A decision-maker’s guide to digital marketing. What works in 2026, which channels fit your business, what results to expect, and when to hire an agency."
+    },
+    {
       "id": "social-media-marketing",
       "title": "The 2026 Practical Guide",
       "author": "Prepared by KAKI",
